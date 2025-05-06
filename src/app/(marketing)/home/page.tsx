@@ -354,9 +354,9 @@ const HomePgae = () => {
                 <div className="block">
                   <h4>Commercial Property</h4>
                   <p>
-                    Dubai's commercial property market offers a wide range of
-                    services, from buying and leasing to property management and
-                    consulting. The market is characterized by a thriving
+                    Dubai&apos;s commercial property market offers a wide range
+                    of services, from buying and leasing to property management
+                    and consulting. The market is characterized by a thriving
                     economy, favorable business environment
                   </p>
                   <Link href={"/"}>

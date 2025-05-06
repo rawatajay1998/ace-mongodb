@@ -32,7 +32,7 @@ const items: CollapseProps["items"] = [
       <p>
         Binghatti Aquarise is a premium residential development by Binghatti
         Developers, known for its distinctive architectural style and luxurious
-        amenities. It’s strategically located in Dubai’s Jumeirah Village Circle
+        amenities. It’s strategically located in Dubais Jumeirah Village Circle
         (JVC), offering easy access to major highways, shopping malls, schools,
         and entertainment hubs.
       </p>
@@ -45,7 +45,7 @@ const items: CollapseProps["items"] = [
       <p>
         Binghatti Aquarise is a premium residential development by Binghatti
         Developers, known for its distinctive architectural style and luxurious
-        amenities. It’s strategically located in Dubai’s Jumeirah Village Circle
+        amenities. It’s strategically located in Dubais Jumeirah Village Circle
         (JVC), offering easy access to major highways, shopping malls, schools,
         and entertainment hubs.
       </p>
@@ -58,7 +58,7 @@ const items: CollapseProps["items"] = [
       <p>
         Binghatti Aquarise is a premium residential development by Binghatti
         Developers, known for its distinctive architectural style and luxurious
-        amenities. It’s strategically located in Dubai’s Jumeirah Village Circle
+        amenities. It’s strategically located in Dubais Jumeirah Village Circle
         (JVC), offering easy access to major highways, shopping malls, schools,
         and entertainment hubs.
       </p>
