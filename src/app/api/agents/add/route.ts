@@ -35,6 +35,7 @@ export async function POST(req: NextRequest) {
       .end(buffer);
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const imageUrl = (uploadRes as any).secure_url;
 
   const newUser = new User({

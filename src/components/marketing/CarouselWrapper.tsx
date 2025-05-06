@@ -1,15 +1,19 @@
 import React from "react";
-import PropertyCard from "./PropertyCard";
 import { Carousel } from "antd";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-const PrevArrow = ({ className, onClick }: any) => (
+interface ArrowProps {
+  className?: string;
+  onClick?: () => void;
+}
+
+const PrevArrow = ({ className, onClick }: ArrowProps) => (
   <button className={className} onClick={onClick}>
     <ChevronLeft />
   </button>
 );
 
-const NextArrow = ({ className, onClick }: any) => (
+const NextArrow = ({ className, onClick }: ArrowProps) => (
   <button className={className} onClick={onClick}>
     <ChevronRight />
   </button>

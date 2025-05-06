@@ -2,7 +2,7 @@
 
 import { Table, Input, Button, Space } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { InputRef } from "antd";
 import type { ColumnsType, TablePaginationConfig } from "antd/es/table";
 import type { FilterDropdownProps } from "antd/es/table/interface";
@@ -17,6 +17,16 @@ interface Property {
 }
 interface PropertyTableProps {
   fetchUrl: string;
+}
+
+interface FetchParams {
+  pagination: {
+    current: number;
+    pageSize: number;
+  };
+  filters: {
+    [key: string]: string | number;
+  };
 }
 
 export default function PropertyTable({ fetchUrl }: PropertyTableProps) {
@@ -36,27 +46,29 @@ export default function PropertyTable({ fetchUrl }: PropertyTableProps) {
 
   console.log(fetchUrl);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const fetchData = async (params: any) => {
-    setLoading(true);
+  const fetchData = useCallback(
+    async (params: FetchParams) => {
+      setLoading(true);
 
-    const query = new URLSearchParams({
-      page: params.pagination.current.toString(),
-      pageSize: params.pagination.pageSize.toString(),
-      ...params.filters,
-    });
+      const query = new URLSearchParams({
+        page: params.pagination.current.toString(),
+        pageSize: params.pagination.pageSize.toString(),
+        ...params.filters,
+      });
 
-    const res = await fetch(`${fetchUrl}?${query}`);
-    const json = await res.json();
+      const res = await fetch(`${fetchUrl}?${query}`);
+      const json = await res.json();
 
-    setData(json.data);
-    setTotal(json.total);
-    setLoading(false);
-  };
+      setData(json.data);
+      setTotal(json.total);
+      setLoading(false);
+    },
+    [fetchUrl]
+  );
 
   useEffect(() => {
     fetchData({ pagination, filters });
-  }, [pagination, filters]);
+  }, [fetchData, pagination, filters]);
 
   const handleTableChange = (pag: TablePaginationConfig) => {
     setPagination({
@@ -85,6 +97,7 @@ export default function PropertyTable({ fetchUrl }: PropertyTableProps) {
     setSearchTexts((prev) => ({ ...prev, [dataIndex]: "" }));
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const getColumnSearchProps = (dataIndex: string): any => {
     if (!searchInputs.current[dataIndex]) {
       searchInputs.current[dataIndex] = null;

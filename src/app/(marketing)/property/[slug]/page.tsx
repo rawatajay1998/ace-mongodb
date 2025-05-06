@@ -1,14 +1,6 @@
 import ReadMoreText from "@/components/marketing/ReadMoreText";
-import { Collapse, CollapseProps, Input, Space, Table, TableProps } from "antd";
-import { SpaceCompactItemContext } from "antd/es/space/Compact";
-import {
-  Contact,
-  FireExtinguisher,
-  Mail,
-  Paperclip,
-  Search,
-  User,
-} from "lucide-react";
+import { Collapse, CollapseProps, Table, TableProps } from "antd";
+import { FireExtinguisher } from "lucide-react";
 import Image from "next/image";
 
 const floorPlanColumns: TableProps["columns"] = [

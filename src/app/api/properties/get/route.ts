@@ -13,6 +13,7 @@ export async function GET(req: NextRequest) {
     const page = parseInt(searchParams.get("page") || "1");
     const pageSize = parseInt(searchParams.get("pageSize") || "10");
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const filters: any = {};
     const searchableFields = ["projectName", "city", "status", "price", "beds"];
 

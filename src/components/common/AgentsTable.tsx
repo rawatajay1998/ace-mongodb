@@ -51,7 +51,9 @@ export default function AgentTable() {
 
   const handleTableChange = (
     pagination: TablePaginationConfig,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     _filters: any,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     sorter: any
   ) => {
     setPagination({
@@ -65,6 +67,7 @@ export default function AgentTable() {
     }
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const getColumnSearchProps = (dataIndex: string): any => ({
     filterDropdown: ({
       setSelectedKeys,

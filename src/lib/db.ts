@@ -1,7 +1,7 @@
 // lib/db.ts
-import mongoose from "mongoose";
+import mongoose, { Mongoose } from "mongoose";
 
-const MONGODB_URI = process.env.MONGODB_URI as string;
+const MONGODB_URI = process.env.MONGODB_URI;
 
 if (!MONGODB_URI) {
   throw new Error(
@@ -9,18 +9,28 @@ if (!MONGODB_URI) {
   );
 }
 
-// Global is used here to prevent multiple connections in development
-let cached = (global as any).mongoose;
-
-if (!cached) {
-  cached = (global as any).mongoose = { conn: null, promise: null };
+// Extend NodeJS.Global to include custom mongoose cache
+declare global {
+  // Allow global `var` declarations
+  // eslint-disable-next-line no-var
+  var mongoose: {
+    conn: Mongoose | null;
+    promise: Promise<Mongoose> | null;
+  };
 }
 
-async function connectDB() {
+// In development, use a global cache to prevent re-creating connections
+let cached = global.mongoose;
+
+if (!cached) {
+  cached = global.mongoose = { conn: null, promise: null };
+}
+
+async function connectDB(): Promise<Mongoose> {
   if (cached.conn) return cached.conn;
 
   if (!cached.promise) {
-    cached.promise = mongoose.connect(MONGODB_URI, {
+    cached.promise = mongoose.connect(MONGODB_URI!, {
       bufferCommands: false,
     });
   }

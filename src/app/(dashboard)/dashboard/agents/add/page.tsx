@@ -27,15 +27,11 @@ const agentSchema = z
   });
 
 export default function AddAgentForm() {
-  const {
-    register,
-    handleSubmit,
-    control,
-    formState: { errors },
-  } = useForm({
+  const { register, handleSubmit, control } = useForm({
     resolver: zodResolver(agentSchema),
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onSubmit = async (data: any) => {
     const formData = new FormData();
     Object.entries(data).forEach(([key, value]) => {
