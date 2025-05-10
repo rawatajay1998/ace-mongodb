@@ -17,6 +17,12 @@ interface Project {
   image?: string;
 }
 
+type AgentProfilePageProps = {
+  params: {
+    id: string;
+  };
+};
+
 async function getAgentData(
   id: string
 ): Promise<{ agent: Agent; projects: Project[] }> {
@@ -34,9 +40,7 @@ async function getAgentData(
 
 export default async function AgentProfilePage({
   params,
-}: {
-  params: { id: string };
-}) {
+}: AgentProfilePageProps) {
   let data;
   try {
     data = await getAgentData(params.id);
