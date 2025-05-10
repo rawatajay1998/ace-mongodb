@@ -56,11 +56,20 @@ const propertySchema = z.object({
   beds: z.coerce.number().min(0, "Must be 0 or more"),
   propertyPrice: z.coerce.number().min(0, "Price must be 0 or more"),
   thumbnailImage: z
-    .instanceof(FileList)
-    .refine((file) => file.length > 0, "Thumbnail image is required"),
+    .custom<FileList>((val) => val instanceof FileList, {
+      message: "Thumbnail image is required",
+    })
+    .refine((files) => files.length > 0, {
+      message: "Thumbnail image is required",
+    }),
   bannerImage: z
-    .instanceof(FileList)
-    .refine((file) => file.length > 0, "Banner image is required"),
+    .custom<FileList>((val) => val instanceof FileList, {
+      message: "Banner image is required",
+    })
+    .refine((files) => files.length > 0, {
+      message: "Banner image is required",
+    }),
+
   amenities: z.array(z.string()).optional(),
   galleryImages: z.array(z.any()).optional(),
   floorPlansImages: z.array(z.any()).optional(),
