@@ -11,7 +11,7 @@ export async function GET() {
       verified: false,
     }).populate("postedBy", "firstname lastname");
 
-    return NextResponse.json({ properties: approvedProperties });
+    return NextResponse.json({ data: approvedProperties });
   } catch (error) {
     console.error("Failed to fetch public properties", error);
     return NextResponse.json(

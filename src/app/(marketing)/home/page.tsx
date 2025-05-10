@@ -1,7 +1,5 @@
-"use client";
-
-import React, { useState } from "react";
-import { Button, Checkbox, Input, Select, Slider, Tabs } from "antd";
+import React from "react";
+import { Tabs } from "antd";
 import {
   Briefcase,
   Building2,
@@ -9,59 +7,82 @@ import {
   Landmark,
   Layout,
   MoveRight,
-  Search,
-  SlidersHorizontal,
   Store,
 } from "lucide-react";
 import Image from "next/image";
 import CarouselWrapper from "@/components/marketing/CarouselWrapper";
-import PropertyCard from "@/components/marketing/PropertyCard";
 import CityCard from "@/components/marketing/CityCard";
 import Link from "next/link";
 import TeamCard from "@/components/marketing/TeamCard";
 import TestimonialCard from "@/components/marketing/Testimonial";
 
+import SearchBanner from "./searchBanner";
+import FeaturedProperties from "./FeaturedCategories";
+import PremiumProperties from "./PremiumCategories";
+
+const cities = [
+  {
+    city: "Downtown Dubai",
+    count: 125,
+    imageUrl: "/assets/images/downtown-dubai.jpg",
+  },
+  {
+    city: "Dubai Marina",
+    count: 98,
+    imageUrl: "/assets/images/dubai-marina.jpg",
+  },
+  {
+    city: "Palm Jumeirah",
+    count: 74,
+    imageUrl: "/assets/images/dubai-palm.jpeg",
+  },
+];
+
+const teamArray = [
+  {
+    name: "Rishi Malik",
+    designation: "Founder",
+    imageUrl: "/assets/images/team/rishi-malik.jpg",
+  },
+  {
+    name: "Fahad Rahim Khan",
+    designation: "Human Resource",
+    imageUrl: "/assets/images/team/fahad-rahim-khan.jpg",
+  },
+  {
+    name: "Rucile",
+    designation: "Admin Officer",
+    imageUrl: "/assets/images/team/rucile.jpg",
+  },
+  {
+    name: "Mayuri Chandwani",
+    designation: "RealEstate Agent",
+    imageUrl: "/assets/images/team/mayuri-chadnwani.jpg",
+  },
+  {
+    name: "Natalia",
+    designation: "RealEstate Agent",
+    imageUrl: "/assets/images/team/natalia-rashwan.jpg",
+  },
+  {
+    name: "Christine",
+    designation: "RealEstate Agent",
+    imageUrl: "/assets/images/team/christine.jpg",
+  },
+];
+
 const HomePgae = () => {
-  const [size, setSize] = useState<number[]>([500, 1000]);
-  const [price, setPrice] = useState<number[]>([10000, 1000000]);
-
-  const [openFilters, setOpenFilters] = useState(false);
-
-  const amenities = [
-    "Air Condition",
-    "Disabled Access",
-    "Floor",
-    "Heating",
-    "Renovation",
-    "Window Type",
-    "Cable TV",
-    "Elevator",
-    "Furnishing",
-    "Intercom",
-    "Security",
-    "Search Property",
-    "Ceiling Height",
-    "Fence",
-    "Garage",
-    "Parking",
-    "Swimming Pool",
-    "Fireplace",
-    "Garden",
-    "Pet Friendly",
-    "WiFi",
-    "Construction Year",
-  ];
-
-  const onChangeSize = (newValue: number[]) => {
-    setSize(newValue);
-  };
-  const onChangePrice = (newValue: number[]) => {
-    setPrice(newValue);
-  };
-
   return (
     <div className="home">
       <section className="banner_section">
+        <div className="image_left">
+          <Image
+            src={"/assets/images/graplic-slider-2.png"}
+            alt="Image"
+            height={400}
+            width={400}
+          />
+        </div>
         <div className="container">
           <div className="content">
             <h1>Reality Properties solve your problems</h1>
@@ -75,173 +96,12 @@ const HomePgae = () => {
             <Tabs
               type="card"
               items={[
-                {
-                  label: "Buy",
-                  key: "1",
-                  children: "",
-                },
-                {
-                  label: "Rent",
-                  key: "2",
-                  children: "",
-                },
+                { label: "Buy", key: "1", children: "" },
+                { label: "Rent", key: "2", children: "" },
               ]}
             />
-            <div className="search_form">
-              <form action="">
-                <div className="form_field">
-                  <label>Type</label>
-                  <Select
-                    showSearch
-                    style={{ width: 200 }}
-                    placeholder="Search to Select"
-                    optionFilterProp="label"
-                    options={[
-                      {
-                        value: "1",
-                        label: "Not Identified",
-                      },
-                      {
-                        value: "2",
-                        label: "Closed",
-                      },
-                      {
-                        value: "3",
-                        label: "Communicated",
-                      },
-                      {
-                        value: "4",
-                        label: "Identified",
-                      },
-                      {
-                        value: "5",
-                        label: "Resolved",
-                      },
-                      {
-                        value: "6",
-                        label: "Cancelled",
-                      },
-                    ]}
-                  />
-                </div>
-                <div className="form_field">
-                  <label>Location</label>
-                  <Input placeholder="Search Location" type="text" />
-                </div>
-                <div className="form_field">
-                  <label>Keyword</label>
-                  <Input placeholder="Search Keyword" type="text" />
-                </div>
-                <button
-                  className="filter_btn"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setOpenFilters(!openFilters);
-                  }}
-                >
-                  <SlidersHorizontal size={16} />
-                  Filters
-                </button>
-                <button className="search_btn">
-                  <Search size={16} />
-                  Search
-                </button>
-              </form>
-              {openFilters && (
-                <div className="filters_dropdown">
-                  <div className="bg-white p-6 rounded-2xl shadow-md space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
-                        <label className="block mb-2 font-medium">
-                          Price Range: {price[0]} - {price[1]}
-                        </label>
-                        <Slider
-                          onChange={onChangePrice}
-                          range
-                          value={price}
-                          min={0}
-                          max={20000000}
-                        />
-                      </div>
 
-                      <div>
-                        <label className="block mb-2 font-medium">
-                          Size Range (sqft): {size[0]} - {size[1]}
-                        </label>
-                        <Slider
-                          onChange={onChangeSize}
-                          range
-                          min={0}
-                          value={size}
-                          max={3000}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                      <Select
-                        placeholder="Rooms"
-                        className="w-full"
-                        size="large"
-                      >
-                        <Select.Option value="all">All</Select.Option>
-                        <Select.Option value="1">1</Select.Option>
-                        <Select.Option value="2">2</Select.Option>
-                      </Select>
-
-                      <Select
-                        placeholder="Bathrooms"
-                        className="w-full"
-                        size="large"
-                      >
-                        <Select.Option value="all">All</Select.Option>
-                        <Select.Option value="1">1</Select.Option>
-                        <Select.Option value="2">2</Select.Option>
-                      </Select>
-
-                      <Select
-                        placeholder="Bedrooms"
-                        className="w-full"
-                        size="large"
-                      >
-                        <Select.Option value="all">All</Select.Option>
-                        <Select.Option value="1">1</Select.Option>
-                        <Select.Option value="2">2</Select.Option>
-                      </Select>
-
-                      <Select
-                        placeholder="Type"
-                        className="w-full"
-                        size="large"
-                      >
-                        <Select.Option value="all">All</Select.Option>
-                        <Select.Option value="apartment">
-                          Apartment
-                        </Select.Option>
-                        <Select.Option value="villa">Villa</Select.Option>
-                      </Select>
-                    </div>
-
-                    <div>
-                      <label className="block mb-4 font-medium">
-                        Amenities:
-                      </label>
-                      <Checkbox.Group className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                        {amenities.map((item) => (
-                          <Checkbox key={item} value={item}>
-                            {item}
-                          </Checkbox>
-                        ))}
-                      </Checkbox.Group>
-                    </div>
-
-                    <div className="flex justify-end gap-4">
-                      <Button type="default">Reset</Button>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
+            <SearchBanner />
           </div>
 
           <div className="details">
@@ -292,27 +152,27 @@ const HomePgae = () => {
               <p className="count">24 Property</p>
             </div>
             <div className="block">
-              <Home size={32} />
+              <Home color="#5c6368" strokeWidth={1.5} size={32} />
               <h4>Villa</h4>
               <p className="count">24 Property</p>
             </div>
             <div className="block">
-              <Layout size={32} />
+              <Layout color="#5c6368" strokeWidth={1.5} size={32} />
               <h4>Studio</h4>
               <p className="count">24 Property</p>
             </div>
             <div className="block">
-              <Briefcase size={32} />
+              <Briefcase color="#5c6368" strokeWidth={1.5} size={32} />
               <h4>Office</h4>
               <p className="count">24 Property</p>
             </div>
             <div className="block">
-              <Landmark />
+              <Landmark color="#5c6368" strokeWidth={1.5} size={32} />
               <h4>TownHouse</h4>
               <p className="count">24 Property</p>
             </div>
             <div className="block">
-              <Store size={32} />
+              <Store color="#5c6368" strokeWidth={1.5} size={32} />
               <h4>Commercial</h4>
               <p className="count">24 Property</p>
             </div>
@@ -403,23 +263,7 @@ const HomePgae = () => {
               Discover Ace Elite Finest <br /> Properties for Your Dream Home
             </h3>
           </div>
-          <CarouselWrapper slidesToShow={3}>
-            <div style={{ padding: "0 12px" }}>
-              <PropertyCard />
-            </div>
-            <div style={{ padding: "0 12px" }}>
-              <PropertyCard />
-            </div>
-            <div style={{ padding: "0 12px" }}>
-              <PropertyCard />
-            </div>
-            <div style={{ padding: "0 12px" }}>
-              <PropertyCard />
-            </div>
-            <div style={{ padding: "0 12px" }}>
-              <PropertyCard />
-            </div>
-          </CarouselWrapper>
+          <PremiumProperties />
         </div>
       </section>
 
@@ -427,15 +271,12 @@ const HomePgae = () => {
         <div className="container">
           <div className="heading_block">
             <p> Explore Cities</p>
-            <h3 className="title">Properties By Cities</h3>
+            <h3 className="title">Property Locations for Higher ROI</h3>
           </div>
           <div className="city_row">
-            <CityCard />
-            <CityCard />
-            <CityCard />
-            <CityCard />
-            <CityCard />
-            <CityCard />
+            {cities.map((cityData) => (
+              <CityCard key={cityData.city} {...cityData} />
+            ))}
           </div>
           <Link href="/" className="view__all">
             View All
@@ -452,23 +293,7 @@ const HomePgae = () => {
               Discover Ace Elite Finest <br /> Properties for Your Dream Home
             </h3>
           </div>
-          <CarouselWrapper slidesToShow={3}>
-            <div style={{ padding: "0 12px" }}>
-              <PropertyCard />
-            </div>
-            <div style={{ padding: "0 12px" }}>
-              <PropertyCard />
-            </div>
-            <div style={{ padding: "0 12px" }}>
-              <PropertyCard />
-            </div>
-            <div style={{ padding: "0 12px" }}>
-              <PropertyCard />
-            </div>
-            <div style={{ padding: "0 12px" }}>
-              <PropertyCard />
-            </div>
-          </CarouselWrapper>
+          <FeaturedProperties />
         </div>
       </section>
 
@@ -501,10 +326,10 @@ const HomePgae = () => {
             </h3>
           </div>
           <CarouselWrapper slidesToShow={5}>
-            <TeamCard />
-            <TeamCard />
-            <TeamCard />
-            <TeamCard />
+            {teamArray &&
+              teamArray.map((person) => {
+                return <TeamCard key={person.name} {...person} />;
+              })}
           </CarouselWrapper>
         </div>
       </section>

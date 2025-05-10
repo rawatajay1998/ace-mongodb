@@ -152,8 +152,8 @@ export default function AgentTable() {
     },
     {
       title: "Phone",
-      dataIndex: "phone",
-      ...getColumnSearchProps("phone"),
+      dataIndex: "phoneNumber",
+      ...getColumnSearchProps("phoneNumber"),
     },
   ];
 

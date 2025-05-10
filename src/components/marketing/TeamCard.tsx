@@ -1,20 +1,21 @@
 import Image from "next/image";
 import React from "react";
 
-const TeamCard = () => {
+interface PersonProps {
+  name: string;
+  designation: string;
+  imageUrl: string;
+}
+
+const TeamCard = ({ name, designation, imageUrl }: PersonProps) => {
   return (
     <div className="team_card">
       <div className="image">
-        <Image
-          src={"/assets/images/team/rishi-malik.jpg"}
-          alt=""
-          height={500}
-          width={500}
-        />
+        <Image src={imageUrl} alt="" height={500} width={500} />
       </div>
       <div className="about">
-        <h4 className="name">Rishi Malik</h4>
-        <p className="designation">Founder</p>
+        <h4 className="name">{name}</h4>
+        <p className="designation">{designation}</p>
       </div>
     </div>
   );

@@ -9,5 +9,5 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/admin/:path*"], // protect routes
+  matcher: ["/dashboard/:path*"], // protect routes
 };

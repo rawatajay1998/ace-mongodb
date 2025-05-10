@@ -21,7 +21,11 @@ const ReadMoreText = ({
 
   return (
     <div>
-      <p style={{ marginBottom: "8px" }}>{displayedText}</p>
+      <div
+        className="prose prose-lg max-w-none"
+        dangerouslySetInnerHTML={{ __html: displayedText }}
+      />
+
       {text.length > maxLength && (
         <button className="p-0 read_more_btn" onClick={toggleReadMore}>
           {expanded ? "Read Less" : "Read More"}

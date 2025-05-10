@@ -1,11 +1,16 @@
 "use client";
 
-import { Table, Input, Button, Space } from "antd";
+import { Table, Input, Button, Space, Badge } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { InputRef } from "antd";
 import type { ColumnsType, TablePaginationConfig } from "antd/es/table";
 import type { FilterDropdownProps } from "antd/es/table/interface";
+
+interface Category {
+  _id: string;
+  name: string;
+}
 
 interface Property {
   _id: string;
@@ -14,9 +19,14 @@ interface Property {
   status: string;
   price: number;
   beds: number;
+  propertyCategory: Category;
+  verified: string;
 }
 interface PropertyTableProps {
   fetchUrl: string;
+  showApproveButton?: boolean;
+  onAction?: (propertyId: string) => Promise<void>;
+  actionButtonText?: string;
 }
 
 interface FetchParams {
@@ -29,7 +39,12 @@ interface FetchParams {
   };
 }
 
-export default function PropertyTable({ fetchUrl }: PropertyTableProps) {
+export default function PropertyTable({
+  fetchUrl,
+  showApproveButton = false,
+  onAction,
+  actionButtonText,
+}: PropertyTableProps) {
   const [data, setData] = useState<Property[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -43,8 +58,6 @@ export default function PropertyTable({ fetchUrl }: PropertyTableProps) {
   const [searchTexts, setSearchTexts] = useState<{ [key: string]: string }>({});
 
   const searchInputs = useRef<{ [key: string]: InputRef | null }>({});
-
-  console.log(fetchUrl);
 
   const fetchData = useCallback(
     async (params: FetchParams) => {
@@ -97,8 +110,19 @@ export default function PropertyTable({ fetchUrl }: PropertyTableProps) {
     setSearchTexts((prev) => ({ ...prev, [dataIndex]: "" }));
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const getColumnSearchProps = (dataIndex: string): any => {
+  const handleApprove = async (propertyId: string) => {
+    if (onAction) {
+      try {
+        await onAction(propertyId);
+        // Refresh the table data after approval
+        fetchData({ pagination, filters });
+      } catch (error) {
+        console.error("Error approving property:", error);
+      }
+    }
+  };
+
+  const getColumnSearchProps = (dataIndex: string) => {
     if (!searchInputs.current[dataIndex]) {
       searchInputs.current[dataIndex] = null;
     }
@@ -174,21 +198,46 @@ export default function PropertyTable({ fetchUrl }: PropertyTableProps) {
       ...getColumnSearchProps("city"),
     },
     {
-      title: "Status",
-      dataIndex: "status",
-      ...getColumnSearchProps("status"),
+      title: "Category",
+      dataIndex: ["propertyCategory", "name"], // nested path for AntD
+      key: "propertyCategory",
+      render: (_, record) => record.propertyCategory?.name || "N/A",
     },
+
     {
       title: "Price",
-      dataIndex: "price",
-      ...getColumnSearchProps("price"),
+      dataIndex: "propertyPrice",
+      ...getColumnSearchProps("propertyPrice"),
     },
     {
       title: "Beds",
       dataIndex: "beds",
       ...getColumnSearchProps("beds"),
     },
+    {
+      title: "Status",
+      dataIndex: "verified",
+      render: (verified: boolean) => (
+        <Badge
+          status={verified ? "success" : "warning"}
+          text={verified ? "Approved" : "Pending"}
+        />
+      ),
+    },
   ];
+
+  // Add Approve button column if showApproveButton is true
+  if (showApproveButton) {
+    columns.push({
+      title: "Action",
+      key: "action",
+      render: (_, record) => (
+        <Button onClick={() => handleApprove(record._id)} type="primary">
+          {actionButtonText}
+        </Button>
+      ),
+    });
+  }
 
   return (
     <Table
@@ -199,7 +248,7 @@ export default function PropertyTable({ fetchUrl }: PropertyTableProps) {
         ...pagination,
         total,
         showSizeChanger: true,
-        pageSizeOptions: ["1", "2", "3"],
+        pageSizeOptions: ["10", "20", "50"],
       }}
       loading={loading}
       onChange={handleTableChange}

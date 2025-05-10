@@ -1,14 +1,17 @@
 import { BedDouble, MapPin } from "lucide-react";
 import Image from "next/image";
 import React from "react";
+import { IPropertyCardProps } from "@/types/PropertyCardProps";
+import Link from "next/link";
 
-const PropertyCard = () => {
+const PropertyCard = ({ item }: { item: IPropertyCardProps }) => {
+  console.log(item);
   return (
     <div className="property_card">
       <div className="image_area overflow-hidden">
         <span className="badge">Featured</span>
         <Image
-          src={"/assets/images/home-banner.jpg"}
+          src={item.bannerImage}
           width={200}
           height={200}
           alt=""
@@ -16,36 +19,46 @@ const PropertyCard = () => {
         />
         <div className="address">
           <MapPin size={16} />
-          Dubai, Downtown
+          {item.city},{item.country}
         </div>
       </div>
       <div className="body">
-        <h4 className="property_name">Property Name</h4>
+        <h4 className="property_name">{item.projectName}</h4>
         <div className="amenity_row">
           <div className="amenity">
             <BedDouble />
-            <span>Beds</span>2
+            <span>Beds</span>
+            {item.beds}
           </div>
           <div className="amenity">
             <BedDouble />
-            <span>Beds</span>2
+            <span>Bathrooms</span>
+            {item.bathrooms}
           </div>
           <div className="amenity">
             <BedDouble />
-            <span>Beds</span>2
+            <span>Area</span>
+            {item.areaSize}
           </div>
         </div>
         <div className="footer_row">
           <div className="agent">
             <Image
-              src={"/assets/images/home-banner.jpg"}
+              src={
+                item.postedBy.profileImage ||
+                "/assets/images/dummy-agent-image.png"
+              }
               alt=""
               width={60}
               height={60}
             />
-            <p className="name">Sailesh Ranjan</p>
+            <p className="name capitalize">
+              {item.postedBy.name || "Unknown Agent"}
+            </p>
           </div>
-          <p className="view">View Property</p>
+          <Link href={`/property/${item.slug}`} className="view">
+            View Property
+          </Link>
         </div>
       </div>
     </div>

@@ -21,7 +21,7 @@ const DashboardHeader = ({
       });
 
       if (res.ok) {
-        router.push("/auth/login"); // or your login page
+        router.push("login"); // or your login page
       } else {
         console.error("Logout failed");
       }
@@ -32,9 +32,9 @@ const DashboardHeader = ({
 
   return (
     <div
+      className="header"
       style={{
         padding: "0 16px",
-        background: "#fff",
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
@@ -44,6 +44,7 @@ const DashboardHeader = ({
         type="text"
         icon={collapsed ? <X /> : <Menu />}
         onClick={onToggle}
+        className="sidebar__toggler"
         style={{
           fontSize: "16px",
           width: 64,
@@ -53,6 +54,7 @@ const DashboardHeader = ({
       />
       <Button
         type="primary"
+        className="logout_btn"
         onClick={handleLogout}
         style={{
           fontSize: "14px",

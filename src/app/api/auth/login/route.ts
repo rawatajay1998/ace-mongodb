@@ -10,8 +10,6 @@ export async function POST(req: NextRequest) {
   const { email, password } = await req.json();
   const user = await User.findOne({ email });
 
-  console.log(user);
-
   if (!user) {
     return NextResponse.json({ error: "User not found" }, { status: 404 });
   }

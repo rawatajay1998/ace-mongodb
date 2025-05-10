@@ -1,80 +1,45 @@
 import ReadMoreText from "@/components/marketing/ReadMoreText";
-import { Collapse, CollapseProps, Table, TableProps } from "antd";
-import { FireExtinguisher } from "lucide-react";
+import { Collapse } from "antd";
 import Image from "next/image";
+import { notFound } from "next/navigation";
+import FloorPlanImage from "./FloorPlan";
+import GalleryImage from "./GalleryImage";
 
-const floorPlanColumns: TableProps["columns"] = [
-  {
-    title: "Floor Plan",
-  },
-  {
-    title: "Catgegory",
-  },
-  {
-    title: "Unit Type",
-  },
-  {
-    title: "Floor Details",
-  },
-  {
-    title: "Sizes",
-  },
-  {
-    title: "Type",
-  },
-];
+type FAQ = {
+  question: string;
+  answer: string;
+  _id: string;
+};
+type Amenity = {
+  _id: string;
+  name: string;
+  imageUrl: string;
+};
 
-const items: CollapseProps["items"] = [
-  {
-    key: "1",
-    label: "What is Binghatti Aquarise and where is it located?",
-    children: (
-      <p>
-        Binghatti Aquarise is a premium residential development by Binghatti
-        Developers, known for its distinctive architectural style and luxurious
-        amenities. It’s strategically located in Dubais Jumeirah Village Circle
-        (JVC), offering easy access to major highways, shopping malls, schools,
-        and entertainment hubs.
-      </p>
-    ),
-  },
-  {
-    key: "2",
-    label: "What is Binghatti Aquarise and where is it located?",
-    children: (
-      <p>
-        Binghatti Aquarise is a premium residential development by Binghatti
-        Developers, known for its distinctive architectural style and luxurious
-        amenities. It’s strategically located in Dubais Jumeirah Village Circle
-        (JVC), offering easy access to major highways, shopping malls, schools,
-        and entertainment hubs.
-      </p>
-    ),
-  },
-  {
-    key: "3",
-    label: "What is Binghatti Aquarise and where is it located?",
-    children: (
-      <p>
-        Binghatti Aquarise is a premium residential development by Binghatti
-        Developers, known for its distinctive architectural style and luxurious
-        amenities. It’s strategically located in Dubais Jumeirah Village Circle
-        (JVC), offering easy access to major highways, shopping malls, schools,
-        and entertainment hubs.
-      </p>
-    ),
-  },
-];
+export default async function PropertyPage({
+  params,
+}: {
+  params: { slug: string };
+}) {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/properties/${params.slug}`,
+    {
+      cache: "no-store", // disable caching to always get fresh data
+    }
+  );
 
-export default async function PropertyPage() {
-  const about = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-    Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi 
-    ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit 
-    in voluptate velit esse cillum dolore eu fugiat nulla pariatur.  labore et dolore magna aliqua. 
-    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi 
-    ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit 
-    in voluptate velit esse cillum dolore eu fugiat nulla pariatur.`;
+  if (!res.ok) {
+    notFound();
+  }
+
+  const { property } = await res.json();
+
+  //set faqs in accordion
+  const faqItems = property.faqs.map((faq: FAQ, index: number) => ({
+    key: String(index + 1),
+    label: faq.question,
+    children: <p>{faq.answer}</p>,
+  }));
 
   return (
     <>
@@ -94,7 +59,7 @@ export default async function PropertyPage() {
               <div className="property_meta">
                 <div className="content_top">
                   <div className="details">
-                    <h1>Binghatti Aquarise Summary</h1>
+                    <h1>{property.projectName}</h1>
                     <p className="developer">By Binghatti Developers</p>
                   </div>
                   <button className="brochuure_btn">
@@ -117,19 +82,19 @@ export default async function PropertyPage() {
                   <div className="row">
                     <div className="block">
                       <div className="label">Property type</div>
-                      <div className="text">Apartment</div>
+                      <div className="text">{property.propertyType}</div>
                     </div>
                     <div className="block">
                       <div className="label">Unit type</div>
-                      <div className="text">Studios, 1, 2, 3 BR</div>
+                      <div className="text">{property.unitType}</div>
                     </div>
                     <div className="block">
                       <div className="label">Size</div>
-                      <div className="text">423 to 1,301 SQ FT. </div>
+                      <div className="text">{property.size} </div>
                     </div>
                     <div className="block">
                       <div className="label">Down Payment</div>
-                      <div className="text"> 70% </div>
+                      <div className="text"> {property.downpayment} </div>
                     </div>
                     <div className="block">
                       <div className="label">Payment Plan:</div>
@@ -137,64 +102,51 @@ export default async function PropertyPage() {
                     </div>
                     <div className="block">
                       <div className="label">Handover</div>
-                      <div className="text"> Q2- 2027</div>
+                      <div className="text"> {property.handoverDate}</div>
                     </div>
                   </div>
                   <div className="price">
                     <p>
                       <span>Starting From</span>
-                      AED 999K /-
+                      {property.propertyPrice}
                     </p>
                   </div>
                 </div>
               </div>
               <div className="content">
                 <h3 className="title">Description</h3>
-                <ReadMoreText text={about} maxLength={400} />
+                <ReadMoreText text={property.about} maxLength={400} />
               </div>
               <div className="content">
                 <h3 className="title">Location Advantages</h3>
-                <ReadMoreText text={about} maxLength={400} />
+                <ReadMoreText
+                  text={property.locationAdvantages}
+                  maxLength={400}
+                />
               </div>
               <div className="content">
                 <h3 className="title">Amenities</h3>
                 <div className="amenity_row">
-                  <div className="amenity">
-                    <FireExtinguisher size={20} />
-                    <h4>Smoke alarm</h4>
-                  </div>
-                  <div className="amenity">
-                    <FireExtinguisher size={20} />
-                    <h4>Smoke alarm</h4>
-                  </div>
-                  <div className="amenity">
-                    <FireExtinguisher size={20} />
-                    <h4>Smoke alarm</h4>
-                  </div>
-                  <div className="amenity">
-                    <FireExtinguisher size={20} />
-                    <h4>Smoke alarm</h4>
-                  </div>
-                  <div className="amenity">
-                    <FireExtinguisher size={20} />
-                    <h4>Smoke alarm</h4>
-                  </div>
-                  <div className="amenity">
-                    <FireExtinguisher size={20} />
-                    <h4>Smoke alarm</h4>
-                  </div>
-                  <div className="amenity">
-                    <FireExtinguisher size={20} />
-                    <h4>Smoke alarm</h4>
-                  </div>
+                  {property.amenities.map((item: Amenity) => {
+                    return (
+                      <div key={item._id} className="amenity">
+                        <Image
+                          src={item.imageUrl}
+                          width={20}
+                          height={20}
+                          alt={item.name}
+                        />
+                        <h4>{item.name}</h4>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
               <div className="content">
                 <h3 className="title">Pricing</h3>
-                <Table
-                  columns={floorPlanColumns}
-                  size={"middle"}
-                  tableLayout={"fixed"}
+                <div
+                  className="prose prose-lg max-w-none"
+                  dangerouslySetInnerHTML={{ __html: property.pricingSection }}
                 />
               </div>
               <div className="content">
@@ -242,16 +194,34 @@ export default async function PropertyPage() {
                 </div>
               </div>
               <div className="content">
-                <h3 className="title">Floor Plans</h3>
-                <Table
-                  columns={floorPlanColumns}
-                  size={"middle"}
-                  tableLayout={"fixed"}
-                />
+                <h3 className="title">Gallery</h3>
+                <div className="grid grid-cols-3">
+                  {property.floorPlansImages &&
+                    property.floorPlansImages.map((url: string) => {
+                      return (
+                        <div key={url}>
+                          <FloorPlanImage imageUrl={url} />
+                        </div>
+                      );
+                    })}
+                </div>
+              </div>
+              <div className="content">
+                <h3 className="title">Gallery</h3>
+                <div className="grid grid-cols-3">
+                  {property.galleryImages &&
+                    property.galleryImages.map((url: string) => {
+                      return (
+                        <div key={url}>
+                          <GalleryImage imageUrl={url} />
+                        </div>
+                      );
+                    })}
+                </div>
               </div>
               <div className="content">
                 <h3 className="title">Frequently Asked Questions</h3>
-                <Collapse items={items} defaultActiveKey={["1"]} />
+                <Collapse items={faqItems} defaultActiveKey={["1"]} />
               </div>
             </div>
             <div className="contact_form">

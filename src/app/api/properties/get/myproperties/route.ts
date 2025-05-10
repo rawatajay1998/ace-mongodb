@@ -39,7 +39,8 @@ export async function GET(req: NextRequest) {
       Property.find(filters)
         .sort({ [sortField]: sortOrder })
         .skip(skip)
-        .limit(pageSize),
+        .limit(pageSize)
+        .populate("propertyCategory"),
       Property.countDocuments(filters),
     ]);
 

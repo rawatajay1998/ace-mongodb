@@ -1,29 +1,42 @@
-import { KeyRound } from "lucide-react";
+"use client";
+
+import { KeyRound, MenuIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 
 const WebsiteHeader = () => {
+  const [menuOpen, setMenuOpen] = useState(false); // State to handle menu open/close
+
+  // Toggle the menu state
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
+  };
+
   return (
     <>
       <header>
         <div className="nav_container">
-          <div className="logo">
+          <Link href={"/"} className="logo">
             <Image
               src={"/assets/images/ace-logo-blue.png"}
               width={100}
               height={100}
               alt="Logo"
             />
+          </Link>
+          <div className="hamburger" onClick={toggleMenu}>
+            <MenuIcon size={24} />
           </div>
-          <div className="nav">
+          <div className={`nav ${menuOpen ? "open" : ""}`}>
             <ul>
               <li>
                 <Link href="/">Home</Link>
               </li>
               <li>
-                <Link href="/">Off Plan</Link>
+                <Link href="/search?type=offplan">Off Plan</Link>
               </li>
+
               <li>
                 <Link href="/">Secondary</Link>
               </li>
@@ -31,7 +44,7 @@ const WebsiteHeader = () => {
                 <Link href="/">Rent</Link>
               </li>
               <li>
-                <Link href="/">Agent</Link>
+                <Link href="/agents">Agent</Link>
               </li>
               <li>
                 <Link href="/">Explore More</Link>

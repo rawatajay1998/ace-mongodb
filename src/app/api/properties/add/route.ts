@@ -4,7 +4,7 @@ import { verifyToken } from "@/lib/auth";
 import Property from "@/models/property.model";
 import connectDB from "@/lib/db";
 import { Readable } from "stream";
-import { generateSlug } from "@/utls/slugify";
+import mongoose from "mongoose";
 
 export async function POST(req: NextRequest) {
   await connectDB();
@@ -19,14 +19,15 @@ export async function POST(req: NextRequest) {
 
   const formData = await req.formData();
 
-  const uploadToCloudinary = async (field: string): Promise<string> => {
-    const value = formData.get(field);
-
-    if (!value || typeof value === "string") {
-      throw new Error(`${field} is missing or not a file`);
+  // upload image files to cloudinary
+  const uploadToCloudinary = async (
+    file: FormDataEntryValue
+  ): Promise<string> => {
+    if (!file || typeof file === "string") {
+      throw new Error("File is missing or not a file");
     }
 
-    const buffer = Buffer.from(await value.arrayBuffer());
+    const buffer = Buffer.from(await file.arrayBuffer());
     const stream = Readable.from(buffer);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -45,20 +46,75 @@ export async function POST(req: NextRequest) {
     return result.secure_url;
   };
 
+  // upload multiple files to cloudinary
+  const uploadMultipleToCloudinary = async (
+    field: string
+  ): Promise<string[]> => {
+    const files: FormDataEntryValue[] = [];
+    let index = 0;
+    while (formData.has(`${field}[${index}]`)) {
+      files.push(formData.get(`${field}[${index}]`)!);
+      index++;
+    }
+
+    const urls = await Promise.all(
+      files.map((file) => uploadToCloudinary(file))
+    );
+
+    return urls;
+  };
+
+  const slug = formData.get("slug")?.toString();
+
+  if (!slug) {
+    return NextResponse.json({ error: "Slug is required" }, { status: 400 });
+  }
+
+  // Check if slug already exists
+  const existingProperty = await Property.findOne({ slug });
+  if (existingProperty) {
+    return NextResponse.json(
+      { error: "Property URL already exists" },
+      { status: 409 }
+    );
+  }
+
   try {
-    const thumbnailUrl = await uploadToCloudinary("thumbnailImage");
-    const bannerUrl = await uploadToCloudinary("bannerImage");
-    const mobileBannerUrl = await uploadToCloudinary("mobileBannerImage");
+    const thumbnailUrl = await uploadToCloudinary(
+      formData.get("thumbnailImage")!
+    );
+    const bannerUrl = await uploadToCloudinary(formData.get("bannerImage")!);
+    const galleryImagesUrl = await uploadMultipleToCloudinary("galleryImages");
+    const floorPlansImagesUrl = await uploadMultipleToCloudinary(
+      "floorPlansImages"
+    );
 
     const projectName = formData.get("projectName")?.toString() || "property";
 
+    // Parse FAQs from form data
+    const faqsString = formData.get("faqs")?.toString();
+    const faqs = faqsString ? JSON.parse(faqsString) : [];
+
+    // Validate FAQs structure
+    if (faqs && !Array.isArray(faqs)) {
+      return NextResponse.json(
+        { error: "Invalid FAQs format" },
+        { status: 400 }
+      );
+    }
+
     const newProperty = new Property({
       projectName,
-      slug: generateSlug(projectName),
+      slug: formData.get("slug"),
       propertyType: formData.get("propertyType"),
       propertyStatus: formData.get("propertyStatus"),
+      propertyCategory: new mongoose.Types.ObjectId(
+        formData.get("propertyCategory")?.toString()
+      ),
       city: formData.get("city"),
-      area: formData.get("area"),
+      country: formData.get("country"),
+      downPayment: formData.get("downPayment"),
+      handoverDate: formData.get("handoverDate"),
       areaSize: Number(formData.get("areaSize")),
       description: formData.get("description"),
       locality: formData.get("locality"),
@@ -67,10 +123,18 @@ export async function POST(req: NextRequest) {
       propertyPrice: Number(formData.get("propertyPrice")),
       thumbnailImage: thumbnailUrl,
       bannerImage: bannerUrl,
-      mobileBannerImage: mobileBannerUrl,
+      galleryImages: galleryImagesUrl, // Add gallery images to the property
+      floorPlansImages: floorPlansImagesUrl,
       createdBy: user.id,
       postedBy: user.id,
-      status: "pending", // optional: default status
+      status: "pending",
+      about: formData.get("about"),
+      pricingSection: formData.get("pricingSection"),
+      locationAdvantages: formData.get("locationAdvantages"),
+      faqs: faqs,
+      amenities: formData.get("amenities")
+        ? JSON.parse(formData.get("amenities") as string)
+        : [],
     });
 
     await newProperty.save();

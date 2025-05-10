@@ -1,56 +1,142 @@
-// app/api/agents/create/route.ts
 import { NextRequest, NextResponse } from "next/server";
-import { verifyToken } from "@/lib/auth";
-import connectDB from "@/lib/db";
-import User from "@/models/user.model";
 import cloudinary from "@/lib/cloudinary";
-import bcrypt from "bcrypt";
+import { verifyToken } from "@/lib/auth";
+import Agent from "@/models/user.model"; // Assuming this is the agent model
+import connectDB from "@/lib/db";
+import bcrypt from "bcryptjs"; // Import bcrypt for password hashing
+import { Readable } from "stream";
+
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
 
 export async function POST(req: NextRequest) {
   await connectDB();
 
+  // Get the token from cookies
   const token = req.cookies.get("token")?.value;
-  if (!token)
+  if (!token) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
+  // Verify the token to check if the user is an admin
   const user = verifyToken(token);
-
-  console.log(user);
-  if (user.role !== "admin") {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  if (!user || user.role !== "admin") {
+    return NextResponse.json(
+      { error: "Admin access required" },
+      { status: 403 }
+    );
   }
 
   const formData = await req.formData();
 
-  const profileImageFile = formData.get("profileImage") as File;
-  const arrayBuffer = await profileImageFile.arrayBuffer();
-  const buffer = Buffer.from(arrayBuffer);
+  // Helper function to upload an image to Cloudinary
+  const uploadToCloudinary = async (
+    file: FormDataEntryValue
+  ): Promise<string> => {
+    if (!file || typeof file === "string") {
+      throw new Error("File is missing or not a file");
+    }
 
-  const uploadRes = await new Promise((resolve, reject) => {
-    cloudinary.uploader
-      .upload_stream({ folder: "agents" }, (err, result) => {
-        if (err || !result) reject(err || new Error("Upload failed"));
-        resolve(result);
-      })
-      .end(buffer);
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const stream = Readable.from(buffer);
+
+    const result = await new Promise<any>((resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        { folder: "agents" },
+        (error, result) => {
+          if (error || !result)
+            return reject(error || new Error("Upload failed"));
+          resolve(result);
+        }
+      );
+      stream.pipe(uploadStream);
+    });
+
+    return result.secure_url;
+  };
+
+  // Extract agent data from the form
+  const fullName = formData.get("name")?.toString();
+  const email = formData.get("email")?.toString();
+  const phoneNumber = formData.get("phoneNumber")?.toString();
+  const country = formData.get("country")?.toString();
+  const address = formData.get("address")?.toString();
+  const about = formData.get("about")?.toString();
+  const password = formData.get("password")?.toString(); // Capture password
+  const profileImageFile = formData.get("profileImage");
+
+  // Validate required fields
+  if (
+    !fullName ||
+    !email ||
+    !phoneNumber ||
+    !country ||
+    !address ||
+    !about ||
+    !password
+  ) {
+    return NextResponse.json(
+      { error: "Missing required fields" },
+      { status: 400 }
+    );
+  }
+
+  // Check if the email already exists
+  const existingAgentByEmail = await Agent.findOne({ email });
+  if (existingAgentByEmail) {
+    return NextResponse.json(
+      { error: "Email already in use" },
+      { status: 400 }
+    );
+  }
+
+  // Check if the phone number already exists
+  const existingAgentByPhone = await Agent.findOne({ phoneNumber });
+  if (existingAgentByPhone) {
+    return NextResponse.json(
+      { error: "Phone number already in use" },
+      { status: 400 }
+    );
+  }
+
+  // Upload the profile image to Cloudinary if provided
+  let profileImageUrl: string | null = null;
+  if (profileImageFile) {
+    try {
+      profileImageUrl = await uploadToCloudinary(profileImageFile);
+    } catch (error) {
+      return NextResponse.json(
+        { error: "Error uploading profile image" },
+        { status: 500 }
+      );
+    }
+  }
+
+  // Hash the password before saving
+  const hashedPassword = await bcrypt.hash(password, 10); // Hashing password
+
+  // Create the agent object
+  const newAgent = new Agent({
+    name: fullName,
+    email,
+    phoneNumber,
+    country,
+    address,
+    about,
+    password: hashedPassword, // Save the hashed password
+    profileImageUrl: profileImageUrl || "", // Profile image URL can be optional
+    role: "agent", // Assigning the role as "agent" by default
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const imageUrl = (uploadRes as any).secure_url;
-
-  const newUser = new User({
-    name: `${formData.get("firstname")} ${formData.get("lastname")}`,
-    email: formData.get("email"),
-    password: await bcrypt.hash(formData.get("password") as string, 10),
-    role: "agent",
-    profileImageUrl: imageUrl,
-    address: formData.get("address"),
-    country: formData.get("country"),
-    phoneNumber: formData.get("phone"),
-    dob: formData.get("dob"), // optionally handle DOB
-  });
-
-  await newUser.save();
-
-  return NextResponse.json({ success: true, user: newUser });
+  try {
+    // Save the agent to the database
+    await newAgent.save();
+    return NextResponse.json({ success: true, agent: newAgent });
+  } catch (error) {
+    console.error("Error saving agent:", error);
+    return NextResponse.json({ error: "Error saving agent" }, { status: 500 });
+  }
 }

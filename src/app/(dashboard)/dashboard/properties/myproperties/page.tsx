@@ -1,5 +1,11 @@
 import PropertyTable from "@/components/common/PropertyTable";
+import Breadcrumb from "@/components/dashboard/Breadcrumb";
 
 export default function AgentPropertiesPage() {
-  return <PropertyTable fetchUrl="/api/properties/get/myproperties" />;
+  return (
+    <>
+      <Breadcrumb name="My Properties" currentUrl="/" />
+      <PropertyTable fetchUrl="/api/properties/get/myproperties" />
+    </>
+  );
 }

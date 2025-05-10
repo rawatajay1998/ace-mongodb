@@ -1,4 +1,3 @@
-// app/api/public/properties/route.ts
 import { NextResponse } from "next/server";
 import Property from "@/models/property.model";
 import connectDB from "@/lib/db";
@@ -11,7 +10,7 @@ export async function GET() {
       verified: true,
     }).populate("postedBy", "firstname lastname");
 
-    return NextResponse.json({ properties: approvedProperties });
+    return NextResponse.json({ data: approvedProperties });
   } catch (error) {
     console.error("Failed to fetch public properties", error);
     return NextResponse.json(

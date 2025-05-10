@@ -41,7 +41,7 @@ const WebsiteFooter = () => {
             <h3 className="title">Quick Links</h3>
             <ul>
               <li>
-                <Link href={"/"}>About</Link>
+                <Link href={"/about"}>About</Link>
               </li>
               <li>
                 <Link href={"/"}>Our Services</Link>
@@ -90,7 +90,7 @@ const WebsiteFooter = () => {
               <Link href={"/"}>Terms Of Service</Link>
             </li>
             <li>
-              <Link href={"/"}>Privacy Policy</Link>
+              <Link href={"/privacy"}>Privacy Policy</Link>
             </li>
           </ul>
         </div>
