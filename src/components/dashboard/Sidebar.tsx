@@ -12,6 +12,7 @@ import { MapPinHouse, UsersRound } from "lucide-react";
 type MenuItem = {
   label: string;
   key: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   icon?: any;
   hideForAgent?: boolean; // Flag to hide from agent
   children?: MenuItem[];
@@ -58,7 +59,7 @@ const menuItems = [
       {
         label: "Add Agent",
         key: "/dashboard/agents/add",
-        // hideForAgent: true,
+        hideForAgent: true,
       },
     ],
   },
@@ -91,17 +92,23 @@ const generateMenuItems = (
 ): MenuProps["items"] => {
   return items
     .map((item) => {
+      // If the parent item has hideForAgent, hide it for agents
+      const shouldHideParent = userRole === "agent" && item.hideForAgent;
+
+      // Filter children if the user is an agent and the child has hideForAgent
       const filteredChildren = item.children?.filter(
         (child) => !(userRole === "agent" && child.hideForAgent)
       );
 
+      // If the parent has hideForAgent and there are no children left, return null
       if (
-        item.children &&
+        shouldHideParent &&
         (!filteredChildren || filteredChildren.length === 0)
       ) {
-        return null; // Hide parent if no visible children
+        return null;
       }
 
+      // Return the parent item with its filtered children (if any)
       return {
         key: item.key,
         icon: item.icon ? React.createElement(item.icon) : undefined,
@@ -112,12 +119,18 @@ const generateMenuItems = (
         })),
       };
     })
-    .filter(Boolean);
+    .filter(Boolean); // Remove null values (hidden items)
 };
 
-const Sidebar = ({ collapsed }: { collapsed: boolean }) => {
+const Sidebar = ({
+  collapsed,
+  isAdmin,
+}: {
+  collapsed: boolean;
+  isAdmin: boolean;
+}) => {
   const pathname = usePathname();
-  const userRole: "admin" | "agent" = "agent"; // ⬅️ Replace with actual role logic
+  const userRole: "admin" | "agent" = isAdmin ? "admin" : "agent";
 
   const items = generateMenuItems(menuItems, userRole);
 

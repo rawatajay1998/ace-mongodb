@@ -43,6 +43,7 @@ export async function POST(req: NextRequest) {
     const buffer = Buffer.from(await file.arrayBuffer());
     const stream = Readable.from(buffer);
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const result = await new Promise<any>((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
         { folder: "agents" },
@@ -108,10 +109,7 @@ export async function POST(req: NextRequest) {
     try {
       profileImageUrl = await uploadToCloudinary(profileImageFile);
     } catch (error) {
-      return NextResponse.json(
-        { error: "Error uploading profile image" },
-        { status: 500 }
-      );
+      return NextResponse.json({ error: error }, { status: 500 });
     }
   }
 

@@ -49,9 +49,9 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json(newAmenity);
-  } catch (error: any) {
+  } catch (error) {
     console.error("POST /api/amenities error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: error }, { status: 500 });
   }
 }
 

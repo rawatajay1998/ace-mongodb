@@ -32,6 +32,7 @@ export async function GET(req: NextRequest) {
     const pageSize = parseInt(searchParams.get("pageSize") || "10");
 
     // Build filters
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const filters: any = { postedBy: agentId };
     const allowedFilters = ["projectName", "city", "status", "price", "beds"];
 
