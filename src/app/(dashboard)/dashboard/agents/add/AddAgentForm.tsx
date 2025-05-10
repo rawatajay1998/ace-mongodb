@@ -311,7 +311,7 @@ const AddAgentForm = () => {
             className="btn btn_primary self-start mt-4"
             disabled={isSubmitting} // Disable the button while submitting
           >
-            {isSubmitting ? <Spin size="small" /> : "Add Property"}
+            {isSubmitting ? <Spin size="small" /> : "Add Agent"}
           </button>
         </form>
       </div>

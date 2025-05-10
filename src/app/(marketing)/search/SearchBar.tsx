@@ -1,10 +1,25 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { Button, Input, Select, Slider, Pagination } from "antd";
+import React, { Suspense, useEffect, useState } from "react";
+import { Button, Input, Select, Slider, Pagination, Spin } from "antd";
 import { ArrowLeft, Search, SlidersHorizontal } from "lucide-react";
 import toast from "react-hot-toast";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+
+// Wrap the main component with Suspense
+export default function SearchBarWrapper() {
+  return (
+    <Suspense
+      fallback={
+        <div className="container py-12 flex justify-center">
+          <Spin size="large" />
+        </div>
+      }
+    >
+      <SearchBar />
+    </Suspense>
+  );
+}
 
 const SearchBar = () => {
   const router = useRouter();
@@ -281,5 +296,3 @@ const SearchBar = () => {
     </>
   );
 };
-
-export default SearchBar;
