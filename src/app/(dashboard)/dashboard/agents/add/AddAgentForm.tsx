@@ -18,8 +18,12 @@ const agentSchema = z
     address: z.string().min(1, "Address is required"),
     about: z.string().min(1, "Description is required"),
     profileImage: z
-      .instanceof(FileList)
-      .refine((file) => file.length > 0, "Banner image is required"),
+      .custom<FileList>((val) => val instanceof FileList, {
+        message: "Profile image is required",
+      })
+      .refine((files) => files.length > 0, {
+        message: "Profile image is required",
+      }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",
