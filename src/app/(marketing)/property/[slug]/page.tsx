@@ -16,11 +16,13 @@ type Amenity = {
   imageUrl: string;
 };
 
-export default async function PropertyPage({
-  params,
-}: {
-  params: { slug: string };
-}) {
+interface PropertyPageProps {
+  params: {
+    slug: string;
+  };
+}
+
+export default async function PropertyPage({ params }: PropertyPageProps) {
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}/api/properties/${params.slug}`,
     {
