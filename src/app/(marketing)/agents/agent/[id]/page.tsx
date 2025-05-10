@@ -18,9 +18,7 @@ interface Project {
 }
 
 type AgentProfilePageProps = {
-  params: {
-    id: string;
-  };
+  params: { id: string }; // Correctly typed params
 };
 
 async function getAgentData(

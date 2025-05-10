@@ -6,6 +6,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { InputRef } from "antd";
 import type { ColumnsType, TablePaginationConfig } from "antd/es/table";
 import type { FilterDropdownProps } from "antd/es/table/interface";
+import { useRouter } from "next/navigation";
 
 interface Category {
   _id: string;
@@ -22,6 +23,7 @@ interface Property {
   propertyCategory: Category;
   verified: string;
 }
+
 interface PropertyTableProps {
   fetchUrl: string;
   showApproveButton?: boolean;
@@ -58,6 +60,8 @@ export default function PropertyTable({
   const [searchTexts, setSearchTexts] = useState<{ [key: string]: string }>({});
 
   const searchInputs = useRef<{ [key: string]: InputRef | null }>({});
+
+  const router = useRouter();
 
   const fetchData = useCallback(
     async (params: FetchParams) => {
@@ -120,6 +124,11 @@ export default function PropertyTable({
         console.error("Error approving property:", error);
       }
     }
+  };
+
+  const handleEdit = (propertyId: string) => {
+    // Redirect to the edit page for this property
+    router.push(`/dashboard/properties/edit/${propertyId}`);
   };
 
   const getColumnSearchProps = (dataIndex: string) => {
@@ -199,11 +208,10 @@ export default function PropertyTable({
     },
     {
       title: "Category",
-      dataIndex: ["propertyCategory", "name"], // nested path for AntD
+      dataIndex: ["propertyCategory", "name"],
       key: "propertyCategory",
       render: (_, record) => record.propertyCategory?.name || "N/A",
     },
-
     {
       title: "Price",
       dataIndex: "propertyPrice",
@@ -232,9 +240,15 @@ export default function PropertyTable({
       title: "Action",
       key: "action",
       render: (_, record) => (
-        <Button onClick={() => handleApprove(record._id)} type="primary">
-          {actionButtonText}
-        </Button>
+        <Space>
+          <Button onClick={() => handleEdit(record._id)} type="primary">
+            Edit
+          </Button>
+
+          <Button onClick={() => handleApprove(record._id)} type="primary">
+            {actionButtonText}
+          </Button>
+        </Space>
       ),
     });
   }
