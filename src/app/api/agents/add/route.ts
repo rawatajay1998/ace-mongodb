@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
   }
 
   // Verify the token to check if the user is an admin
-  const user = verifyToken(token);
+  const user = await verifyToken(token);
   if (!user || user.role !== "admin") {
     return NextResponse.json(
       { error: "Admin access required" },
