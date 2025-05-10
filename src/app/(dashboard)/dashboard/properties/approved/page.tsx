@@ -7,6 +7,7 @@ const ApprovedPropertiesPage = () => {
       const res = await fetch(`/api/properties/reject/${propertyId}`, {
         method: "PATCH",
       });
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const data = await res.json();
 
       // You might want to show a success toast here

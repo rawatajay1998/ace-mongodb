@@ -45,6 +45,7 @@ export async function GET(request: Request) {
     });
 
     const skip = (page - 1) * limit;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const query: any = {
       verified: true,
     };

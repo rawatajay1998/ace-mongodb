@@ -97,6 +97,7 @@ export default function PropertyTypes() {
     },
     {
       title: "Action",
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       render: (_: any, record: PropertyType) => (
         <Button type="primary" onClick={() => handleEdit(record)}>
           Edit
