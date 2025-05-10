@@ -1,5 +1,0 @@
-{
-  "buildCommand": "next build",
-  "plugins": ["@vercel/next-vitals"],
-  "ignoreBuildErrors": true
-}
