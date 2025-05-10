@@ -4,6 +4,61 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import FloorPlanImage from "./FloorPlan";
 import GalleryImage from "./GalleryImage";
+import { Metadata } from "next";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string };
+}): Promise<Metadata> {
+  // Fetch property data (same as your page component)
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/properties/${params.slug}`,
+    { cache: "no-store" }
+  );
+
+  if (!res.ok) {
+    return {
+      title: "Property Not Found",
+      description: "The property you're looking for doesn't exist",
+    };
+  }
+
+  const { property } = await res.json();
+
+  return {
+    title: `${property.projectName} | Ace Elite Properties`,
+    description: property.about.substring(0, 160), // First 160 chars for meta description
+    openGraph: {
+      title: `${property.projectName} | Ace Elite Properties`,
+      description: property.about.substring(0, 160),
+      url: `https://aceeliteproperties.com/properties/${params.slug}`,
+      siteName: "Ace Elite Properties",
+      images: [
+        {
+          url:
+            property.galleryImages?.[0] ||
+            "/assets/images/default-property.jpg",
+          width: 1200,
+          height: 630,
+          alt: property.projectName,
+        },
+      ],
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${property.projectName} | Ace Elite Properties`,
+      description: property.about.substring(0, 160),
+      images: [
+        property.galleryImages?.[0] || "/assets/images/default-property.jpg",
+      ],
+    },
+    alternates: {
+      canonical: `https://aceeliteproperties.com/properties/${params.slug}`,
+    },
+  };
+}
 
 type FAQ = {
   question: string;
@@ -35,11 +90,13 @@ export default async function PropertyPage({
   const { property } = await res.json();
 
   //set faqs in accordion
-  const faqItems = property.faqs.map((faq: FAQ, index: number) => ({
-    key: String(index + 1),
-    label: faq.question,
-    children: <p>{faq.answer}</p>,
-  }));
+  const faqItems =
+    property &&
+    property.faqs.map((faq: FAQ, index: number) => ({
+      key: String(index + 1),
+      label: faq.question,
+      children: <p>{faq.answer}</p>,
+    }));
 
   return (
     <>

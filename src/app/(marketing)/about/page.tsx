@@ -1,5 +1,31 @@
+import { Metadata } from "next";
 import Image from "next/image";
 import React from "react";
+
+export const metadata: Metadata = {
+  title: "About | Ace Elite Properties",
+  description: "Discover amazing properties with our real estate platform",
+  openGraph: {
+    title: "About | Ace Elite Properties",
+    description: "Discover amazing properties with our real estate platform",
+    url: "https://aceeliteproperties.com",
+    siteName: "Ace Elite Properties",
+    images: [
+      {
+        url: "https://aceeliteproperties.com//assets/images/about-page-1.avif",
+        width: 1200,
+        height: 630,
+      },
+    ],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "About | Your Site Name",
+    description: "Discover amazing properties with our real estate platform",
+    images: ["https://aceeliteproperties.com//assets/images/about-page-1.avif"],
+  },
+};
 
 const AboutPage = () => {
   return (

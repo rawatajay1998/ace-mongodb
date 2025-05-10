@@ -53,7 +53,7 @@ const WebsiteHeader = () => {
                 <Link href="/">Contact</Link>
               </li>
               <li>
-                <Link href="/" className="submmit">
+                <Link href="/login" className="submmit">
                   <KeyRound size={14} />
                   Submit Property
                 </Link>
