@@ -3,7 +3,6 @@
 import React from "react";
 import { Button } from "antd";
 import { LogOut, Menu, X } from "lucide-react";
-import { useRouter } from "next/navigation";
 
 const DashboardHeader = ({
   collapsed,
@@ -12,8 +11,6 @@ const DashboardHeader = ({
   collapsed: boolean;
   onToggle: () => void;
 }) => {
-  const router = useRouter();
-
   const handleLogout = async () => {
     try {
       const res = await fetch("/api/auth/logout", {
@@ -21,7 +18,7 @@ const DashboardHeader = ({
       });
 
       if (res.ok) {
-        router.push("login"); // or your login page
+        window.location.href = "/login"; // ← Hard reload to login page
       } else {
         console.error("Logout failed");
       }

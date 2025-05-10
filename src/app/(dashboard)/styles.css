@@ -73,6 +73,9 @@ footer {
   font-size: 13px;
   color: #cccccc;
 }
+.dashboard .ant-menu-title-content a:hover {
+  color: #aaa;
+}
 .dashboard .ant-table-container {
   border: none !important;
 }

@@ -12,15 +12,23 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    // Simple check - adjust based on your auth system
-    const token = document.cookie
-      .split("; ")
-      .find((row) => row.startsWith("token="));
-    if (token) {
-      // Very basic check - in real app, verify properly
-      setIsAdmin(token.includes("admin"));
-    }
+    const fetchRole = async () => {
+      try {
+        const res = await fetch("/api/auth/user");
+        if (!res.ok) throw new Error("Unauthorized");
+
+        const data = await res.json();
+        setIsAdmin(data.user?.role === "admin");
+      } catch (err) {
+        console.error("Error fetching user:", err);
+        setIsAdmin(false);
+      }
+    };
+
+    fetchRole();
   }, []);
+
+  console.log(isAdmin);
 
   return (
     <>

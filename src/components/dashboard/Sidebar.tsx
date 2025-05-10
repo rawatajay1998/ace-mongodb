@@ -28,6 +28,7 @@ const menuItems = [
       {
         label: "All Properties",
         key: "/dashboard/properties",
+        hideForAgent: true,
       },
       {
         label: "My Properties",
@@ -40,10 +41,12 @@ const menuItems = [
       {
         label: "Approved Properties",
         key: "/dashboard/properties/approved",
+        hideForAgent: true,
       },
       {
         label: "Pending Properties",
         key: "/dashboard/properties/pending",
+        hideForAgent: true,
       },
     ],
   },
@@ -72,14 +75,17 @@ const menuItems = [
       {
         label: "Amenities",
         key: "/dashboard/master/amenities",
+        hideForAgent: true,
       },
       {
         label: "Category",
         key: "/dashboard/master/category",
+        hideForAgent: true,
       },
       {
         label: "Property Type",
         key: "/dashboard/master/property-types",
+        hideForAgent: true,
       },
     ],
   },
