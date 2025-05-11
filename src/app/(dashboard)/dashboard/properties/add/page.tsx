@@ -1,16 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useForm, Controller, FormProvider, useWatch } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  AutoComplete,
-  Button,
-  DatePicker,
-  Input,
-  Select,
-  Spin,
-  Table,
-} from "antd";
+import { AutoComplete, Button, DatePicker, Input, Select, Table } from "antd";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import Image from "next/image";
@@ -19,6 +12,7 @@ import { Plus, Trash2 } from "lucide-react";
 import FloorPlanUpload from "@/components/dashboard/FloorPlanUploader";
 import toast from "react-hot-toast";
 import dayjs from "dayjs";
+import axios from "axios";
 
 const TipTapEditor = dynamic(
   () => import("@/components/dashboard/text-editor/Editor"),
@@ -38,8 +32,9 @@ const propertySchema = z.object({
   propertyType: z.string().min(1, "Property type is required"),
   propertyStatus: z.string().min(1, "Property status is required"),
   propertyCategory: z.string().min(1, "Property category is required"),
+  state: z.string().min(1, "State is required"),
   city: z.string().min(1, "City is required"),
-  country: z.string().min(1, "Country is required"),
+  area: z.string().min(1, "Area is required"),
   downPayment: z.string().min(1, "Down Payment is required"),
   handoverDate: z.string().refine(
     (val) => {
@@ -91,6 +86,22 @@ interface Category {
   name: string;
 }
 
+const fetchStates = async () => {
+  const response = await axios.get("/api/states");
+  console.log(response.data);
+  return response.data; // assuming the response is an array of states
+};
+
+const fetchCitiesByState = async (state: string) => {
+  const response = await axios.get(`/api/cities?state=${state}`);
+  return response.data; // assuming the response is an array of cities
+};
+
+const fetchAreasByCity = async (city: string) => {
+  const response = await axios.get(`/api/areas?city=${city}`);
+  return response.data; // assuming the response is an array of areas
+};
+
 export default function AddPropertyForm() {
   const methods = useForm<PropertyFormData>({
     resolver: zodResolver(propertySchema),
@@ -101,6 +112,7 @@ export default function AddPropertyForm() {
     handleSubmit,
     control,
     setValue,
+    watch,
     formState: { errors },
   } = methods;
 
@@ -114,13 +126,17 @@ export default function AddPropertyForm() {
   const [currentFaq, setCurrentFaq] = useState({ question: "", answer: "" });
 
   //location apis
-  const [countries, setCountries] = useState<
-    { country: string; cities: string[] }[]
-  >([]);
-  const [selectedCountry, setSelectedCountry] = useState<string>("");
+
+  const [states, setStates] = useState<string[]>([]);
   const [cities, setCities] = useState<string[]>([]);
-  const [filteredCities, setFilteredCities] = useState<string[]>([]);
-  const [loadingCountries, setLoadingCountries] = useState(false);
+  const [areas, setAreas] = useState<string[]>([]);
+
+  const [loadingCities, setLoadingCities] = useState(false);
+  const [loadingAreas, setLoadingAreas] = useState(false);
+
+  const selectedState = watch("state");
+  const selectedCity = watch("city");
+
   const [slug, setSlug] = useState("");
 
   const projectName = useWatch({
@@ -205,67 +221,68 @@ export default function AddPropertyForm() {
 
   // Add this useEffect to fetch countries when component mounts
   useEffect(() => {
-    const fetchCountries = async () => {
-      setLoadingCountries(true);
-      try {
-        const response = await fetch(
-          "https://countriesnow.space/api/v0.1/countries"
-        );
-        const data = await response.json();
-        if (data.error) throw new Error(data.msg);
-        setCountries(data.data);
-      } catch (error) {
-        console.error("Failed to load countries:", error);
-        toast.error("Failed to load countries");
-      } finally {
-        setLoadingCountries(false);
-      }
-    };
-    fetchCountries();
-
     fetchCategories();
     fetchPropertyTypes();
   }, []);
 
-  // Add this function to handle country selection
-  const handleCountryChange = async (country: string) => {
-    setSelectedCountry(country);
+  // Load states initially
+  useEffect(() => {
+    const loadStates = async () => {
+      try {
+        const stateList = await fetchStates();
+        setStates(stateList);
+      } catch (error) {
+        console.error("Error fetching states:", error);
+      }
+    };
+    loadStates();
+  }, []);
 
-    try {
-      const response = await fetch(
-        "https://countriesnow.space/api/v0.1/countries/cities",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ country }),
+  // When state changes, reset city & area and fetch cities
+  useEffect(() => {
+    if (selectedState) {
+      const loadCities = async () => {
+        try {
+          setLoadingCities(true);
+          const cityList = await fetchCitiesByState(selectedState);
+          setCities(cityList);
+          setLoadingCities(false);
+        } catch (error) {
+          console.error("Error fetching cities:", error);
         }
-      );
-      const data = await response.json();
-      if (data.error) throw new Error(data.msg);
-      setCities(data.data);
-      setFilteredCities(data.data);
-      setValue("city", ""); // Reset city when country changes
-    } catch (error) {
-      console.error("Failed to load cities:", error);
-      toast.error("Failed to load cities");
-    }
-  };
-
-  // City search handler
-  const handleCitySearch = (value: string) => {
-    if (value) {
-      // Filter cities based on search term
-      const filtered = cities.filter((city) =>
-        city.toLowerCase().includes(value.toLowerCase())
-      );
-      setFilteredCities(filtered); // Update filtered city list
+      };
+      loadCities();
+      setValue("city", "");
+      setValue("area", "");
+      setAreas([]);
     } else {
-      // Reset filtered cities if search term is empty
-      setFilteredCities(cities);
+      setCities([]);
+      setValue("city", "");
+      setValue("area", "");
+      setAreas([]);
     }
-  };
+  }, [selectedState, setValue]);
+
+  // When city changes, reset area and fetch areas
+  useEffect(() => {
+    if (selectedCity) {
+      const loadAreas = async () => {
+        try {
+          setLoadingAreas(true);
+          const areaList = await fetchAreasByCity(selectedCity);
+          setAreas(areaList);
+          setLoadingAreas(false);
+        } catch (error) {
+          console.error("Error fetching areas:", error);
+        }
+      };
+      loadAreas();
+      setValue("area", "");
+    } else {
+      setAreas([]);
+      setValue("area", "");
+    }
+  }, [selectedCity, setValue]);
 
   // fetch categories
   const fetchCategories = async () => {
@@ -466,73 +483,83 @@ export default function AddPropertyForm() {
                 <p className="text-red-500">{errors.unitType.message}</p>
               )}
             </div>
-            {/* Country Dropdown */}
+
             <div className="form_field">
-              <label>Country</label>
+              <label>State</label>
               <Controller
-                name="country"
+                name="state"
                 control={control}
                 render={({ field }) => (
-                  <AutoComplete
-                    className="relative"
+                  <Select
                     {...field}
-                    onSearch={(value) => field.onChange(value)} // Update field value on search
-                    placeholder="Search Country"
-                    filterOption={(inputValue, option) =>
-                      (option?.label ?? "")
-                        .toLowerCase()
-                        .includes(inputValue.toLowerCase())
-                    }
-                    options={countries.map((c) => ({
-                      value: c.country,
-                      label: c.country,
-                    }))}
-                    status={errors.country ? "error" : undefined}
+                    size="large"
+                    placeholder="Select Property"
+                    status={errors.state ? "error" : undefined}
                     style={{ width: "100%" }}
-                    onSelect={handleCountryChange} // Handle country change
+                    onChange={(value) => field.onChange(value)}
                   >
-                    {/* Show loading spinner inside dropdown */}
-                    {loadingCountries && (
-                      <Spin
-                        className="absolute top-[7px] left-[7px]"
-                        style={{ padding: "10px", width: "100%" }}
-                      />
-                    )}
-                  </AutoComplete>
+                    {states.map((state: any) => (
+                      <Select.Option key={state._id} value={state._id}>
+                        {state.name}
+                      </Select.Option>
+                    ))}
+                  </Select>
                 )}
               />
-              {errors.country && (
-                <p className="text-red-500">{errors.country.message}</p>
-              )}
             </div>
-            {/* City Dropdown */}
-            <div className="form_field">
-              <label>City</label>
-              <Controller
-                name="city"
-                control={control}
-                render={({ field }) => (
-                  <AutoComplete
-                    {...field}
-                    onSearch={handleCitySearch} // Handle search term change
-                    placeholder={
-                      selectedCountry ? "Search City" : "Select country first"
-                    }
-                    disabled={!selectedCountry} // Disable city selection if no country is selected
-                    filterOption={false} // Let onSearch handle filtering
-                    status={errors.city ? "error" : undefined}
-                    style={{ width: "100%" }}
-                    options={filteredCities.map((city) => ({
-                      value: city,
-                      label: city,
-                    }))}
-                  />
-                )}
-              />
-              {errors.city && (
-                <p className="text-red-500">{errors.city.message}</p>
-              )}
-            </div>
+
+            {selectedState && (
+              <div className="form_field">
+                <label>City</label>
+                <Controller
+                  name="city"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      size="large"
+                      placeholder="Select Property"
+                      status={errors.city ? "error" : undefined}
+                      style={{ width: "100%" }}
+                      onChange={(value) => field.onChange(value)} // Send ObjectId when selected
+                    >
+                      {cities.map((city: any) => (
+                        <Select.Option key={city._id} value={city._id}>
+                          {city.name}
+                        </Select.Option>
+                      ))}
+                    </Select>
+                  )}
+                />
+              </div>
+            )}
+
+            {selectedCity && (
+              <div className="form_field">
+                <label>Area</label>
+                <Controller
+                  name="area"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      size="large"
+                      placeholder="Select Property"
+                      status={errors.area ? "error" : undefined}
+                      style={{ width: "100%" }}
+                      onChange={(value) => field.onChange(value)} // Send ObjectId when selected
+                    >
+                      {areas.map((area: any) => (
+                        <Select.Option key={area._id} value={area._id}>
+                          {area.name}
+                        </Select.Option>
+                      ))}
+                    </Select>
+                  )}
+                />
+              </div>
+            )}
+
             {/* Price */}
             <div className="form_field">
               <label>Price</label>

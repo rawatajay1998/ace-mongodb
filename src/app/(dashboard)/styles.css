@@ -348,3 +348,6 @@ footer {
   color: #fff !important;
   padding-inline: 6px;
 }
+.ant-menu.ant-menu-root {
+  overflow: auto;
+}

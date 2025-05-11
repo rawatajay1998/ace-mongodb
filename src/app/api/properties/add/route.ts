@@ -111,8 +111,9 @@ export async function POST(req: NextRequest) {
       propertyCategory: new mongoose.Types.ObjectId(
         formData.get("propertyCategory")?.toString()
       ),
-      city: formData.get("city"),
-      country: formData.get("country"),
+      city: new mongoose.Types.ObjectId(formData.get("city")?.toString()),
+      state: new mongoose.Types.ObjectId(formData.get("state")?.toString()),
+      area: new mongoose.Types.ObjectId(formData.get("area")?.toString()),
       downPayment: formData.get("downPayment"),
       handoverDate: formData.get("handoverDate"),
       areaSize: Number(formData.get("areaSize")),

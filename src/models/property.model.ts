@@ -11,8 +11,9 @@ export interface IProperty extends Document {
   propertyType: mongoose.Types.ObjectId;
   propertyStatus: string;
   propertyCategory: mongoose.Types.ObjectId;
-  city: string;
-  country: string;
+  state: mongoose.Types.ObjectId;
+  city: mongoose.Types.ObjectId;
+  area: mongoose.Types.ObjectId;
   downPayment: string;
   handoverDate: string;
   areaSize: number;
@@ -31,7 +32,7 @@ export interface IProperty extends Document {
   about: string;
   locationAdvantages: string;
   pricingSection: string;
-  amenities: string[];
+  amenities: mongoose.Types.ObjectId[];
   faqs: IFAQ[];
 }
 
@@ -44,7 +45,6 @@ const PropertySchema = new Schema<IProperty>(
       required: true,
       index: true,
     },
-
     propertyCategory: {
       type: Schema.Types.ObjectId,
       ref: "Category",
@@ -52,8 +52,24 @@ const PropertySchema = new Schema<IProperty>(
       index: true,
     },
     propertyStatus: { type: String, required: true },
-    city: { type: String, required: true, index: true },
-    country: { type: String, required: true, index: true },
+    state: {
+      type: Schema.Types.ObjectId,
+      ref: "State",
+      required: true,
+      index: true,
+    },
+    city: {
+      type: Schema.Types.ObjectId,
+      ref: "City",
+      required: true,
+      index: true,
+    },
+    area: {
+      type: Schema.Types.ObjectId,
+      ref: "Area",
+      required: true,
+      index: true,
+    },
     downPayment: { type: String, required: true },
     handoverDate: { type: String, required: true },
     areaSize: { type: Number, required: true, index: true },
@@ -90,8 +106,6 @@ PropertySchema.index(
   {
     projectName: "text",
     description: "text",
-    city: "text",
-    country: "text",
     locality: "text",
   },
   {
@@ -99,8 +113,6 @@ PropertySchema.index(
     weights: {
       projectName: 5,
       description: 3,
-      city: 2,
-      country: 1,
       locality: 1,
     },
   }
@@ -110,6 +122,7 @@ PropertySchema.index(
 PropertySchema.index({ propertyType: 1, propertyPrice: 1 });
 PropertySchema.index({ city: 1, propertyType: 1 });
 PropertySchema.index({ beds: 1, bathrooms: 1 });
+PropertySchema.index({ state: 1, city: 1, area: 1 });
 
 export default mongoose.models.Property ||
   mongoose.model<IProperty>("Property", PropertySchema);

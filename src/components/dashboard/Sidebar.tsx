@@ -87,6 +87,21 @@ const menuItems = [
         key: "/dashboard/master/property-types",
         hideForAgent: true,
       },
+      {
+        label: "States",
+        key: "/dashboard/master/states",
+        hideForAgent: true,
+      },
+      {
+        label: "Cities",
+        key: "/dashboard/master/cities",
+        hideForAgent: true,
+      },
+      {
+        label: "Areas",
+        key: "/dashboard/master/areas",
+        hideForAgent: true,
+      },
     ],
   },
 ];
