@@ -12,10 +12,10 @@ const propertySchema = z.object({
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   await connnectDB();
-  const id = params.id;
+  const { slug } = await params;
   const body = await req.json();
 
   const result = propertySchema.safeParse(body);
@@ -27,7 +27,9 @@ export async function PUT(
   }
 
   try {
-    const property = await Property.findByIdAndUpdate(id, body, { new: true });
+    const property = await Property.findOneAndUpdate({ slug }, body, {
+      new: true,
+    });
 
     if (!property) {
       return NextResponse.json(
@@ -44,13 +46,14 @@ export async function PUT(
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   await connnectDB();
-  const id = params.id;
+  const { slug } = await params;
 
   try {
-    const property = await Property.findById(id);
+    const property = await Property.findOne({ slug });
+
     if (!property) {
       return NextResponse.json(
         { error: "Property not found" },
@@ -58,7 +61,7 @@ export async function GET(
       );
     }
 
-    return NextResponse.json(property);
+    return NextResponse.json({ property });
   } catch (error) {
     return NextResponse.json({ error: error }, { status: 500 });
   }

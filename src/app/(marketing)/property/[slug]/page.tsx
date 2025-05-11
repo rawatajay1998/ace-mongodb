@@ -9,11 +9,13 @@ import { Metadata } from "next";
 export async function generateMetadata({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
+  const { slug } = await params;
+
   // Fetch property data (same as your page component)
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/properties/${params.slug}`,
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/properties/${slug}`,
     { cache: "no-store" }
   );
 
@@ -26,13 +28,15 @@ export async function generateMetadata({
 
   const { property } = await res.json();
 
+  console.log(slug);
+
   return {
     title: `${property.projectName} | Ace Elite Properties`,
     description: property.about.substring(0, 160), // First 160 chars for meta description
     openGraph: {
       title: `${property.projectName} | Ace Elite Properties`,
       description: property.about.substring(0, 160),
-      url: `https://aceeliteproperties.com/properties/${params.slug}`,
+      url: `https://aceeliteproperties.com/properties/${slug}`,
       siteName: "Ace Elite Properties",
       images: [
         {
@@ -55,7 +59,7 @@ export async function generateMetadata({
       ],
     },
     alternates: {
-      canonical: `https://aceeliteproperties.com/properties/${params.slug}`,
+      canonical: `https://aceeliteproperties.com/properties/${slug}`,
     },
   };
 }
@@ -74,10 +78,12 @@ type Amenity = {
 export default async function PropertyPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
+  const { slug } = await params;
+
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/properties/${params.slug}`,
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/properties/${slug}`,
     {
       cache: "no-store", // disable caching to always get fresh data
     }
