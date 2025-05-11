@@ -15,6 +15,7 @@ const uploadToCloudinary = async (file: File): Promise<string> => {
   const buffer = Buffer.from(await file.arrayBuffer());
   const stream = Readable.from(buffer);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const result = await new Promise<any>((resolve, reject) => {
     const uploadStream = cloudinary.uploader.upload_stream(
       { folder: "profile_images" },
