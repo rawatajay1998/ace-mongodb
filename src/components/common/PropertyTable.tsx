@@ -29,6 +29,7 @@ interface PropertyTableProps {
   showApproveButton?: boolean;
   onAction?: (propertyId: string) => Promise<void>;
   actionButtonText?: string;
+  showEditButton: boolean;
 }
 
 interface FetchParams {
@@ -46,6 +47,7 @@ export default function PropertyTable({
   showApproveButton = false,
   onAction,
   actionButtonText,
+  showEditButton,
 }: PropertyTableProps) {
   const [data, setData] = useState<Property[]>([]);
   const [total, setTotal] = useState(0);
@@ -241,13 +243,17 @@ export default function PropertyTable({
       key: "action",
       render: (_, record) => (
         <Space>
-          <Button onClick={() => handleEdit(record._id)} type="primary">
-            Edit
-          </Button>
+          {showEditButton && (
+            <Button onClick={() => handleEdit(record._id)} type="primary">
+              Edit
+            </Button>
+          )}
 
-          <Button onClick={() => handleApprove(record._id)} type="primary">
-            {actionButtonText}
-          </Button>
+          {onAction && (
+            <Button onClick={() => handleApprove(record._id)} type="primary">
+              {actionButtonText}
+            </Button>
+          )}
         </Space>
       ),
     });

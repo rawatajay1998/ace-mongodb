@@ -5,7 +5,11 @@ export default function AgentPropertiesPage() {
   return (
     <>
       <Breadcrumb name="My Properties" currentUrl="/" />
-      <PropertyTable fetchUrl="/api/properties/get/myproperties" />
+      <PropertyTable
+        fetchUrl="/api/properties/get/myproperties"
+        showEditButton={true}
+        showApproveButton={true}
+      />
     </>
   );
 }

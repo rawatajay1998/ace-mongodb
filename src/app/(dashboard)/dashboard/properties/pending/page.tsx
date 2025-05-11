@@ -27,6 +27,7 @@ const PendingPropertiesPage = () => {
         showApproveButton={true}
         actionButtonText="Approve"
         onAction={approveProperty}
+        showEditButton={false}
       />
     </div>
   );

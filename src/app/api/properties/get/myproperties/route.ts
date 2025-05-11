@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/db";
 import Property from "@/models/property.model";
 import { getUserFromToken } from "@/lib/auth";
+import "@/models/category.model";
 
 export async function GET(req: NextRequest) {
   try {
