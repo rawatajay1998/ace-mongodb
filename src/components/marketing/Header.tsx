@@ -1,6 +1,6 @@
 "use client";
 
-import { KeyRound, MenuIcon } from "lucide-react";
+import { MenuIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";

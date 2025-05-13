@@ -30,6 +30,7 @@ export default function AreasPage() {
     handleSubmit,
     reset,
     setValue,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     formState: { errors, isValid },
   } = useForm<AreaFormData>({
     resolver: zodResolver(areaSchema),
@@ -82,7 +83,7 @@ export default function AreasPage() {
       reset();
       setEditingArea(null);
     } catch (err) {
-      toast.error("Failed to save area");
+      toast.error(err);
     }
   };
 

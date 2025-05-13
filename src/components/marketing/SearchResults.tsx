@@ -9,6 +9,7 @@ import PropertyCard from "@/components/marketing/PropertyCard";
 import { IPropertyCardProps } from "@/types/PropertyCardProps";
 
 const SearchResults = () => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const searchParams = useSearchParams();
   const pathname = usePathname();
 
@@ -97,6 +98,7 @@ const SearchResults = () => {
             placeholder="Property Type"
             value={filters.type}
             onChange={(val) => setFilters({ ...filters, type: val })}
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             options={propertyTypes.map((t: any) => ({
               label: t.name,
               value: t._id,
@@ -108,6 +110,7 @@ const SearchResults = () => {
             placeholder="Status"
             value={filters.status}
             onChange={(val) => setFilters({ ...filters, status: val })}
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             options={propertyStatuses.map((s: any) => ({
               label: s.name,
               value: s._id,

@@ -17,9 +17,11 @@ const tabs = [
 
 export default function FeaturedProperties() {
   const [activeTabKey, setActiveTabKey] = useState("offplan");
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [featuredMap, setFeaturedMap] = useState<Record<string, any[]>>({});
   const [maxReached, setMaxReached] = useState(false);
 
@@ -79,7 +81,7 @@ export default function FeaturedProperties() {
       setSelectedId(null);
       setSearchResults([]);
       fetchFeaturedItems(activeTabKey);
-    } catch (error: any) {
+    } catch (error) {
       toast.error(error.response?.data?.message || "Something went wrong");
     }
   };
@@ -99,6 +101,7 @@ export default function FeaturedProperties() {
 
       message.success(res.data.message);
       fetchFeaturedItems(activeTabKey);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error("Delete error:", error.response?.data || error.message);
       message.error(error.response?.data?.message || "Something went wrong");

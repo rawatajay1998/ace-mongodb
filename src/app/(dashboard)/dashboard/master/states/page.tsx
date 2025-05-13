@@ -23,6 +23,7 @@ export default function StatesPage() {
     handleSubmit,
     reset,
     setValue,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     formState: { errors, isValid },
   } = useForm<StateFormData>({
     resolver: zodResolver(stateSchema),
@@ -63,7 +64,7 @@ export default function StatesPage() {
       reset();
       setEditingState(null);
     } catch (err) {
-      toast.error("Failed to save state");
+      toast.error(err);
     }
   };
 

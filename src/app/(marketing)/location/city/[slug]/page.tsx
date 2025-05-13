@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import PropertyCard from "@/components/marketing/PropertyCard";
 import db from "@/lib/db";
 import Property from "@/models/property.model";
+
 interface CityPageProps {
   params: {
     city: string;

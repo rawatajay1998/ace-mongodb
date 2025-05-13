@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/db";
-import Property from "@/models/property.model";
 import City from "@/models/city.model";
 
 export async function GET(
@@ -25,6 +24,7 @@ export async function GET(
 
     // Rest of your property search logic...
     const { searchParams } = new URL(request.url);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const queryParams = Object.fromEntries(searchParams.entries());
 
     // ... (keep your existing property search implementation)

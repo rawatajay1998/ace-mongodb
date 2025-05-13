@@ -13,7 +13,7 @@ export async function GET() {
     return NextResponse.json({ success: true, data: topLocations });
   } catch (error) {
     return NextResponse.json(
-      { success: false, message: "Failed to fetch top locations" },
+      { success: false, message: error },
       { status: 500 }
     );
   }

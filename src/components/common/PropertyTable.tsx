@@ -68,6 +68,7 @@ export default function PropertyTable({
   const [searchTexts, setSearchTexts] = useState<{ [key: string]: string }>({});
   const searchInputs = useRef<{ [key: string]: InputRef | null }>({});
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   const router = useRouter();

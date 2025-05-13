@@ -16,6 +16,7 @@ const uploadToCloudinary = async (file: File): Promise<string> => {
   const buffer = Buffer.from(await file.arrayBuffer());
   const stream = Readable.from(buffer);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const result: any = await new Promise((resolve, reject) => {
     const uploadStream = cloudinary.v2.uploader.upload_stream(
       { folder: "cities" },
@@ -62,10 +63,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(newCity);
   } catch (err) {
-    return NextResponse.json(
-      { error: "City creation failed" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: err }, { status: 500 });
   }
 }
 
@@ -103,6 +101,6 @@ export async function PUT(req: NextRequest) {
     await city.save();
     return NextResponse.json(city);
   } catch (err) {
-    return NextResponse.json({ error: "Error updating city" }, { status: 500 });
+    return NextResponse.json({ error: err }, { status: 500 });
   }
 }

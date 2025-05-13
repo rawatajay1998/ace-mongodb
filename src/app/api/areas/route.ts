@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
     const newArea = await Area.create({ name, cityId });
     return NextResponse.json(newArea);
   } catch (err) {
-    return NextResponse.json({ error: "Error creating area" }, { status: 500 });
+    return NextResponse.json({ error: err }, { status: 500 });
   }
 }
 
@@ -45,6 +45,6 @@ export async function PUT(req: NextRequest) {
 
     return NextResponse.json(updatedArea);
   } catch (err) {
-    return NextResponse.json({ error: "Error updating area" }, { status: 500 });
+    return NextResponse.json({ error: err }, { status: 500 });
   }
 }

@@ -33,9 +33,6 @@ export async function PUT(req: NextRequest) {
       message: "City status updated successfully",
     });
   } catch (err) {
-    return NextResponse.json(
-      { error: "Error updating city status" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: err }, { status: 500 });
   }
 }

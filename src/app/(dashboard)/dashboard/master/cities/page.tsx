@@ -34,6 +34,7 @@ export default function CitiesPage() {
     handleSubmit,
     reset,
     setValue,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     formState: { errors, isValid },
   } = useForm<CityFormData>({
     resolver: zodResolver(citySchema),

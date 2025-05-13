@@ -131,9 +131,6 @@ export default function AddPropertyForm() {
   const [cities, setCities] = useState<LocationOption[]>([]);
   const [areas, setAreas] = useState<LocationOption[]>([]);
 
-  const [loadingCities, setLoadingCities] = useState(false);
-  const [loadingAreas, setLoadingAreas] = useState(false);
-
   const selectedState = watch("state");
   const selectedCity = watch("city");
 
@@ -244,10 +241,8 @@ export default function AddPropertyForm() {
     if (selectedState) {
       const loadCities = async () => {
         try {
-          setLoadingCities(true);
           const cityList = await fetchCitiesByState(selectedState);
           setCities(cityList);
-          setLoadingCities(false);
         } catch (error) {
           console.error("Error fetching cities:", error);
         }
@@ -269,10 +264,8 @@ export default function AddPropertyForm() {
     if (selectedCity) {
       const loadAreas = async () => {
         try {
-          setLoadingAreas(true);
           const areaList = await fetchAreasByCity(selectedCity);
           setAreas(areaList);
-          setLoadingAreas(false);
         } catch (error) {
           console.error("Error fetching areas:", error);
         }
