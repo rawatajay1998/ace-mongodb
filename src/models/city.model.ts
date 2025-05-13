@@ -5,7 +5,7 @@ export interface ICity extends Document {
   stateId: mongoose.Types.ObjectId;
   topLocation: boolean;
   featuredOnHomepage: boolean;
-  cityImageUrl?: string; // optional field for city image URL
+  cityImageUrl?: string;
 }
 
 const CitySchema = new Schema<ICity>({
@@ -13,7 +13,7 @@ const CitySchema = new Schema<ICity>({
   stateId: { type: Schema.Types.ObjectId, ref: "State", required: true },
   topLocation: { type: Boolean, default: false },
   featuredOnHomepage: { type: Boolean, default: false },
-  cityImageUrl: { type: String }, // new field to store Cloudinary URL
+  cityImageUrl: { type: String },
 });
 
 export default mongoose.models.City ||

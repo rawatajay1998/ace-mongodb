@@ -4,14 +4,11 @@ import connectDB from "@/lib/db";
 import User from "@/models/user.model";
 import Property from "@/models/property.model";
 
-export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: Request, { params }) {
   try {
     await connectDB();
 
-    const agentSlug = params.slug;
+    const agentSlug = await params.id;
 
     // Find agent by slug
     const agent = await User.findOne({ slug: agentSlug }).lean();

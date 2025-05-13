@@ -5,7 +5,6 @@ import { IPropertyCardProps } from "@/types/PropertyCardProps";
 import Link from "next/link";
 
 const PropertyCard = ({ item }: { item: IPropertyCardProps }) => {
-  console.log(item);
   return (
     <div className="property_card">
       <div className="image_area overflow-hidden">
@@ -56,7 +55,10 @@ const PropertyCard = ({ item }: { item: IPropertyCardProps }) => {
               {item.postedBy.name || "Unknown Agent"}
             </p>
           </div>
-          <Link href={`/property/${encodeURIComponent(item.slug)}`}>
+          <Link
+            className="view"
+            href={`/property/${encodeURIComponent(item.slug)}`}
+          >
             View More
           </Link>
         </div>

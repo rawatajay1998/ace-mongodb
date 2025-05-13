@@ -1,7 +1,7 @@
 "use client";
 
+import CarouselWrapper from "@/components/marketing/CarouselWrapper";
 import TestimonialCard from "@/components/marketing/Testimonial";
-import { Carousel } from "antd";
 
 const testimonials = [
   {
@@ -33,14 +33,7 @@ const testimonials = [
 const TestimonialsCarousel = () => {
   return (
     <div>
-      <Carousel
-        autoplay
-        dots
-        effect="scrollx"
-        dotPosition="bottom"
-        className="testimonial-carousel"
-        slidesToShow={3}
-      >
+      <CarouselWrapper slidesToShow={3}>
         {testimonials.map((t, i) => (
           <div key={i} className="px-4">
             <TestimonialCard
@@ -50,7 +43,7 @@ const TestimonialsCarousel = () => {
             />
           </div>
         ))}
-      </Carousel>
+      </CarouselWrapper>
     </div>
   );
 };

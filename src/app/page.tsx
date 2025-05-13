@@ -3,10 +3,10 @@ import HomePgae from "./(marketing)/home/page";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Home | Ace Elite Properties",
+  title: "Ace Elite Properies - #1 Real Estate Consultant In Dubai",
   description: "Discover amazing properties with our real estate platform",
   openGraph: {
-    title: "Home | Ace Elite Properties",
+    title: "Ace Elite Properies - #1 Real Estate Consultant In Dubai",
     description: "Discover amazing properties with our real estate platform",
     url: "https://aceeliteproperties.com",
     siteName: "Ace Elite Properties",
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Home | Your Site Name",
+    title: "Ace Elite Properies - #1 Real Estate Consultant In Dubai",
     description: "Discover amazing properties with our real estate platform",
     images: ["https://aceeliteproperties.com/og-image.jpg"],
   },

@@ -100,15 +100,16 @@ export default function Categories() {
 
   const columns = [
     {
-      title: "ID",
-      dataIndex: "_id",
-      key: "_id",
-    },
-    {
       title: "Name",
       dataIndex: "name",
       key: "name",
     },
+    {
+      title: "ID",
+      dataIndex: "_id",
+      key: "_id",
+    },
+
     {
       title: "Action",
       render: (_: unknown, record: Category) => (

@@ -1,3 +1,5 @@
+"use client";
+
 import { Image } from "antd";
 import React from "react";
 

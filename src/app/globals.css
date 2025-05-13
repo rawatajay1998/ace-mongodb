@@ -714,7 +714,20 @@ section .container {
 }
 
 footer {
+  position: relative;
   background-color: #161e2d;
+}
+footer:before {
+  background-image: url("/assets/images/footer-image.png");
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  opacity: 0.1;
+}
+footer .bg_iamge {
 }
 footer .container {
   width: 100%;
@@ -1384,6 +1397,7 @@ footer .copyrights_row ul {
     width: 100%;
     grid-template-columns: 1fr;
     padding: 0;
+    background-color: #f3f7fd;
   }
   .home .services_section .grid_row .heading_block {
     padding-block: 20px;
@@ -1656,5 +1670,8 @@ footer .copyrights_row ul {
   }
   .about_section .grid_row .image {
     order: -10;
+  }
+  .home .services_section .row .block {
+    background-color: #f3f7fd;
   }
 }

@@ -110,7 +110,9 @@ export default function FeaturedProperties() {
 
   return (
     <div className="card">
-      <h2 className="font-semibold text-2xl mb-4">Manage Featured</h2>
+      <h2 className="font-semibold main_title text-2xl mb-4">
+        Manage Featured
+      </h2>
       <Tabs activeKey={activeTabKey} onChange={(key) => setActiveTabKey(key)}>
         {tabs.map(({ key, label }) => {
           const count = featuredMap[key]?.length || 0;

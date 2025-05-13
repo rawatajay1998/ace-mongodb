@@ -162,7 +162,7 @@ const HomePgae = () => {
           <div className="grid_row">
             <div className="image">
               <Image
-                src={"/assets/images/home-banner.jpg"}
+                src={"/assets/images/our-services.jpg"}
                 alt="Home Banner"
                 width={1200}
                 height={1200}

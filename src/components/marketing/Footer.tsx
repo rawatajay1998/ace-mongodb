@@ -1,4 +1,4 @@
-import { Facebook, Linkedin } from "lucide-react";
+import { Facebook, Instagram, Linkedin } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -30,6 +30,11 @@ const WebsiteFooter = () => {
                 href={"https://www.linkedin.com/company/ace-elite-properties/"}
               >
                 <Linkedin />
+              </Link>
+            </div>
+            <div className="icon">
+              <Link href={"https://www.instagram.com/aceeliteproperties/"}>
+                <Instagram />
               </Link>
             </div>
           </div>

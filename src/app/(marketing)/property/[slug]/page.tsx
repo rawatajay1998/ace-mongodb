@@ -9,13 +9,13 @@ import { Metadata } from "next";
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: { slug: string };
 }): Promise<Metadata> {
   const { slug } = await params;
 
   // Fetch property data (same as your page component)
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/properties/${slug}`,
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/property/${slug}`,
     { cache: "no-store" }
   );
 
@@ -28,14 +28,14 @@ export async function generateMetadata({
 
   const { property } = await res.json();
 
-  console.log(slug);
+  console.log(property);
 
   return {
     title: `${property.projectName} | Ace Elite Properties`,
-    description: property.about.substring(0, 160), // First 160 chars for meta description
+    description: property?.aboutProperty.substring(0, 160), // First 160 chars for meta description
     openGraph: {
       title: `${property.projectName} | Ace Elite Properties`,
-      description: property.about.substring(0, 160),
+      description: property?.aboutProperty.substring(0, 160),
       url: `https://aceeliteproperties.com/properties/${slug}`,
       siteName: "Ace Elite Properties",
       images: [
@@ -53,7 +53,7 @@ export async function generateMetadata({
     twitter: {
       card: "summary_large_image",
       title: `${property.projectName} | Ace Elite Properties`,
-      description: property.about.substring(0, 160),
+      description: property?.aboutProperty.substring(0, 160),
       images: [
         property.galleryImages?.[0] || "/assets/images/default-property.jpg",
       ],
@@ -78,12 +78,14 @@ type Amenity = {
 export default async function PropertyPage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: { slug: string };
 }) {
   const { slug } = await params;
 
+  console.log(slug);
+
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/properties/${slug}`,
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/property/${slug}`,
     {
       cache: "no-store", // disable caching to always get fresh data
     }
@@ -178,7 +180,7 @@ export default async function PropertyPage({
               </div>
               <div className="content">
                 <h3 className="title">Description</h3>
-                <ReadMoreText text={property.about} maxLength={400} />
+                <ReadMoreText text={property.aboutProperty} maxLength={400} />
               </div>
               <div className="content">
                 <h3 className="title">Location Advantages</h3>

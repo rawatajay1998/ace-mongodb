@@ -11,7 +11,7 @@ const { Search } = Input;
 interface Agent {
   _id: string;
   name: string;
-  image?: string;
+  profileImageUrl: string;
   country?: string;
   languages?: string[];
   location?: string;
@@ -90,7 +90,7 @@ export default function AgentsPage() {
             <div
               className={`grid ${
                 viewType === "grid"
-                  ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"
+                  ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6"
                   : "grid-cols-1 gap-4"
               }`}
             >
@@ -102,14 +102,17 @@ export default function AgentsPage() {
                   } bg-white border rounded-2xl shadow-sm overflow-hidden hover:shadow-md transition`}
                 >
                   <Image
-                    src={agent.image || "/assets/images/dummy-agent-image.png"}
+                    src={
+                      agent.profileImageUrl ||
+                      "/assets/images/dummy-agent-image.png"
+                    }
                     alt={agent.name}
                     height={200}
                     width={200}
                     className={`object-cover ${
                       viewType === "list"
                         ? "w-40 h-40"
-                        : "w-full h-52 sm:h-60 md:h-48"
+                        : "w-full h-full sm:h-60 md:h-full"
                     }`}
                   />
                   <div className="p-4 flex flex-col justify-between flex-1">
