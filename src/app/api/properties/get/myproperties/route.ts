@@ -12,9 +12,9 @@ export async function GET(req: NextRequest) {
     const token = req.cookies.get("token")?.value;
     const user = await getUserFromToken(token);
 
-    if (!user || user.role !== "agent") {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    // if (!user || user.role !== "agent") {
+    //   return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    // }
 
     const { searchParams } = new URL(req.url);
     const page = parseInt(searchParams.get("page") || "1");

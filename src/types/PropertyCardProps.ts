@@ -1,6 +1,7 @@
 import { IFAQ } from "@/models/property.model";
 
 export interface IPropertyCardProps extends Document {
+  _id: string;
   projectName: string;
   propertyType: string;
   propertyStatus: string;

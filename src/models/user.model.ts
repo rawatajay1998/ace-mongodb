@@ -9,6 +9,7 @@ export interface IUser extends Document {
   address: string;
   phoneNumber: string;
   about: string;
+  slug: string;
   profileImageUrl: string;
 }
 
@@ -22,6 +23,11 @@ const UserSchema = new Schema<IUser>({
   phoneNumber: { type: String, required: true },
   about: { type: String, required: true },
   profileImageUrl: { type: String, required: true },
+  slug: {
+    type: String,
+    required: true,
+    unique: true,
+  },
 });
 
 export default mongoose.models.User ||

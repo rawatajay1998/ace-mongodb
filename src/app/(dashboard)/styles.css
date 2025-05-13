@@ -72,6 +72,9 @@ footer {
 .dashboard .ant-menu-title-content a {
   font-size: 13px;
   color: #cccccc;
+  width: max-content;
+  min-width: max-content;
+  display: block;
 }
 .dashboard .ant-menu-title-content a:hover {
   color: #aaa;
@@ -176,6 +179,12 @@ footer {
 .toolbar_editor .button-group button svg {
   stroke: var(--text-color);
   height: 16px;
+}
+.toolbar_editor .editor_table_buttons button {
+  width: max-content;
+  font-size: 13px;
+  font-weight: 600;
+  padding-inline: 20px;
 }
 .dashboard .sidebar__toggler svg {
   color: var(--text-color);
@@ -350,4 +359,20 @@ footer {
 }
 .ant-menu.ant-menu-root {
   overflow: auto;
+}
+.ant-tabs-nav-list .ant-tabs-tab {
+  color: var(--text-color);
+}
+:where(.css-dev-only-do-not-override-1m63z2v).ant-table-wrapper
+  .ant-table-tbody
+  > tr.ant-table-placeholder:hover
+  > th,
+:where(.css-dev-only-do-not-override-1m63z2v).ant-table-wrapper
+  .ant-table-tbody
+  > tr.ant-table-placeholder:hover
+  > td,
+:where(.css-dev-only-do-not-override-1m63z2v).ant-table-wrapper
+  .ant-table-tbody
+  > tr.ant-table-placeholder {
+  background: var(--bg-color);
 }

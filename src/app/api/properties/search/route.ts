@@ -26,6 +26,11 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const params = Object.fromEntries(searchParams.entries());
 
+    const parsed = searchSchema.parse({
+      ...params,
+      amenities: searchParams.getAll("amenities"),
+    });
+
     const {
       type,
       location,
@@ -39,60 +44,53 @@ export async function GET(request: Request) {
       bathrooms,
       page,
       limit,
-    } = searchSchema.parse({
-      ...params,
-      amenities: searchParams.getAll("amenities"),
-    });
+    } = parsed;
 
     const skip = (page - 1) * limit;
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const query: any = {
+    const query: Record<string, any> = {
       verified: true,
     };
 
-    // Exact match (uses index)
+    // Match property type
     if (type) query.propertyType = type;
 
-    // Combine text search fields (MongoDB allows only one $text query)
-    if (projectName) {
-      query.projectName = { $regex: projectName, $options: "i" };
+    // Match project name
+    if (projectName?.trim()) {
+      query.projectName = { $regex: projectName.trim(), $options: "i" };
     }
 
-    if (location) {
-      query.$or = [
-        { city: { $regex: location, $options: "i" } },
-        { country: { $regex: location, $options: "i" } },
-      ];
+    // Safe $regex on location using RegExp object
+    if (typeof location === "string" && location.trim()) {
+      const regex = new RegExp(location.trim(), "i");
+      query.$or = [{ city: regex }, { country: regex }];
     }
 
-    // Property price filtering
+    // Price filtering
     if (minPrice !== undefined || maxPrice !== undefined) {
       query.propertyPrice = {};
       if (minPrice !== undefined) query.propertyPrice.$gte = minPrice;
       if (maxPrice !== undefined) query.propertyPrice.$lte = maxPrice;
     }
 
-    // Area size filtering
+    // Size filtering
     if (minSize !== undefined || maxSize !== undefined) {
       query.areaSize = {};
       if (minSize !== undefined) query.areaSize.$gte = minSize;
       if (maxSize !== undefined) query.areaSize.$lte = maxSize;
     }
 
-    // Amenities match (exact, all items must be present)
+    // Amenities filter
     if (amenities.length > 0) {
       query.amenities = { $all: amenities };
     }
 
-    if (beds) query.beds = { $gte: beds };
-    if (bathrooms) query.bathrooms = { $gte: bathrooms };
+    if (beds !== undefined) query.beds = { $gte: beds };
+    if (bathrooms !== undefined) query.bathrooms = { $gte: bathrooms };
 
-    // Execute query
-    const properties = await Property.find(
-      query,
-      query.$text ? { score: { $meta: "textScore" } } : {}
-    )
-      .sort(query.$text ? { score: { $meta: "textScore" } } : { _id: 1 })
+    const properties = await Property.find(query)
+      .sort({ _id: 1 })
       .skip(skip)
       .limit(limit)
       .lean();

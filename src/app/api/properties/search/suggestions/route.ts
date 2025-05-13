@@ -1,54 +1,35 @@
-// /api/search-suggestions.ts
-import { NextResponse } from "next/server";
-import connectToDB from "@/lib/db";
+import { NextRequest, NextResponse } from "next/server";
+import connectDB from "@/lib/db";
 import Property from "@/models/property.model";
 
-export async function GET(req: Request) {
-  await connectToDB();
-  const { searchParams } = new URL(req.url);
-  const q = searchParams.get("q")?.trim().toLowerCase();
+export const GET = async (req: NextRequest) => {
+  await connectDB();
 
-  if (!q || q.length < 2) {
-    return NextResponse.json({ locations: [], projects: [] });
+  try {
+    // Access query parameters using searchParams
+    const search = req.nextUrl.searchParams.get("q");
+
+    if (!search) {
+      return NextResponse.json(
+        { message: "Search query is required" },
+        { status: 400 }
+      );
+    }
+
+    // Search properties by title or description
+    const properties = await Property.find({
+      $or: [
+        { title: { $regex: search, $options: "i" } },
+        { description: { $regex: search, $options: "i" } },
+      ],
+    }).limit(10); // Limit results to 10
+
+    return NextResponse.json({ properties });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json(
+      { message: "Something went wrong", error },
+      { status: 500 }
+    );
   }
-
-  const regex = new RegExp(`^${q}`, "i");
-
-  const [locations, projects] = await Promise.all([
-    Property.aggregate([
-      {
-        $match: {
-          $or: [{ city: { $regex: regex } }, { country: { $regex: regex } }],
-        },
-      },
-      {
-        $project: {
-          _id: 0,
-          label: { $concat: ["$city", ", ", "$country"] },
-        },
-      },
-      { $group: { _id: "$label" } },
-      { $limit: 5 },
-    ]),
-    Property.aggregate([
-      {
-        $match: {
-          projectName: { $regex: regex },
-        },
-      },
-      {
-        $project: {
-          _id: 0,
-          label: "$projectName",
-        },
-      },
-      { $group: { _id: "$label" } },
-      { $limit: 5 },
-    ]),
-  ]);
-
-  return NextResponse.json({
-    locations: locations.map((l) => l._id),
-    projects: projects.map((p) => p._id),
-  });
-}
+};

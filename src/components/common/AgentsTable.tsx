@@ -12,6 +12,7 @@ interface Agent {
   name: string;
   email: string;
   phone: string;
+  country: string;
 }
 
 export default function AgentTable() {
@@ -154,6 +155,11 @@ export default function AgentTable() {
       title: "Phone",
       dataIndex: "phoneNumber",
       ...getColumnSearchProps("phoneNumber"),
+    },
+    {
+      title: "Country",
+      dataIndex: "country",
+      ...getColumnSearchProps("country"),
     },
   ];
 

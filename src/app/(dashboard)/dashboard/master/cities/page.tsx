@@ -1,10 +1,12 @@
 "use client";
-import { Table, Button, Input, Select } from "antd";
+
+import { Table, Button, Input, Select, Switch, Tag, message } from "antd";
 import { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
+import type { ColumnsType } from "antd/es/table";
 
 const citySchema = z.object({
   name: z.string().min(1, "City name is required"),
@@ -16,7 +18,9 @@ type CityFormData = z.infer<typeof citySchema>;
 interface City {
   _id: string;
   name: string;
-  state: { _id: string; name: string };
+  stateId: { _id: string; name: string };
+  cityImageUrl?: string;
+  topLocation: boolean;
 }
 
 interface State {
@@ -39,11 +43,20 @@ export default function CitiesPage() {
   const [cities, setCities] = useState<City[]>([]);
   const [states, setStates] = useState<State[]>([]);
   const [editingCity, setEditingCity] = useState<City | null>(null);
+  const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const fetchCities = async () => {
-    const res = await fetch("/api/cities");
-    const data = await res.json();
-    setCities(data);
+    try {
+      setLoading(true);
+      const res = await fetch("/api/cities");
+      const data = await res.json();
+      setCities(data);
+    } catch {
+      message.error("Failed to fetch cities");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const fetchStates = async () => {
@@ -59,29 +72,34 @@ export default function CitiesPage() {
 
   const onSubmit = async (data: CityFormData) => {
     try {
+      const formData = new FormData();
+      formData.append("name", data.name);
+      formData.append("stateId", data.stateId);
+
       if (editingCity) {
-        await fetch("/api/cities", {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            id: editingCity._id,
-            name: data.name,
-            stateId: data.stateId,
-          }),
+        formData.append("id", editingCity._id);
+        const dummyFile = new File(["dummy"], "dummy.jpg", {
+          type: "image/jpeg",
         });
-        toast.success("City updated!");
+        formData.append("image", dummyFile);
+      } else if (selectedImageFile) {
+        formData.append("image", selectedImageFile);
       } else {
-        await fetch("/api/cities", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data),
-        });
-        toast.success("City added!");
+        toast.error("Image is required for new city");
+        return;
       }
+
+      await fetch("/api/cities", {
+        method: editingCity ? "PUT" : "POST",
+        body: formData,
+      });
+
+      toast.success(editingCity ? "City updated!" : "City added!");
       fetchCities();
       reset();
       setEditingCity(null);
-    } catch (err) {
+      setSelectedImageFile(null);
+    } catch {
       toast.error("Failed to save city");
     }
   };
@@ -89,16 +107,51 @@ export default function CitiesPage() {
   const handleEdit = (record: City) => {
     setEditingCity(record);
     setValue("name", record.name);
-    setValue("stateId", record.state._id);
+    setValue("stateId", record.stateId._id);
   };
 
-  const columns = [
+  const updateTopLocation = async (id: string, value: boolean) => {
+    try {
+      await fetch("/api/cities/status", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, topLocation: value }),
+      });
+      message.success("City status updated");
+      fetchCities();
+    } catch {
+      message.error("Failed to update status");
+    }
+  };
+
+  const columns: ColumnsType<City> = [
     { title: "ID", dataIndex: "_id", key: "_id" },
     { title: "Name", dataIndex: "name", key: "name" },
-    { title: "State", dataIndex: ["state", "name"], key: "state" },
+    { title: "State", dataIndex: ["stateId", "name"], key: "state" },
+    {
+      title: "Top Location",
+      key: "topLocation",
+      render: (_, record) => (
+        <Switch
+          checked={record.topLocation}
+          onChange={(checked) => updateTopLocation(record._id, checked)}
+        />
+      ),
+    },
+    {
+      title: "Status",
+      key: "status",
+      render: (_, record) =>
+        record.topLocation ? (
+          <Tag color="blue">Top Location</Tag>
+        ) : (
+          <Tag>Regular</Tag>
+        ),
+    },
     {
       title: "Action",
-      render: (_: unknown, record: City) => (
+      key: "action",
+      render: (_, record) => (
         <Button onClick={() => handleEdit(record)}>Edit</Button>
       ),
     },
@@ -107,7 +160,7 @@ export default function CitiesPage() {
   return (
     <div className="card">
       <h2 className="text-xl mb-4">{editingCity ? "Edit City" : "Add City"}</h2>
-      <form onSubmit={handleSubmit(onSubmit)} className="mb-6 ">
+      <form onSubmit={handleSubmit(onSubmit)} className="mb-6">
         <div className="grid grid-cols-2 gap-4">
           <div className="form_field">
             <label>State</label>
@@ -136,17 +189,37 @@ export default function CitiesPage() {
               name="name"
               control={control}
               render={({ field }) => (
-                <Input placeholder="City name" {...field} />
+                <Input size="large" placeholder="City name" {...field} />
               )}
             />
           </div>
+          {!editingCity && (
+            <div className="form_field col-span-2">
+              <label>City Image</label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) setSelectedImageFile(file);
+                }}
+              />
+            </div>
+          )}
         </div>
-        <button className="btn_primary" type="submit" disabled={!isValid}>
+        <button className="btn_primary mt-4" type="submit" disabled={!isValid}>
           {editingCity ? "Update" : "Add"}
         </button>
       </form>
 
-      <Table dataSource={cities} columns={columns} rowKey="_id" />
+      <h2 className="text-xl mb-4">All Cities</h2>
+      <Table
+        dataSource={cities}
+        columns={columns}
+        rowKey="_id"
+        loading={loading}
+        pagination={{ pageSize: 10 }}
+      />
     </div>
   );
 }

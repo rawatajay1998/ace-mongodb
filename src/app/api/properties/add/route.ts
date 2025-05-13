@@ -106,21 +106,27 @@ export async function POST(req: NextRequest) {
     const newProperty = new Property({
       projectName,
       slug: formData.get("slug"),
-      propertyType: formData.get("propertyType"),
-      propertyStatus: formData.get("propertyStatus"),
+      propertyType: new mongoose.Types.ObjectId(
+        formData.get("propertyType")?.toString()
+      ),
+      propertyTypeName: formData.get("propertyTypeName"),
+      propertyStatus: new mongoose.Types.ObjectId(
+        formData.get("propertyStatus")?.toString()
+      ),
+      propertyStatusName: formData.get("propertyStatusName"),
       propertyCategory: new mongoose.Types.ObjectId(
         formData.get("propertyCategory")?.toString()
       ),
+      propertyCategoryName: formData.get("propertyCategoryName"),
+
       city: new mongoose.Types.ObjectId(formData.get("city")?.toString()),
       state: new mongoose.Types.ObjectId(formData.get("state")?.toString()),
       area: new mongoose.Types.ObjectId(formData.get("area")?.toString()),
-      downPayment: formData.get("downPayment"),
-      handoverDate: formData.get("handoverDate"),
+      stateName: formData.get("stateName"),
+      cityName: formData.get("cityName"),
+      areaName: formData.get("areaName"),
+      paymentPlan: formData.get("paymentPlan"),
       areaSize: Number(formData.get("areaSize")),
-      description: formData.get("description"),
-      locality: formData.get("locality"),
-      bathrooms: Number(formData.get("bathrooms")),
-      beds: Number(formData.get("beds")),
       propertyPrice: Number(formData.get("propertyPrice")),
       thumbnailImage: thumbnailUrl,
       bannerImage: bannerUrl,
@@ -129,7 +135,7 @@ export async function POST(req: NextRequest) {
       createdBy: user.id,
       postedBy: user.id,
       status: "pending",
-      about: formData.get("about"),
+      aboutProperty: formData.get("aboutProperty"),
       pricingSection: formData.get("pricingSection"),
       locationAdvantages: formData.get("locationAdvantages"),
       faqs: faqs,

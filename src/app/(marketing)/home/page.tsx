@@ -11,43 +11,22 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import CarouselWrapper from "@/components/marketing/CarouselWrapper";
-import CityCard from "@/components/marketing/CityCard";
 import Link from "next/link";
 import TeamCard from "@/components/marketing/TeamCard";
-import TestimonialCard from "@/components/marketing/Testimonial";
 
 import SearchBanner from "./searchBanner";
-import FeaturedProperties from "./FeaturedCategories";
-import PremiumProperties from "./PremiumCategories";
-
-const cities = [
-  {
-    city: "Downtown Dubai",
-    count: 125,
-    imageUrl: "/assets/images/downtown-dubai.jpg",
-  },
-  {
-    city: "Dubai Marina",
-    count: 98,
-    imageUrl: "/assets/images/dubai-marina.jpg",
-  },
-  {
-    city: "Palm Jumeirah",
-    count: 74,
-    imageUrl: "/assets/images/dubai-palm.jpeg",
-  },
-];
+import OffPlanProperties from "./OffPlan";
+import SecondaryProperties from "./Secondary";
+import RentalProperties from "./Rental";
+import HighROIProperties from "./HIghROI";
+import TopLocations from "./TopLocations";
+import TestimonialsCarousel from "./Testimonials";
 
 const teamArray = [
   {
     name: "Rishi Malik",
     designation: "Founder",
     imageUrl: "/assets/images/team/rishi-malik.jpg",
-  },
-  {
-    name: "Fahad Rahim Khan",
-    designation: "Human Resource",
-    imageUrl: "/assets/images/team/fahad-rahim-khan.jpg",
   },
   {
     name: "Rucile",
@@ -85,11 +64,10 @@ const HomePgae = () => {
         </div>
         <div className="container">
           <div className="content">
-            <h1>Reality Properties solve your problems</h1>
+            <h1>Your Safe Path to Owning Properties in Dubai Starts Here </h1>
             <p>
-              We are a real estate agency that will help you find the best{" "}
-              <br />
-              residence you dream of.
+              Verified properties. Honest advice. No fake promises just real
+              opportunities in Dubai real estate.
             </p>
           </div>
           <div className="search_row">
@@ -131,7 +109,7 @@ const HomePgae = () => {
         </div>
         <div className="image_right">
           <Image
-            src={"/assets/images/home-banner.jpg"}
+            src={"/assets/images/banner-image.jpg"}
             alt="Home Banner"
             width={1200}
             height={1200}
@@ -142,7 +120,6 @@ const HomePgae = () => {
       <section className="type_section">
         <div className="container">
           <div className="heading_block">
-            <p> Property Type</p>
             <h3 className="title">Try Searching For</h3>
           </div>
           <div className="type_row">
@@ -180,7 +157,7 @@ const HomePgae = () => {
         </div>
       </section>
 
-      <section className="services_section">
+      <section className="services_section bg_section">
         <div className="container">
           <div className="grid_row">
             <div className="image">
@@ -258,26 +235,36 @@ const HomePgae = () => {
       <section className="premium_property">
         <div className="container">
           <div className="heading_block">
-            <p> Premium Properties</p>
-            <h3 className="title">
-              Discover Ace Elite Finest <br /> Properties for Your Dream Home
-            </h3>
+            <h3 className="title">Off Plan Properties</h3>
           </div>
-          <PremiumProperties />
+          <OffPlanProperties />
         </div>
       </section>
 
-      <section className="cities_section">
+      <section className="featured_property bg_section">
         <div className="container">
           <div className="heading_block">
-            <p> Explore Cities</p>
-            <h3 className="title">Property Locations for Higher ROI</h3>
+            <h3 className="title">Secondary Properties</h3>
           </div>
-          <div className="city_row">
-            {cities.map((cityData) => (
-              <CityCard key={cityData.city} {...cityData} />
-            ))}
+          <SecondaryProperties />
+        </div>
+      </section>
+
+      <section className="featured_property">
+        <div className="container">
+          <div className="heading_block">
+            <h3 className="title">Rental Properties</h3>
           </div>
+          <RentalProperties />
+        </div>
+      </section>
+
+      <section className="cities_section bg_section">
+        <div className="container">
+          <div className="heading_block">
+            <h3 className="title">Top Locations</h3>
+          </div>
+          <TopLocations />
           <Link href="/" className="view__all">
             View All
             <MoveRight size={20} />
@@ -288,16 +275,13 @@ const HomePgae = () => {
       <section className="featured_property">
         <div className="container">
           <div className="heading_block">
-            <p> Featured Properties</p>
-            <h3 className="title">
-              Discover Ace Elite Finest <br /> Properties for Your Dream Home
-            </h3>
+            <h3 className="title">Recommended High ROI Projects</h3>
           </div>
-          <FeaturedProperties />
+          <HighROIProperties />
         </div>
       </section>
 
-      <section className="testimonial_section">
+      <section className="testimonial_section bg_section">
         <div className="container">
           <div className="heading_block">
             <p>What Clinets Say</p>
@@ -307,12 +291,7 @@ const HomePgae = () => {
               Our Service and Commitment to Excellence
             </h3>
           </div>
-          <CarouselWrapper slidesToShow={3}>
-            <TestimonialCard />
-            <TestimonialCard />
-            <TestimonialCard />
-            <TestimonialCard />
-          </CarouselWrapper>
+          <TestimonialsCarousel />
         </div>
       </section>
 

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/db";
-import userModel from "@/models/user.model";
+import User from "@/models/user.model";
+import Property from "@/models/property.model"; // import your property model
 
 export async function GET(req: NextRequest) {
   try {
@@ -20,12 +21,12 @@ export async function GET(req: NextRequest) {
 
     // Filter object
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const filters: any = {};
+    const filters: Record<string, any> = {};
     if (name) filters.name = { $regex: name, $options: "i" };
     if (email) filters.email = { $regex: email, $options: "i" };
     if (phone) filters.phone = { $regex: phone, $options: "i" };
 
-    // Sort object
+    // Sort
     const sortObj: Record<string, 1 | -1> =
       sortField && ["name"].includes(sortField)
         ? { [sortField]: sortOrder }
@@ -33,12 +34,27 @@ export async function GET(req: NextRequest) {
 
     const skip = (page - 1) * pageSize;
 
+    // Fetch agents
     const [agents, total] = await Promise.all([
-      userModel.find(filters).sort(sortObj).skip(skip).limit(pageSize),
-      userModel.countDocuments(filters),
+      User.find(filters).sort(sortObj).skip(skip).limit(pageSize),
+      User.countDocuments(filters),
     ]);
 
-    return NextResponse.json({ success: true, data: agents, total });
+    // Populate totalProperties for each agent
+    const agentWithCounts = await Promise.all(
+      agents.map(async (agent) => {
+        const propertyCount = await Property.countDocuments({
+          postedBy: agent._id,
+        });
+
+        return {
+          ...agent.toObject(),
+          totalProperties: propertyCount,
+        };
+      })
+    );
+
+    return NextResponse.json({ success: true, data: agentWithCounts, total });
   } catch (error) {
     console.error("Error fetching agents:", error);
     return NextResponse.json(

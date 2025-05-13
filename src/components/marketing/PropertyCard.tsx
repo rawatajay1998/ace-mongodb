@@ -56,8 +56,8 @@ const PropertyCard = ({ item }: { item: IPropertyCardProps }) => {
               {item.postedBy.name || "Unknown Agent"}
             </p>
           </div>
-          <Link href={`/property/${item.slug}`} className="view">
-            View Property
+          <Link href={`/property/${encodeURIComponent(item.slug)}`}>
+            View More
           </Link>
         </div>
       </div>

@@ -25,11 +25,11 @@ const menuItems = [
     icon: MapPinHouse,
     key: "properties", // Changed
     children: [
-      {
-        label: "All Properties",
-        key: "/dashboard/properties",
-        hideForAgent: true,
-      },
+      // {
+      //   label: "All Properties",
+      //   key: "/dashboard/properties",
+      //   hideForAgent: true,
+      // },
       {
         label: "My Properties",
         key: "/dashboard/properties/myproperties",
@@ -46,6 +46,11 @@ const menuItems = [
       {
         label: "Pending Properties",
         key: "/dashboard/properties/pending",
+        hideForAgent: true,
+      },
+      {
+        label: "Home Featured",
+        key: "/dashboard/home-featured", // Changed
         hideForAgent: true,
       },
     ],
@@ -78,8 +83,13 @@ const menuItems = [
         hideForAgent: true,
       },
       {
-        label: "Category",
+        label: "Property Category",
         key: "/dashboard/master/category",
+        hideForAgent: true,
+      },
+      {
+        label: "Property Status",
+        key: "/dashboard/master/property-status",
         hideForAgent: true,
       },
       {

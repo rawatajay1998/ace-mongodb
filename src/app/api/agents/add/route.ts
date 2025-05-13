@@ -116,6 +116,15 @@ export async function POST(req: NextRequest) {
   // Hash the password before saving
   const hashedPassword = await bcrypt.hash(password, 10); // Hashing password
 
+  // Count current agents for a unique number in the slug
+  const totalAgents = await Agent.countDocuments();
+
+  // Create a slug like "nicole-daniels-964959"
+  const slug = `${fullName
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^\w-]+/g, "")}-${totalAgents + 1}`;
+
   // Create the agent object
   const newAgent = new Agent({
     name: fullName,
@@ -127,6 +136,7 @@ export async function POST(req: NextRequest) {
     password: hashedPassword, // Save the hashed password
     profileImageUrl: profileImageUrl || "", // Profile image URL can be optional
     role: "agent", // Assigning the role as "agent" by default
+    slug,
   });
 
   try {

@@ -9,33 +9,35 @@ export interface IFAQ {
 export interface IProperty extends Document {
   projectName: string;
   propertyType: mongoose.Types.ObjectId;
-  propertyStatus: string;
+  propertyTypeName: string;
+  propertyStatus: mongoose.Types.ObjectId;
+  propertyStatusName: string;
   propertyCategory: mongoose.Types.ObjectId;
+  propertyCategoryName: string;
   state: mongoose.Types.ObjectId;
   city: mongoose.Types.ObjectId;
+  stateName: string;
+  cityName: string;
   area: mongoose.Types.ObjectId;
-  downPayment: string;
-  handoverDate: string;
+  areaName: string;
+  paymentPlan: string;
   areaSize: number;
   thumbnailImage: string;
   bannerImage: string;
-  description: string;
-  locality: string;
-  bathrooms: number;
-  beds: number;
   propertyPrice: number;
   verified: boolean;
   slug: string;
   postedBy: mongoose.Types.ObjectId | IUser;
   galleryImages: string[];
   floorPlansImages: string[];
-  about: string;
+  aboutProperty: string;
   locationAdvantages: string;
   pricingSection: string;
   amenities: mongoose.Types.ObjectId[];
   faqs: IFAQ[];
+  highROIProjects: boolean;
+  featuredOnHomepage: boolean;
 }
-
 const PropertySchema = new Schema<IProperty>(
   {
     projectName: { type: String, required: true, index: true },
@@ -45,13 +47,30 @@ const PropertySchema = new Schema<IProperty>(
       required: true,
       index: true,
     },
+    propertyTypeName: {
+      type: String,
+      required: true,
+    },
     propertyCategory: {
       type: Schema.Types.ObjectId,
       ref: "Category",
       required: true,
       index: true,
     },
-    propertyStatus: { type: String, required: true },
+    propertyCategoryName: {
+      type: String,
+      required: true,
+    },
+    propertyStatus: {
+      type: Schema.Types.ObjectId,
+      ref: "PropertyStatus",
+      required: true,
+      index: true,
+    },
+    propertyStatusName: {
+      type: String,
+      required: true,
+    },
     state: {
       type: Schema.Types.ObjectId,
       ref: "State",
@@ -64,28 +83,35 @@ const PropertySchema = new Schema<IProperty>(
       required: true,
       index: true,
     },
+    cityName: {
+      type: String,
+      required: true,
+    },
+    stateName: {
+      type: String,
+      required: true,
+    },
     area: {
       type: Schema.Types.ObjectId,
       ref: "Area",
       required: true,
       index: true,
     },
-    downPayment: { type: String, required: true },
-    handoverDate: { type: String, required: true },
+    areaName: {
+      type: String,
+      required: true,
+    },
+    paymentPlan: { type: String, required: true },
     areaSize: { type: Number, required: true, index: true },
     thumbnailImage: { type: String, required: true },
     bannerImage: { type: String, required: true },
-    description: { type: String, required: true },
-    locality: { type: String, required: true },
-    bathrooms: { type: Number, required: true, index: true },
-    beds: { type: Number, required: true, index: true },
     propertyPrice: { type: Number, required: true, index: true },
     verified: { type: Boolean, default: false },
     slug: { type: String, required: true, unique: true },
     postedBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
     galleryImages: { type: [String], default: [] },
     floorPlansImages: { type: [String], default: [] },
-    about: { type: String, required: true },
+    aboutProperty: { type: String, required: true },
     locationAdvantages: { type: String, required: true },
     pricingSection: { type: String, required: true },
     amenities: [{ type: mongoose.Schema.Types.ObjectId, ref: "Amenity" }],
@@ -95,33 +121,23 @@ const PropertySchema = new Schema<IProperty>(
         answer: { type: String, required: true },
       },
     ],
+    featuredOnHomepage: {
+      type: Boolean,
+      default: false,
+    },
+    highROIProjects: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,
   }
 );
 
-// Compound text index for search
-PropertySchema.index(
-  {
-    projectName: "text",
-    description: "text",
-    locality: "text",
-  },
-  {
-    name: "property_search_index",
-    weights: {
-      projectName: 5,
-      description: 3,
-      locality: 1,
-    },
-  }
-);
-
 // Compound indexes for common query patterns
 PropertySchema.index({ propertyType: 1, propertyPrice: 1 });
 PropertySchema.index({ city: 1, propertyType: 1 });
-PropertySchema.index({ beds: 1, bathrooms: 1 });
 PropertySchema.index({ state: 1, city: 1, area: 1 });
 
 export default mongoose.models.Property ||

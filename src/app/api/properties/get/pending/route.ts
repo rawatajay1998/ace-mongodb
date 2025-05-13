@@ -2,6 +2,7 @@
 import { NextResponse } from "next/server";
 import Property from "@/models/property.model";
 import connectDB from "@/lib/db";
+import "@/models/user.model";
 
 export async function GET() {
   try {

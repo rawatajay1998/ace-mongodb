@@ -3,7 +3,7 @@
 import { useForm, Controller, FormProvider, useWatch } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AutoComplete, Button, DatePicker, Input, Select, Table } from "antd";
+import { Button, Input, Select, Table } from "antd";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import Image from "next/image";
@@ -11,7 +11,6 @@ import ImageUpload from "@/components/dashboard/ImageUploader";
 import { Plus, Trash2 } from "lucide-react";
 import FloorPlanUpload from "@/components/dashboard/FloorPlanUploader";
 import toast from "react-hot-toast";
-import dayjs from "dayjs";
 import axios from "axios";
 
 const TipTapEditor = dynamic(
@@ -21,6 +20,11 @@ const TipTapEditor = dynamic(
     loading: () => <p>Loading editor...</p>,
   }
 );
+
+interface LocationOption {
+  _id: string;
+  name: string;
+}
 
 const faqSchema = z.object({
   question: z.string().min(5),
@@ -35,20 +39,16 @@ const propertySchema = z.object({
   state: z.string().min(1, "State is required"),
   city: z.string().min(1, "City is required"),
   area: z.string().min(1, "Area is required"),
-  downPayment: z.string().min(1, "Down Payment is required"),
-  handoverDate: z.string().refine(
-    (val) => {
-      if (!val) return false; // empty string fails
-      return !isNaN(new Date(val).getTime()); // check if valid date
-    },
-    { message: "Please select a valid date" }
-  ),
+  propertyTypeName: z.string().min(1, "Area is required"),
+  propertyStatusName: z.string().min(1, "Area is required"),
+  propertyCategoryName: z.string().min(1, "Area is required"),
+  stateName: z.string().min(1, "Area is required"),
+  cityName: z.string().min(1, "Area is required"),
+  areaName: z.string().min(1, "Area is required"),
+  paymentPlan: z.string().min(1, "Down Payment is required"),
   unitType: z.string().min(1, "Unit type is required"),
   areaSize: z.coerce.number().min(1, "Area size must be at least 1"),
-  description: z.string().min(5, "Description must be at least 5 characters"),
-  locality: z.string().min(1, "Locality is required"),
-  bathrooms: z.coerce.number().min(0, "Must be 0 or more"),
-  beds: z.coerce.number().min(0, "Must be 0 or more"),
+  aboutProperty: z.string().min(5, "Description must be at least 5 characters"),
   propertyPrice: z.coerce.number().min(0, "Price must be 0 or more"),
   thumbnailImage: z
     .custom<FileList>((val) => val instanceof FileList, {
@@ -68,7 +68,6 @@ const propertySchema = z.object({
   amenities: z.array(z.string()).optional(),
   galleryImages: z.array(z.any()).optional(),
   floorPlansImages: z.array(z.any()).optional(),
-  about: z.string().optional(),
   locationAdvantages: z.string().optional(),
   pricingSection: z.string().optional(),
   faqs: z.array(faqSchema).max(5, "Maximum 5 FAQs allowed").optional(),
@@ -88,7 +87,7 @@ interface Category {
 
 const fetchStates = async () => {
   const response = await axios.get("/api/states");
-  console.log(response.data);
+
   return response.data; // assuming the response is an array of states
 };
 
@@ -119,6 +118,7 @@ export default function AddPropertyForm() {
   const [amenities, setAmenities] = useState<Amenity[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [propertyTypes, setPropertyTypes] = useState<Category[]>([]);
+  const [propertyStatusList, setPropertyStatusList] = useState<Category[]>([]);
 
   const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
   const [amenitiesLoaded, setAmenitiesLoaded] = useState(false);
@@ -127,9 +127,9 @@ export default function AddPropertyForm() {
 
   //location apis
 
-  const [states, setStates] = useState<string[]>([]);
-  const [cities, setCities] = useState<string[]>([]);
-  const [areas, setAreas] = useState<string[]>([]);
+  const [states, setStates] = useState<LocationOption[]>([]);
+  const [cities, setCities] = useState<LocationOption[]>([]);
+  const [areas, setAreas] = useState<LocationOption[]>([]);
 
   const [loadingCities, setLoadingCities] = useState(false);
   const [loadingAreas, setLoadingAreas] = useState(false);
@@ -223,6 +223,7 @@ export default function AddPropertyForm() {
   useEffect(() => {
     fetchCategories();
     fetchPropertyTypes();
+    fetchPropertyStatuses();
   }, []);
 
   // Load states initially
@@ -301,6 +302,16 @@ export default function AddPropertyForm() {
       const response = await fetch("/api/propertyTypes"); // Fetch property types from your API
       const data = await response.json();
       setPropertyTypes(data); // Assuming the data is an array of property types objects
+    } catch {
+      toast.error("Failed to load property types");
+    }
+  };
+  // fetch propertyTYpes
+  const fetchPropertyStatuses = async () => {
+    try {
+      const response = await fetch("/api/property-status"); // Fetch property types from your API
+      const data = await response.json();
+      setPropertyStatusList(data); // Assuming the data is an array of property types objects
     } catch {
       toast.error("Failed to load property types");
     }
@@ -389,36 +400,9 @@ export default function AddPropertyForm() {
                 className="bg-gray-100 text-gray-500 cursor-not-allowed"
               />
             </div>
-            {/* Property Type */}
-            <div className="form_field">
-              <label>Property Type</label>
-              <Controller
-                name="propertyType"
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    {...field}
-                    size="large"
-                    placeholder="Select Property"
-                    status={errors.propertyType ? "error" : undefined}
-                    style={{ width: "100%" }}
-                    onChange={(value) => setValue("propertyType", value)} // Set propertyType value
-                  >
-                    {propertyTypes.map((category) => (
-                      <Select.Option key={category._id} value={category._id}>
-                        {category.name}
-                      </Select.Option>
-                    ))}
-                  </Select>
-                )}
-              />
-              {errors.propertyType && (
-                <p className="text-red-500">{errors.propertyType.message}</p>
-              )}
-            </div>
             {/* Category Dropdown */}
             <div className="form_field">
-              <label>Category</label>
+              <label>Property Category</label>
               <Controller
                 name="propertyCategory"
                 control={control}
@@ -429,7 +413,19 @@ export default function AddPropertyForm() {
                     placeholder="Select Category"
                     status={errors.propertyCategory ? "error" : undefined}
                     style={{ width: "100%" }}
-                    onChange={(value) => setValue("propertyCategory", value)} // Set propertyCategory value
+                    onChange={(value) => {
+                      // Find the selected category object
+                      const selectedCategory = categories.find(
+                        (category) => category._id === value
+                      );
+
+                      // Set both ID and Name in form state
+                      setValue("propertyCategory", value);
+                      setValue(
+                        "propertyCategoryName",
+                        selectedCategory?.name || ""
+                      );
+                    }}
                   >
                     {categories.map((category) => (
                       <Select.Option key={category._id} value={category._id}>
@@ -439,12 +435,53 @@ export default function AddPropertyForm() {
                   </Select>
                 )}
               />
+
               {errors.propertyCategory && (
                 <p className="text-red-500">
                   {errors.propertyCategory.message}
                 </p>
               )}
             </div>
+            {/* Property Type */}
+            <div className="form_field">
+              <label>Property Type</label>
+              <Controller
+                name="propertyType"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    size="large"
+                    placeholder="Select Property Type"
+                    status={errors.propertyType ? "error" : undefined}
+                    style={{ width: "100%" }}
+                    onChange={(value) => {
+                      // Find the selected type object
+                      const selectedPropertyType = propertyTypes.find(
+                        (type) => type._id === value
+                      );
+
+                      // Set both ID and Name in form state
+                      setValue("propertyType", value);
+                      setValue(
+                        "propertyTypeName",
+                        selectedPropertyType?.name || ""
+                      );
+                    }}
+                  >
+                    {propertyTypes.map((type) => (
+                      <Select.Option key={type._id} value={type._id}>
+                        {type.name}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                )}
+              />
+              {errors.propertyType && (
+                <p className="text-red-500">{errors.propertyType.message}</p>
+              )}
+            </div>
+
             {/* Property Status */}
             <div className="form_field">
               <label>Property Status</label>
@@ -452,18 +489,128 @@ export default function AddPropertyForm() {
                 name="propertyStatus"
                 control={control}
                 render={({ field }) => (
-                  <Input
+                  <Select
                     {...field}
                     size="large"
-                    placeholder="Property Status"
+                    placeholder="Select Property Status"
                     status={errors.propertyStatus ? "error" : undefined}
-                  />
+                    style={{ width: "100%" }}
+                    onChange={(value) => {
+                      // Find the selected status object
+                      const selectedpropertyStatus = propertyStatusList.find(
+                        (status) => status._id === value
+                      );
+
+                      // Set both ID and Name in form state
+                      setValue("propertyStatus", value);
+                      setValue(
+                        "propertyStatusName",
+                        selectedpropertyStatus?.name || ""
+                      );
+                    }}
+                  >
+                    {propertyStatusList.map((status) => (
+                      <Select.Option key={status._id} value={status._id}>
+                        {status.name}
+                      </Select.Option>
+                    ))}
+                  </Select>
                 )}
               />
               {errors.propertyStatus && (
                 <p className="text-red-500">{errors.propertyStatus.message}</p>
               )}
             </div>
+
+            <div className="form_field">
+              <label>State</label>
+              <Controller
+                name="state"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    size="large"
+                    placeholder="Select State"
+                    style={{ width: "100%" }}
+                    status={errors.state ? "error" : undefined}
+                    onChange={(value) => {
+                      field.onChange(value);
+                      const selected = states.find((s) => s._id === value);
+                      setValue("stateName", selected?.name || "");
+                    }}
+                  >
+                    {states.map((state) => (
+                      <Select.Option key={state._id} value={state._id}>
+                        {state.name}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                )}
+              />
+            </div>
+
+            {/* City */}
+            {selectedState && (
+              <div className="form_field">
+                <label>City</label>
+                <Controller
+                  name="city"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      size="large"
+                      placeholder="Select City"
+                      style={{ width: "100%" }}
+                      status={errors.city ? "error" : undefined}
+                      onChange={(value) => {
+                        field.onChange(value);
+                        const selected = cities.find((c) => c._id === value);
+                        setValue("cityName", selected?.name || "");
+                      }}
+                    >
+                      {cities.map((city) => (
+                        <Select.Option key={city._id} value={city._id}>
+                          {city.name}
+                        </Select.Option>
+                      ))}
+                    </Select>
+                  )}
+                />
+              </div>
+            )}
+
+            {/* Area */}
+            {selectedCity && (
+              <div className="form_field">
+                <label>Area</label>
+                <Controller
+                  name="area"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      size="large"
+                      placeholder="Select Area"
+                      style={{ width: "100%" }}
+                      status={errors.area ? "error" : undefined}
+                      onChange={(value) => {
+                        field.onChange(value);
+                        const selected = areas.find((a) => a._id === value);
+                        setValue("areaName", selected?.name || "");
+                      }}
+                    >
+                      {areas.map((area) => (
+                        <Select.Option key={area._id} value={area._id}>
+                          {area.name}
+                        </Select.Option>
+                      ))}
+                    </Select>
+                  )}
+                />
+              </div>
+            )}
             {/* Unit Type */}
             <div className="form_field">
               <label>Unit Type</label>
@@ -484,81 +631,26 @@ export default function AddPropertyForm() {
               )}
             </div>
 
+            {/* Area Size */}
             <div className="form_field">
-              <label>State</label>
+              <label>Area Size (sq ft)</label>
               <Controller
-                name="state"
+                name="areaSize"
                 control={control}
                 render={({ field }) => (
-                  <Select
+                  <Input
                     {...field}
                     size="large"
-                    placeholder="Select Property"
-                    status={errors.state ? "error" : undefined}
-                    style={{ width: "100%" }}
-                    onChange={(value) => field.onChange(value)}
-                  >
-                    {states.map((state: any) => (
-                      <Select.Option key={state._id} value={state._id}>
-                        {state.name}
-                      </Select.Option>
-                    ))}
-                  </Select>
+                    type="number"
+                    placeholder="Area Size"
+                    status={errors.areaSize ? "error" : undefined}
+                  />
                 )}
               />
+              {errors.areaSize && (
+                <p className="text-red-500">{errors.areaSize.message}</p>
+              )}
             </div>
-
-            {selectedState && (
-              <div className="form_field">
-                <label>City</label>
-                <Controller
-                  name="city"
-                  control={control}
-                  render={({ field }) => (
-                    <Select
-                      {...field}
-                      size="large"
-                      placeholder="Select Property"
-                      status={errors.city ? "error" : undefined}
-                      style={{ width: "100%" }}
-                      onChange={(value) => field.onChange(value)} // Send ObjectId when selected
-                    >
-                      {cities.map((city: any) => (
-                        <Select.Option key={city._id} value={city._id}>
-                          {city.name}
-                        </Select.Option>
-                      ))}
-                    </Select>
-                  )}
-                />
-              </div>
-            )}
-
-            {selectedCity && (
-              <div className="form_field">
-                <label>Area</label>
-                <Controller
-                  name="area"
-                  control={control}
-                  render={({ field }) => (
-                    <Select
-                      {...field}
-                      size="large"
-                      placeholder="Select Property"
-                      status={errors.area ? "error" : undefined}
-                      style={{ width: "100%" }}
-                      onChange={(value) => field.onChange(value)} // Send ObjectId when selected
-                    >
-                      {areas.map((area: any) => (
-                        <Select.Option key={area._id} value={area._id}>
-                          {area.name}
-                        </Select.Option>
-                      ))}
-                    </Select>
-                  )}
-                />
-              </div>
-            )}
 
             {/* Price */}
             <div className="form_field">
@@ -580,134 +672,27 @@ export default function AddPropertyForm() {
                 <p className="text-red-500">{errors.propertyPrice.message}</p>
               )}
             </div>
-            <div className="form_field">
-              <label>Handover Date</label>
-              <Controller
-                name="handoverDate"
-                control={control}
-                rules={{ required: "Handover date is required" }}
-                render={({ field, fieldState }) => (
-                  <>
-                    <DatePicker
-                      {...field}
-                      size="large"
-                      placeholder="Select Handover Date"
-                      style={{ width: "100%" }}
-                      value={field.value ? dayjs(field.value) : null}
-                      onChange={(date) => {
-                        // Convert to ISO string or empty string
-                        const value = date ? date.toISOString() : "";
-                        field.onChange(value);
-                      }}
-                      format="YYYY-MM-DD"
-                    />
-                    {fieldState.error && (
-                      <span className="text-red-500 text-sm">
-                        {fieldState.error.message}
-                      </span>
-                    )}
-                  </>
-                )}
-              />
-            </div>
-            {/* Area */}
+
+            {/* Payment Plan */}
             <div className="form_field">
               <label>Down Payment</label>
               <Controller
-                name="downPayment"
+                name="paymentPlan"
                 control={control}
                 render={({ field }) => (
                   <Input
                     {...field}
                     size="large"
                     placeholder="Down Payment"
-                    status={errors.downPayment ? "error" : undefined}
+                    status={errors.paymentPlan ? "error" : undefined}
                   />
                 )}
               />
-              {errors.downPayment && (
-                <p className="text-red-500">{errors.downPayment.message}</p>
+              {errors.paymentPlan && (
+                <p className="text-red-500">{errors.paymentPlan.message}</p>
               )}
             </div>
-            {/* Area Size */}
-            <div className="form_field">
-              <label>Area Size (sq ft)</label>
-              <Controller
-                name="areaSize"
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    size="large"
-                    type="number"
-                    placeholder="Area Size"
-                    status={errors.areaSize ? "error" : undefined}
-                  />
-                )}
-              />
-              {errors.areaSize && (
-                <p className="text-red-500">{errors.areaSize.message}</p>
-              )}
-            </div>
-            {/* Locality */}
-            <div className="form_field">
-              <label>Locality</label>
-              <Controller
-                name="locality"
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    size="large"
-                    placeholder="Locality"
-                    status={errors.locality ? "error" : undefined}
-                  />
-                )}
-              />
-              {errors.locality && (
-                <p className="text-red-500">{errors.locality.message}</p>
-              )}
-            </div>
-            {/* Bathrooms */}
-            <div className="form_field">
-              <label>Bathrooms</label>
-              <Controller
-                name="bathrooms"
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    size="large"
-                    type="number"
-                    placeholder="Bathrooms"
-                    status={errors.bathrooms ? "error" : undefined}
-                  />
-                )}
-              />
-              {errors.bathrooms && (
-                <p className="text-red-500">{errors.bathrooms.message}</p>
-              )}
-            </div>
-            {/* Beds */}
-            <div className="form_field">
-              <label>Beds</label>
-              <Controller
-                name="beds"
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    size="large"
-                    type="number"
-                    placeholder="Beds"
-                    status={errors.beds ? "error" : undefined}
-                  />
-                )}
-              />
-              {errors.beds && (
-                <p className="text-red-500">{errors.beds.message}</p>
-              )}
-            </div>
+
             {/* Amenities */}
             <div className="form_field">
               <label>Amenities</label>
@@ -754,31 +739,12 @@ export default function AddPropertyForm() {
             </div>
           </div>
 
-          {/* Description */}
-          <div className="form_field">
-            <label>Description</label>
-            <Controller
-              name="description"
-              control={control}
-              render={({ field }) => (
-                <textarea
-                  {...field}
-                  placeholder="Description"
-                  className="p-2 border rounded-md min-h-[100px] w-full"
-                />
-              )}
-            />
-            {errors.description && (
-              <p className="text-red-500">{errors.description.message}</p>
-            )}
-          </div>
-
           {/* TipTapEditor fields - you'll need to implement proper onChange handlers */}
           <div className="form_field">
             <label>About</label>
             <TipTapEditor
               onEditorChange={(content) => {
-                setValue("about", content);
+                setValue("aboutProperty", content);
               }}
             />
           </div>

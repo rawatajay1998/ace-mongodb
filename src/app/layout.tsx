@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
+import { Lato } from "next/font/google";
 import "./globals.css";
 import WebsiteHeader from "@/components/marketing/Header";
 import WebsiteFooter from "@/components/marketing/Footer";
 import { Toaster } from "react-hot-toast";
 
-const poppins = Poppins({
+const lato = Lato({
   subsets: ["latin"],
-  weight: ["400", "600"], // Or any desired weights
-  variable: "--font-poppins", // Optional: Create a CSS variable
+  weight: ["300", "400", "700"], // Choose the weights you need
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -23,7 +23,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${poppins.variable} antialiased`}>
+      <body className={`${lato.className} antialiased`}>
         <WebsiteHeader />
         {children}
         <WebsiteFooter />

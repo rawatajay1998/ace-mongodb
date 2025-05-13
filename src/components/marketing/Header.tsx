@@ -34,28 +34,21 @@ const WebsiteHeader = () => {
                 <Link href="/">Home</Link>
               </li>
               <li>
-                <Link href="/search?type=offplan">Off Plan</Link>
+                <Link href="/offplan/dubai">Off Plan</Link>
               </li>
 
               <li>
-                <Link href="/">Secondary</Link>
+                <Link href="/secondary/dubai">Secondary</Link>
               </li>
               <li>
-                <Link href="/">Rent</Link>
+                <Link href="/rent/dubai">Rent</Link>
               </li>
               <li>
                 <Link href="/agents">Agent</Link>
               </li>
               <li>
-                <Link href="/">Explore More</Link>
-              </li>
-              <li>
-                <Link href="/">Contact</Link>
-              </li>
-              <li>
-                <Link href="/login" className="submmit">
-                  <KeyRound size={14} />
-                  Submit Property
+                <Link href="/contact" className="submmit">
+                  Contact
                 </Link>
               </li>
             </ul>

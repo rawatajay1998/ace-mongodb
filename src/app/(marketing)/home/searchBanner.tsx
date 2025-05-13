@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Input, Select, Slider } from "antd";
 import { Search, SlidersHorizontal } from "lucide-react";
 import toast from "react-hot-toast";
@@ -21,12 +21,34 @@ const SearchBanner = () => {
     amenities: [] as string[],
   });
 
-  const propertyTypes = [
-    { value: "residential", label: "Residential" },
-    { value: "Commercial", label: "Commercial" },
-    { value: "Villa", label: "Villa" },
-    { value: "Office", label: "Office" },
-  ];
+  const [categories, setCategories] = useState<{ _id: string; name: string }[]>(
+    []
+  );
+  const [cities, setCities] = useState<{ _id: string; name: string }[]>([]);
+
+  // fetch categories
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [catRes, cityRes] = await Promise.all([
+          fetch("/api/categories"),
+          fetch("/api/cities"),
+        ]);
+
+        const [catData, cityData] = await Promise.all([
+          catRes.json(),
+          cityRes.json(),
+        ]);
+
+        setCategories(catData);
+        setCities(cityData);
+      } catch (err) {
+        toast.error("Failed to load filter data");
+        console.error(err);
+      }
+    };
+    fetchData();
+  }, []);
 
   const [openFilters, setOpenFilters] = useState(false);
 
@@ -40,24 +62,19 @@ const SearchBanner = () => {
   const router = useRouter();
 
   const handleSearch = async () => {
-    if (!searchParams.location.trim()) {
-      toast.error("Please enter a location to search");
-      return; // Do not search if location is empty
+    const { type, location } = searchParams;
+
+    if (!type || !location) {
+      toast.error("Please select both category and location");
+      return;
     }
 
     setLoading(true);
     try {
       const params = new URLSearchParams();
 
-      // Basic search
-      if (searchParams.type) params.append("type", searchParams.type);
-      if (searchParams.location)
-        params.append("location", searchParams.location);
       if (searchParams.projectName)
         params.append("projectName", searchParams.projectName);
-      params.append("page", "1");
-
-      // Advanced filters
       if (price[0] > 0) params.append("minPrice", price[0].toString());
       if (price[1] < 20000000) params.append("maxPrice", price[1].toString());
       if (size[0] > 0) params.append("minSize", size[0].toString());
@@ -65,16 +82,17 @@ const SearchBanner = () => {
       if (searchParams.beds) params.append("beds", searchParams.beds);
       if (searchParams.bathrooms)
         params.append("bathrooms", searchParams.bathrooms);
-
       searchParams.amenities.forEach((amenity) =>
         params.append("amenities", amenity)
       );
 
-      // Navigate to search results page with all parameters
-      router.push(`/search?${params.toString()}`);
-    } catch (error) {
-      console.error("Search error:", error);
-      toast.error("Error searching properties");
+      const categorySlug = type.toLowerCase().replace(/\s+/g, "-");
+      const citySlug = location.toLowerCase().replace(/\s+/g, "-");
+
+      router.push(`/${categorySlug}/${citySlug}?${params.toString()}`);
+    } catch (err) {
+      toast.error("Search failed");
+      console.error(err);
     } finally {
       setLoading(false);
     }
@@ -103,31 +121,38 @@ const SearchBanner = () => {
         }}
       >
         <div className="form_field">
-          <label>Type</label>
+          <label>Category</label>
           <Select
             showSearch
             style={{ width: 200 }}
-            placeholder="Select property type"
+            placeholder="Select category"
             optionFilterProp="children"
             value={searchParams.type}
             onChange={(value) =>
               setSearchParams({ ...searchParams, type: value })
             }
-            options={propertyTypes}
+            options={categories.map((c) => ({
+              label: c.name,
+              value: c.name,
+            }))}
           />
         </div>
 
         <div className="form_field">
           <label>Location</label>
-          <Input
-            placeholder="Search Location"
+          <Select
+            showSearch
+            style={{ width: 200 }}
+            placeholder="Select location"
+            optionFilterProp="children"
             value={searchParams.location}
-            onChange={(e) =>
-              setSearchParams({
-                ...searchParams,
-                location: e.target.value,
-              })
+            onChange={(value) =>
+              setSearchParams({ ...searchParams, location: value })
             }
+            options={cities.map((city) => ({
+              label: city.name,
+              value: city.name,
+            }))}
           />
         </div>
 

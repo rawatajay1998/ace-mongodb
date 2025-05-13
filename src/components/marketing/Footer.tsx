@@ -1,5 +1,4 @@
-import { Input } from "antd";
-import { Facebook, Linkedin, SendHorizontal } from "lucide-react";
+import { Facebook, Linkedin } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -18,24 +17,32 @@ const WebsiteFooter = () => {
           <div className="social_links">
             <p>Follow us on:</p>
             <div className="icon">
-              <Facebook />
+              <Link
+                href={
+                  "https://www.facebook.com/people/Ace-Elite-Properties/61572930571115/"
+                }
+              >
+                <Facebook />
+              </Link>
             </div>
             <div className="icon">
-              <Linkedin />
+              <Link
+                href={"https://www.linkedin.com/company/ace-elite-properties/"}
+              >
+                <Linkedin />
+              </Link>
             </div>
           </div>
         </div>
         <div className="links_row">
           <div className="contact_details">
-            <h3 className="title">Connect</h3>
-            <ul>
-              <li>
-                Ace Elite Properties 1103 Anantara Business Tower, Business Bay,
-                Dubai UAE
-              </li>
-              <li>+971 55 526 6579</li>
-              <li>info@AceEliteProperties.com</li>
-            </ul>
+            <h3 className="title">About</h3>
+            <p>
+              Ace Elite Properties – Where Innovation Meets Real Estate
+              Excellence At Ace Elite Properties, we’re not just another real
+              estate brokerage in Dubai—we’re a technology-driven powerhouse
+              redefining how properties are bought, sold, and invested in.
+            </p>
           </div>
           <div className="quick_links">
             <h3 className="title">Quick Links</h3>
@@ -71,14 +78,16 @@ const WebsiteFooter = () => {
               </li>
             </ul>
           </div>
-          <div className="newsletter">
-            <h3 className="title">Newsletter</h3>
-            <div className="input_field">
-              <Input placeholder="Your Email Address" />
-              <button>
-                <SendHorizontal />
-              </button>
-            </div>
+          <div className="contact">
+            <h3 className="title">Contact Details</h3>
+            <ul>
+              <li>
+                Ace Elite Properties 1103 Anantara Business Tower, Business Bay,
+                Dubai UAE
+              </li>
+              <li>+971 55 526 6579</li>
+              <li>info@AceEliteProperties.com</li>
+            </ul>
           </div>
         </div>
         <div className="copyrights_row">

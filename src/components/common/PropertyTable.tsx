@@ -1,17 +1,14 @@
 "use client";
 
-import { Table, Input, Button, Space, Badge } from "antd";
+import { Table, Input, Button, Space, Badge, Switch, message } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { InputRef } from "antd";
 import type { ColumnsType, TablePaginationConfig } from "antd/es/table";
 import type { FilterDropdownProps } from "antd/es/table/interface";
 import { useRouter } from "next/navigation";
-
-interface Category {
-  _id: string;
-  name: string;
-}
+import axios from "axios";
+import toast from "react-hot-toast";
 
 interface Property {
   _id: string;
@@ -20,8 +17,18 @@ interface Property {
   status: string;
   price: number;
   beds: number;
-  propertyCategory: Category;
+  propertyCategoryName: string;
+  propertyTypeName: string;
+  propertyStatusName: string;
   verified: string;
+  featuredOnHomepage?: boolean;
+  highROIProjects?: boolean; // ✅ New field
+}
+
+interface User {
+  _id: string;
+  name: string;
+  role: string;
 }
 
 interface PropertyTableProps {
@@ -44,7 +51,6 @@ interface FetchParams {
 
 export default function PropertyTable({
   fetchUrl,
-  showApproveButton = false,
   onAction,
   actionButtonText,
   showEditButton,
@@ -60,24 +66,32 @@ export default function PropertyTable({
     {}
   );
   const [searchTexts, setSearchTexts] = useState<{ [key: string]: string }>({});
-
   const searchInputs = useRef<{ [key: string]: InputRef | null }>({});
 
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+
   const router = useRouter();
+
+  const fetchCurrentUser = async () => {
+    try {
+      const res = await fetch("/api/auth/me");
+      const json = await res.json();
+      setCurrentUser(json.user);
+    } catch (error) {
+      console.error("Error fetching current user", error);
+    }
+  };
 
   const fetchData = useCallback(
     async (params: FetchParams) => {
       setLoading(true);
-
       const query = new URLSearchParams({
         page: params.pagination.current.toString(),
         pageSize: params.pagination.pageSize.toString(),
         ...params.filters,
       });
-
       const res = await fetch(`${fetchUrl}?${query}`);
       const json = await res.json();
-
       setData(json.data);
       setTotal(json.total);
       setLoading(false);
@@ -86,8 +100,9 @@ export default function PropertyTable({
   );
 
   useEffect(() => {
+    fetchCurrentUser();
     fetchData({ pagination, filters });
-  }, [fetchData, pagination, filters]);
+  }, [fetchData, filters, pagination]);
 
   const handleTableChange = (pag: TablePaginationConfig) => {
     setPagination({
@@ -120,7 +135,6 @@ export default function PropertyTable({
     if (onAction) {
       try {
         await onAction(propertyId);
-        // Refresh the table data after approval
         fetchData({ pagination, filters });
       } catch (error) {
         console.error("Error approving property:", error);
@@ -129,15 +143,30 @@ export default function PropertyTable({
   };
 
   const handleEdit = (propertyId: string) => {
-    // Redirect to the edit page for this property
     router.push(`/dashboard/properties/edit/${propertyId}`);
+  };
+
+  const updateStatus = async (
+    id: string,
+    field: "highROIProjects" | "featuredOnHomepage",
+    value: boolean
+  ) => {
+    try {
+      await axios.put("/api/properties/high-roi", {
+        id,
+        [field]: value,
+      });
+      message.success(`Property ${field} updated`);
+      fetchData({ pagination, filters });
+    } catch (error) {
+      toast.error(error);
+    }
   };
 
   const getColumnSearchProps = (dataIndex: string) => {
     if (!searchInputs.current[dataIndex]) {
       searchInputs.current[dataIndex] = null;
     }
-
     return {
       filterDropdown: ({
         setSelectedKeys,
@@ -210,19 +239,23 @@ export default function PropertyTable({
     },
     {
       title: "Category",
-      dataIndex: ["propertyCategory", "name"],
-      key: "propertyCategory",
-      render: (_, record) => record.propertyCategory?.name || "N/A",
+      dataIndex: "propertyCategoryName",
+      ...getColumnSearchProps("propertyCategoryName"),
+    },
+    {
+      title: "Property Type",
+      dataIndex: "propertyTypeName",
+      ...getColumnSearchProps("propertyTypeName"),
+    },
+    {
+      title: "Property Status",
+      dataIndex: "propertyStatusName",
+      ...getColumnSearchProps("propertyStatusName"),
     },
     {
       title: "Price",
-      dataIndex: "propertyPrice",
-      ...getColumnSearchProps("propertyPrice"),
-    },
-    {
-      title: "Beds",
-      dataIndex: "beds",
-      ...getColumnSearchProps("beds"),
+      dataIndex: "price",
+      ...getColumnSearchProps("price"),
     },
     {
       title: "Status",
@@ -234,13 +267,21 @@ export default function PropertyTable({
         />
       ),
     },
-  ];
-
-  // Add Approve button column if showApproveButton is true
-  if (showApproveButton) {
-    columns.push({
-      title: "Action",
-      key: "action",
+    {
+      title: "High ROI",
+      key: "highROIProjects",
+      render: (_, record) => (
+        <Switch
+          checked={record.highROIProjects}
+          onChange={(checked) =>
+            updateStatus(record._id, "highROIProjects", checked)
+          }
+        />
+      ),
+    },
+    {
+      title: "Actions",
+      key: "actions",
       render: (_, record) => (
         <Space>
           {showEditButton && (
@@ -248,7 +289,6 @@ export default function PropertyTable({
               Edit
             </Button>
           )}
-
           {onAction && (
             <Button onClick={() => handleApprove(record._id)} type="primary">
               {actionButtonText}
@@ -256,8 +296,8 @@ export default function PropertyTable({
           )}
         </Space>
       ),
-    });
-  }
+    },
+  ];
 
   return (
     <Table
