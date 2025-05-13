@@ -717,7 +717,7 @@ footer {
   position: relative;
   background-color: #161e2d;
 }
-footer:before {
+/* footer:before {
   background-image: url("/assets/images/footer-image.png");
   content: "";
   position: absolute;
@@ -726,9 +726,8 @@ footer:before {
   height: 100%;
   width: 100%;
   opacity: 0.1;
-}
-footer .bg_iamge {
-}
+} */
+
 footer .container {
   width: 100%;
   max-width: 1280px;

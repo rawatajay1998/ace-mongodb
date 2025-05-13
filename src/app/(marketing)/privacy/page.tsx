@@ -1,5 +1,11 @@
-// app/privacy-policy/page.tsx
+import type { Metadata } from "next";
 import React from "react";
+
+export const metadata: Metadata = {
+  title: "Privacy Policy | Ace Elite Properties Dubai",
+  description:
+    "Learn how Ace Elite Properties Dubai collects, uses, and protects your personal information. Read our privacy policy.",
+};
 
 const PrivacyPolicyPage = () => {
   return (

@@ -3,6 +3,53 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 
+import type { Metadata } from "next";
+
+interface Props {
+  params: {
+    id: string;
+  };
+}
+
+// Generate dynamic meta for agent page
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const agentSlug = decodeURIComponent(params.id);
+
+  const capitalizedName =
+    agentSlug.charAt(0).toUpperCase() + agentSlug.slice(1).replace(/-/g, " ");
+
+  const title = `Meet ${capitalizedName} | Real Estate Agent at Ace Elite Properties`;
+  const description = `Learn more about ${capitalizedName}, one of our expert real estate agents at Ace Elite Properties. Get in touch for premium property deals.`;
+
+  const imageUrl =
+    "https://aceeliteproperties.com/assets/images/banner-image.webp"; // Change to agent banner if you have one
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: `https://aceeliteproperties.com/agents/${agentSlug}`,
+      siteName: "Ace Elite Properties",
+      images: [
+        {
+          url: imageUrl,
+          width: 1200,
+          height: 630,
+        },
+      ],
+      type: "profile",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [imageUrl],
+    },
+  };
+}
+
 interface Property {
   _id: string;
   title: string;

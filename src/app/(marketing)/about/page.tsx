@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     siteName: "Ace Elite Properties",
     images: [
       {
-        url: "https://aceeliteproperties.com//assets/images/about-page-1.avif",
+        url: "https://aceeliteproperties.com//assets/images/banner-image.webp",
         width: 1200,
         height: 630,
       },
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "About | Your Site Name",
     description: "Discover amazing properties with our real estate platform",
-    images: ["https://aceeliteproperties.com//assets/images/about-page-1.avif"],
+    images: ["https://aceeliteproperties.com//assets/images/banner-image.webp"],
   },
 };
 

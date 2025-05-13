@@ -2,10 +2,54 @@
 import PropertyCard from "@/components/marketing/PropertyCard";
 import db from "@/lib/db";
 import Property from "@/models/property.model";
+import { Metadata } from "next";
 
 interface CityPageProps {
   params: {
     city: string;
+  };
+}
+
+// Dynamic metadata based on city
+export async function generateMetadata({
+  params,
+}: CityPageProps): Promise<Metadata> {
+  const citySlug = decodeURIComponent(params.city);
+
+  const formattedCity = citySlug
+    .split("-")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+
+  const title = `Top Properties in ${formattedCity} | Ace Elite Properties`;
+  const description = `Explore handpicked off-plan and investment properties in ${formattedCity}. Brought to you by Ace Elite Properties.`;
+
+  const imageUrl =
+    "https://aceeliteproperties.com/assets/images/banner-image.webp";
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: `https://aceeliteproperties.com/location/${citySlug}`,
+      siteName: "Ace Elite Properties",
+      images: [
+        {
+          url: imageUrl,
+          width: 1200,
+          height: 630,
+        },
+      ],
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [imageUrl],
+    },
   };
 }
 

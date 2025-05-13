@@ -28,7 +28,7 @@ const CityCard = ({ name, cityImageUrl, propertyCount }: CityCardProps) => {
         </p>
 
         <Link
-          href={`/property/${encodeURIComponent(name)}`}
+          href={`/location/${encodeURIComponent(name)}`}
           className="view inline-flex items-center text-blue-600 hover:underline text-sm"
         >
           View More <ArrowRight size={16} className="ml-1" />
