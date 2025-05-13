@@ -14,6 +14,7 @@ export async function GET(req: NextRequest) {
 
   try {
     if (["offplan", "rent", "secondary"].includes(category.toLowerCase())) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const baseFilter: any = {
         verified: true,
         propertyCategoryName: { $regex: `^${category}$`, $options: "i" },
@@ -32,6 +33,7 @@ export async function GET(req: NextRequest) {
     }
 
     if (category === "high-roi-projects") {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const baseFilter: any = {
         verified: true,
         highROIProjects: true,
@@ -47,6 +49,7 @@ export async function GET(req: NextRequest) {
     }
 
     if (category === "top-locations") {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const cityQuery: any = {};
 
       if (type === "search") {
@@ -121,6 +124,7 @@ export async function POST(req: NextRequest) {
         );
       }
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const filter: any = { featuredOnHomepage: true };
       if (category === "high-roi-projects") {
         filter.highROIProjects = true;
