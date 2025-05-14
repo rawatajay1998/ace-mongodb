@@ -21,6 +21,7 @@ import RentalProperties from "./Rental";
 import HighROIProperties from "./HIghROI";
 import TopLocations from "./TopLocations";
 import TestimonialsCarousel from "./Testimonials";
+import DeveloperCarousel from "./Developers";
 
 const teamArray = [
   {
@@ -310,6 +311,15 @@ const HomePgae = () => {
                 return <TeamCard key={person.name} {...person} />;
               })}
           </CarouselWrapper>
+        </div>
+      </section>
+
+      <section className="team_section bg_section">
+        <div className="container">
+          <div className="heading_block" style={{ marginBottom: "0px" }}>
+            <h3 className="title">Our Partners</h3>
+          </div>
+          <DeveloperCarousel />
         </div>
       </section>
     </div>

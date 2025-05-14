@@ -104,3 +104,35 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ error: err }, { status: 500 });
   }
 }
+export async function DELETE(req: NextRequest) {
+  try {
+    await connectDB();
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get("id");
+
+    if (!id) {
+      return NextResponse.json(
+        { error: "City ID is required" },
+        { status: 400 }
+      );
+    }
+
+    const deletedCity = await City.findByIdAndDelete(id);
+
+    if (!deletedCity) {
+      return NextResponse.json({ error: "City not found" }, { status: 404 });
+    }
+
+    // Optional: Delete image from Cloudinary
+    if (deletedCity.cityImageUrl) {
+      const publicId = deletedCity.cityImageUrl.split("/").pop()?.split(".")[0];
+      if (publicId) {
+        await cloudinary.v2.uploader.destroy(`cities/${publicId}`);
+      }
+    }
+
+    return NextResponse.json({ message: "City deleted successfully" });
+  } catch (err) {
+    return NextResponse.json({ error: err }, { status: 500 });
+  }
+}

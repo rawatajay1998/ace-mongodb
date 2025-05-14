@@ -136,6 +136,8 @@ export async function POST(req: NextRequest) {
       postedBy: user.id,
       status: "pending",
       aboutProperty: formData.get("aboutProperty"),
+      metaTitle: formData.get("metaTitle"),
+      metaDescription: formData.get("metaDescription"),
       pricingSection: formData.get("pricingSection"),
       locationAdvantages: formData.get("locationAdvantages"),
       faqs: faqs,

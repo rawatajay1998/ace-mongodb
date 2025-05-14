@@ -47,6 +47,8 @@ const propertySchema = z.object({
   areaName: z.string().min(1, "Area is required"),
   paymentPlan: z.string().min(1, "Down Payment is required"),
   unitType: z.string().min(1, "Unit type is required"),
+  metaTitle: z.string().min(1, "Unit type is required"),
+  metaDescription: z.string().min(1, "Unit type is required"),
   areaSize: z.coerce.number().min(1, "Area size must be at least 1"),
   aboutProperty: z.string().min(5, "Description must be at least 5 characters"),
   propertyPrice: z.coerce.number().min(0, "Price must be 0 or more"),
@@ -730,6 +732,43 @@ export default function AddPropertyForm() {
                 )}
               />
             </div>
+          </div>
+
+          <div className="form_field">
+            <label>Meta Title</label>
+            <Controller
+              name="metaTitle"
+              control={control}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  size="large"
+                  placeholder="Meta Title"
+                  status={errors.metaTitle ? "error" : undefined}
+                />
+              )}
+            />
+            {errors.metaTitle && (
+              <p className="text-red-500">{errors.metaTitle.message}</p>
+            )}
+          </div>
+          <div className="form_field">
+            <label>Meta Description</label>
+            <Controller
+              name="metaDescription"
+              control={control}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  size="large"
+                  placeholder="Meta Description"
+                  status={errors.metaDescription ? "error" : undefined}
+                />
+              )}
+            />
+            {errors.metaDescription && (
+              <p className="text-red-500">{errors.metaDescription.message}</p>
+            )}
           </div>
 
           {/* TipTapEditor fields - you'll need to implement proper onChange handlers */}

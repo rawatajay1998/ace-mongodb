@@ -99,3 +99,36 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ error: err }, { status: 500 });
   }
 }
+
+export async function DELETE(req: NextRequest) {
+  try {
+    await connectDB();
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get("id");
+
+    if (!id) {
+      return NextResponse.json(
+        { error: "Area ID is required" },
+        { status: 400 }
+      );
+    }
+
+    const deletedArea = await Area.findByIdAndDelete(id);
+
+    if (!deletedArea) {
+      return NextResponse.json({ error: "Area not found" }, { status: 404 });
+    }
+
+    // Optional: Delete image from Cloudinary
+    if (deletedArea.areaImageUrl) {
+      const publicId = deletedArea.areaImageUrl.split("/").pop()?.split(".")[0];
+      if (publicId) {
+        await cloudinary.v2.uploader.destroy(`areas/${publicId}`);
+      }
+    }
+
+    return NextResponse.json({ message: "Area deleted successfully" });
+  } catch (err) {
+    return NextResponse.json({ error: err }, { status: 500 });
+  }
+}

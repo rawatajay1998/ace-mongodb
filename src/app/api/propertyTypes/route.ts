@@ -55,3 +55,38 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }
+
+export async function DELETE(req: NextRequest) {
+  try {
+    await connectDB();
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get("id");
+
+    if (!id) {
+      return NextResponse.json(
+        { error: "Property type ID is required" },
+        { status: 400 }
+      );
+    }
+
+    const deletedType = await PropertyType.findByIdAndDelete(id);
+
+    if (!deletedType) {
+      return NextResponse.json(
+        { error: "Property type not found" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({
+      message: "Property type deleted successfully",
+      deletedType,
+    });
+  } catch (error) {
+    console.error("DELETE /api/property-types error:", error);
+    return NextResponse.json(
+      { error: "Failed to delete property type" },
+      { status: 500 }
+    );
+  }
+}

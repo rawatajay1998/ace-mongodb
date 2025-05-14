@@ -1,6 +1,15 @@
 "use client";
 
-import { Table, Button, Input, Select, Switch, Tag, message } from "antd";
+import {
+  Table,
+  Button,
+  Input,
+  Select,
+  Switch,
+  Tag,
+  message,
+  Modal,
+} from "antd";
 import { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
@@ -34,8 +43,7 @@ export default function CitiesPage() {
     handleSubmit,
     reset,
     setValue,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    formState: { errors, isValid },
+    formState: { isValid },
   } = useForm<CityFormData>({
     resolver: zodResolver(citySchema),
     mode: "onChange",
@@ -46,6 +54,7 @@ export default function CitiesPage() {
   const [editingCity, setEditingCity] = useState<City | null>(null);
   const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const fetchCities = async () => {
     try {
@@ -70,6 +79,13 @@ export default function CitiesPage() {
     fetchCities();
     fetchStates();
   }, []);
+
+  const openAddModal = () => {
+    setEditingCity(null);
+    reset();
+    setSelectedImageFile(null);
+    setModalVisible(true);
+  };
 
   const onSubmit = async (data: CityFormData) => {
     try {
@@ -100,6 +116,7 @@ export default function CitiesPage() {
       reset();
       setEditingCity(null);
       setSelectedImageFile(null);
+      setModalVisible(false);
     } catch {
       toast.error("Failed to save city");
     }
@@ -109,6 +126,7 @@ export default function CitiesPage() {
     setEditingCity(record);
     setValue("name", record.name);
     setValue("stateId", record.stateId._id);
+    setModalVisible(true);
   };
 
   const updateTopLocation = async (id: string, value: boolean) => {
@@ -122,6 +140,22 @@ export default function CitiesPage() {
       fetchCities();
     } catch {
       message.error("Failed to update status");
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      const confirmed = confirm("Are you sure you want to delete this city?");
+      if (!confirmed) return;
+
+      await fetch(`/api/cities?id=${id}`, {
+        method: "DELETE",
+      });
+
+      toast.success("City deleted successfully");
+      fetchCities();
+    } catch {
+      toast.error("Failed to delete city");
     }
   };
 
@@ -153,17 +187,46 @@ export default function CitiesPage() {
       title: "Action",
       key: "action",
       render: (_, record) => (
-        <Button onClick={() => handleEdit(record)}>Edit</Button>
+        <div className="flex gap-2">
+          <Button onClick={() => handleEdit(record)}>Edit</Button>
+          <Button danger onClick={() => handleDelete(record._id)}>
+            Delete
+          </Button>
+        </div>
       ),
     },
   ];
 
   return (
     <div className="card">
-      <h2 className="text-xl mb-4">{editingCity ? "Edit City" : "Add City"}</h2>
-      <form onSubmit={handleSubmit(onSubmit)} className="mb-6">
-        <div className="grid grid-cols-2 gap-4">
-          <div className="form_field">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-xl">Cities</h2>
+        <Button type="primary" onClick={openAddModal}>
+          + Add City
+        </Button>
+      </div>
+
+      <Table
+        dataSource={cities}
+        columns={columns}
+        rowKey="_id"
+        loading={loading}
+        pagination={{ pageSize: 10 }}
+      />
+
+      <Modal
+        title={editingCity ? "Edit City" : "Add City"}
+        open={modalVisible}
+        onCancel={() => {
+          setModalVisible(false);
+          reset();
+          setEditingCity(null);
+        }}
+        footer={null}
+        destroyOnClose
+      >
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <div>
             <label>State</label>
             <Controller
               name="stateId"
@@ -173,7 +236,8 @@ export default function CitiesPage() {
                   className="w-full"
                   size="large"
                   placeholder="Select state"
-                  {...field}
+                  value={field.value}
+                  onChange={(value) => field.onChange(value)}
                 >
                   {states.map((state) => (
                     <Select.Option key={state._id} value={state._id}>
@@ -184,8 +248,9 @@ export default function CitiesPage() {
               )}
             />
           </div>
-          <div className="form_field">
-            <label>City</label>
+
+          <div>
+            <label>City Name</label>
             <Controller
               name="name"
               control={control}
@@ -194,8 +259,9 @@ export default function CitiesPage() {
               )}
             />
           </div>
+
           {!editingCity && (
-            <div className="form_field col-span-2">
+            <div>
               <label>City Image</label>
               <input
                 type="file"
@@ -207,20 +273,20 @@ export default function CitiesPage() {
               />
             </div>
           )}
-        </div>
-        <button className="btn_primary mt-4" type="submit" disabled={!isValid}>
-          {editingCity ? "Update" : "Add"}
-        </button>
-      </form>
 
-      <h2 className="text-xl mb-4">All Cities</h2>
-      <Table
-        dataSource={cities}
-        columns={columns}
-        rowKey="_id"
-        loading={loading}
-        pagination={{ pageSize: 10 }}
-      />
+          <div className="text-right pt-2">
+            <Button
+              onClick={() => setModalVisible(false)}
+              style={{ marginRight: 8 }}
+            >
+              Cancel
+            </Button>
+            <Button type="primary" htmlType="submit" disabled={!isValid}>
+              {editingCity ? "Update" : "Add"}
+            </Button>
+          </div>
+        </form>
+      </Modal>
     </div>
   );
 }

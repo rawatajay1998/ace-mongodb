@@ -20,6 +20,8 @@ export interface IProperty extends Document {
   cityName: string;
   area: mongoose.Types.ObjectId;
   areaName: string;
+  metaTitle: string;
+  metaDescription: string;
   paymentPlan: string;
   areaSize: number;
   thumbnailImage: string;
@@ -58,6 +60,14 @@ const PropertySchema = new Schema<IProperty>(
       index: true,
     },
     propertyCategoryName: {
+      type: String,
+      required: true,
+    },
+    metaTitle: {
+      type: String,
+      required: true,
+    },
+    metaDescription: {
       type: String,
       required: true,
     },

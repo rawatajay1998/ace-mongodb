@@ -1,5 +1,5 @@
 "use client";
-import { Table, Button, Input } from "antd";
+import { Table, Button, Input, Modal } from "antd";
 import { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
@@ -28,9 +28,7 @@ export default function PropertyStatusManager() {
   } = useForm<StatusFormData>({
     resolver: zodResolver(statusSchema),
     mode: "onChange",
-    defaultValues: {
-      name: "",
-    },
+    defaultValues: { name: "" },
   });
 
   const [statuses, setStatuses] = useState<PropertyStatus[]>([]);
@@ -38,6 +36,9 @@ export default function PropertyStatusManager() {
   const [editingStatus, setEditingStatus] = useState<PropertyStatus | null>(
     null
   );
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const fetchStatuses = async () => {
     try {
@@ -65,7 +66,6 @@ export default function PropertyStatusManager() {
     setIsSubmitting(true);
     try {
       if (editingStatus) {
-        // PUT update
         await fetch("/api/property-status", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -76,7 +76,6 @@ export default function PropertyStatusManager() {
         });
         toast.success("Status updated successfully!");
       } else {
-        // POST create
         await fetch("/api/property-status", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -87,6 +86,7 @@ export default function PropertyStatusManager() {
 
       fetchStatuses();
       handleReset();
+      setIsModalOpen(false);
     } catch (error) {
       toast.error("Failed to save status");
       console.error("Error saving status:", error);
@@ -98,6 +98,21 @@ export default function PropertyStatusManager() {
   const handleEdit = (status: PropertyStatus) => {
     setEditingStatus(status);
     setValue("name", status.name);
+    setIsModalOpen(true);
+  };
+
+  const handleDelete = async () => {
+    if (!deleteId) return;
+    try {
+      await fetch(`/api/property-status?id=${deleteId}`, { method: "DELETE" });
+      toast.success("Status deleted");
+      fetchStatuses();
+    } catch (error) {
+      toast.error(error);
+    } finally {
+      setIsDeleteModalOpen(false);
+      setDeleteId(null);
+    }
   };
 
   const columns = [
@@ -114,66 +129,93 @@ export default function PropertyStatusManager() {
     {
       title: "Action",
       render: (_: unknown, record: PropertyStatus) => (
-        <Button type="primary" onClick={() => handleEdit(record)}>
-          Edit
-        </Button>
+        <div className="flex gap-2">
+          <Button type="primary" onClick={() => handleEdit(record)}>
+            Edit
+          </Button>
+          <Button
+            danger
+            onClick={() => {
+              setDeleteId(record._id);
+              setIsDeleteModalOpen(true);
+            }}
+          >
+            Delete
+          </Button>
+        </div>
       ),
     },
   ];
 
   return (
     <div className="card">
-      <h2 className="text-xl text-white mb-4">
-        {editingStatus ? "Edit Property Status" : "Add Property Status"}
-      </h2>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-xl text-white">Property Statuses</h2>
+        <Button type="primary" onClick={() => setIsModalOpen(true)}>
+          + Add Status
+        </Button>
+      </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="mb-12">
-        <div className="form_field">
-          <label>Status Name:</label>
-          <Controller
-            name="name"
-            control={control}
-            render={({ field }) => (
-              <>
-                <Input {...field} />
-                {errors.name && (
-                  <span className="text-red-500">{errors.name.message}</span>
-                )}
-              </>
-            )}
-          />
-        </div>
-
-        <div className="flex gap-4">
-          <button
-            className="btn_primary"
-            type="submit"
-            disabled={!isValid || isSubmitting}
-          >
-            {isSubmitting
-              ? "Processing..."
-              : editingStatus
-              ? "Update Status"
-              : "Add Status"}
-          </button>
-          <button
-            className="btn_secondary"
-            type="button"
-            onClick={handleReset}
-            disabled={isSubmitting}
-          >
-            Reset
-          </button>
-        </div>
-      </form>
-
-      <h3 className="text-xl text-white mb-4">Property Status List</h3>
       <Table
         dataSource={statuses}
         columns={columns}
         rowKey="_id"
         scroll={{ x: true }}
       />
+
+      {/* Add/Edit Modal */}
+      <Modal
+        open={isModalOpen}
+        onCancel={() => setIsModalOpen(false)}
+        footer={null}
+        title={editingStatus ? "Edit Property Status" : "Add Property Status"}
+      >
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <div>
+            <label>Status Name:</label>
+            <Controller
+              name="name"
+              control={control}
+              render={({ field }) => (
+                <>
+                  <Input {...field} />
+                  {errors.name && (
+                    <span className="text-red-500 text-sm">
+                      {errors.name.message}
+                    </span>
+                  )}
+                </>
+              )}
+            />
+          </div>
+
+          <div className="flex justify-end gap-4">
+            <Button onClick={() => setIsModalOpen(false)}>Cancel</Button>
+            <Button
+              type="primary"
+              htmlType="submit"
+              disabled={!isValid || isSubmitting}
+              loading={isSubmitting}
+            >
+              {editingStatus ? "Update" : "Add"}
+            </Button>
+          </div>
+        </form>
+      </Modal>
+
+      {/* Delete Confirmation Modal */}
+      <Modal
+        open={isDeleteModalOpen}
+        onCancel={() => setIsDeleteModalOpen(false)}
+        onOk={handleDelete}
+        okText="Yes, Delete"
+        okType="danger"
+        cancelText="Cancel"
+        title="Confirm Deletion"
+      >
+        Are you sure you want to delete this property status? This action cannot
+        be undone.
+      </Modal>
     </div>
   );
 }
