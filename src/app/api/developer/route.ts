@@ -146,6 +146,7 @@ export const PUT = async (request: NextRequest) => {
     const id = formData.get("id") as string;
     const logoFile = formData.get("developerLogo");
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const updateData: any = {
       developerName: formData.get("developerName"),
       state: formData.get("state"),
