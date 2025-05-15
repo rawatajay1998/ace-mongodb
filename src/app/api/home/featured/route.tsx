@@ -7,7 +7,7 @@ import Category from "@/models/category.model";
 
 // Map the tab keys to actual property category names in the database
 const CATEGORY_MAP: Record<string, string> = {
-  offplan: "Offplan",
+  offplan: "Off Plan",
   secondary: "Secondary",
   rent: "Rent",
 };
@@ -52,6 +52,8 @@ export async function GET(req: Request) {
             ],
           },
         });
+
+        console.log(categoryDocs);
 
         if (!categoryDocs.length) {
           return NextResponse.json(
