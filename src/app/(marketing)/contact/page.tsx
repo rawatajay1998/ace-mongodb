@@ -54,7 +54,7 @@ export default function ContactPage() {
               </li>
               <li>
                 <Check />
-                Dedicated, U.S.-based real estate agents providing personalized
+                Dedicated, Dubai-based real estate agents providing personalized
                 service
               </li>
             </ul>
