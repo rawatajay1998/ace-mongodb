@@ -3,12 +3,18 @@ import { NextResponse } from "next/server";
 import connectDB from "@/lib/db";
 import Property from "@/models/property.model";
 import Area from "@/models/area.model";
+import Category from "@/models/category.model";
 
 // Map the tab keys to actual property category names in the database
 const CATEGORY_MAP: Record<string, string> = {
   offplan: "Offplan",
   secondary: "Secondary",
   rent: "Rent",
+};
+
+// Cache for category IDs (in-memory, resets on server restart)
+const normalizeCategoryName = (name: string) => {
+  return name.toLowerCase().replace(/\s+/g, "");
 };
 
 export async function GET(req: Request) {
@@ -34,20 +40,34 @@ export async function GET(req: Request) {
         });
         return NextResponse.json({ properties });
       } else {
-        // For offplan, secondary, rent
-        const dbCategory = CATEGORY_MAP[category || ""];
-        if (!dbCategory) {
+        const categoryDocs = await Category.find({
+          $expr: {
+            $eq: [
+              {
+                $toLower: {
+                  $replaceAll: { input: "$name", find: " ", replacement: "" },
+                },
+              },
+              normalizeCategoryName(category || ""),
+            ],
+          },
+        });
+
+        if (!categoryDocs.length) {
           return NextResponse.json(
-            { message: "Invalid category" },
-            { status: 400 }
+            { message: "Category not found" },
+            { status: 404 }
           );
         }
 
+        // 2. Then find properties referencing these categories
+        const categoryIds = categoryDocs.map((c) => c._id);
         const properties = await Property.find({
           projectName: { $regex: searchQuery, $options: "i" },
           verified: true,
-          propertyCategoryName: dbCategory,
-        });
+          propertyCategory: { $in: categoryIds }, // Using reference ID
+        }).populate("propertyCategory");
+
         return NextResponse.json({ properties });
       }
     }
