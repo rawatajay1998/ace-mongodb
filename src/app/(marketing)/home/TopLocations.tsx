@@ -22,10 +22,12 @@ const TopLocations = () => {
         const res = await fetch(
           "/api/home/featured?category=top-locations&type=table"
         );
+
         const data = await res.json();
+        console.log(data);
 
         if (data) {
-          setCities(data.cities);
+          setCities(data.topLocations);
         }
       } catch (error) {
         console.error("Error fetching top locations:", error);
