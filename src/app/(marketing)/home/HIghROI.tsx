@@ -12,7 +12,7 @@ const HighROIProperties = () => {
     const fetchHighROI = async () => {
       try {
         const res = await fetch(
-          "/api/properties/feature?category=high-roi-projects&type=table"
+          "/api/home/featured?category=high-roi-projects&type=table"
         );
         const data = await res.json();
 

@@ -11,7 +11,7 @@ const OffPlanProperties = () => {
     const fetchHighROI = async () => {
       try {
         const res = await fetch(
-          "/api/properties/feature?category=offplan&type=table"
+          "/api/home/featured?category=offplan&type=table"
         );
         const data = await res.json();
 

@@ -20,7 +20,7 @@ const TopLocations = () => {
     const fetchTopLocations = async () => {
       try {
         const res = await fetch(
-          "/api/properties/feature?category=top-locations&type=table"
+          "/api/home/featured?category=top-locations&type=table"
         );
         const data = await res.json();
 

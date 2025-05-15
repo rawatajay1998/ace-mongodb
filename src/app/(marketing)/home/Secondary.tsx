@@ -11,7 +11,7 @@ const SecondaryProperties = () => {
     const fetchHighROI = async () => {
       try {
         const res = await fetch(
-          "/api/properties/feature?category=secondary&type=table"
+          "/api/home/featured?category=secondary&type=table"
         );
         const data = await res.json();
 
