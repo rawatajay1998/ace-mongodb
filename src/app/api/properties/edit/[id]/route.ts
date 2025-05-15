@@ -13,6 +13,7 @@ export async function PUT(
     const formData = await request.formData();
 
     // Convert FormData to a regular object
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const formDataObject: Record<string, any> = {};
     for (const [key, value] of formData.entries()) {
       // Handle array fields
@@ -44,6 +45,7 @@ export async function PUT(
     const faqs = formDataObject.faqs ? JSON.parse(formDataObject.faqs) : [];
 
     // Prepare update data
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const updateData: Record<string, any> = {
       projectName: formDataObject.projectName,
       propertyType: formDataObject.propertyType,
@@ -113,7 +115,7 @@ export async function PUT(
       message: "Property updated successfully",
       data: updatedProperty,
     });
-  } catch (error: any) {
+  } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
