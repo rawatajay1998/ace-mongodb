@@ -396,3 +396,12 @@ footer {
   .ant-select-selection-item {
   color: #121212 !important;
 }
+.ant-pagination {
+  justify-content: end;
+  margin-top: 12px;
+}
+.ant-pagination .ant-pagination-prev .ant-pagination-item-link,
+.ant-pagination .ant-pagination-next .ant-pagination-item-link {
+  border: 1px solid var(--border-color);
+  color: #fff;
+}

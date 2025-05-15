@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
 export const metadata: Metadata = {
@@ -21,7 +22,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "About | Your Site Name",
+    title: "About | Ace Elite Properties",
     description: "Discover amazing properties with our real estate platform",
     images: ["https://aceeliteproperties.com//assets/images/banner-image.webp"],
   },
@@ -30,12 +31,36 @@ export const metadata: Metadata = {
 const AboutPage = () => {
   return (
     <div className="about_page">
+      <section className="banner_about">
+        <div className="container">
+          <div className="flex_row">
+            <div className="box_left">
+              <p>Become Partners</p>
+              <h3>
+                List your Properties on Ace Elite Properties, join Us Now!
+              </h3>
+              <Link href={"/contact"}>Become a Agent</Link>
+            </div>
+            <div className="box_right">
+              <Image
+                alt="image"
+                loading="lazy"
+                width="748"
+                height="380"
+                decoding="async"
+                data-nimg="1"
+                src="/assets/images/banner-about.png"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
       <section className="about_section">
         <div className="container">
           <div className="grid_row">
             <div className="image">
               <Image
-                src={"/assets/images/about-page-1.avif"}
+                src={"/assets/images/about-two.jpg"}
                 height={300}
                 width={300}
                 alt="about us"
@@ -85,7 +110,7 @@ const AboutPage = () => {
             </div>
             <div className="image">
               <Image
-                src={"/assets/images/about-page-1.avif"}
+                src={"/assets/images/about-one.jpg"}
                 height={300}
                 width={300}
                 alt="about us"

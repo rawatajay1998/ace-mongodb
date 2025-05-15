@@ -131,7 +131,9 @@ body {
   padding-bottom: 20px;
 }
 .card {
-  box-shadow: 0 6px 16px -8px #00000014, 0 9px 28px #0000000d,
+  box-shadow:
+    0 6px 16px -8px #00000014,
+    0 9px 28px #0000000d,
     0 12px 48px 16px #00000008;
   padding: 20px;
   border-radius: 12px;
@@ -323,7 +325,8 @@ section .container {
   display: flex;
   align-items: center;
   gap: 20px;
-  box-shadow: 0 4px 24px 0 rgba(103, 151, 255, 0.1),
+  box-shadow:
+    0 4px 24px 0 rgba(103, 151, 255, 0.1),
     0 12px 64px 0 rgba(103, 151, 255, 0.1);
   padding: 24px;
   border-radius: 0 20px 20px 20px;
@@ -1331,10 +1334,56 @@ footer .copyrights_row ul {
   padding-inline: 20px;
   margin-inline: auto;
 }
+
+/*  about page */
+.about_page .banner_about .flex_row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 20px;
+  background-color: #f3f7fd;
+}
+.about_page .banner_about .box_left {
+  padding: 60px 20px 60px 80px;
+}
+.about_page .banner_about .box_left p {
+  color: #1563df !important;
+  font-size: 14px;
+  line-height: 24px;
+}
+.about_page .banner_about .box_left h3 {
+  font-size: 28px;
+  line-height: 44px;
+  margin-bottom: 20px;
+}
+.about_page .banner_about .box_left a {
+  color: #fff;
+  background: #0a264a;
+  border-radius: 90px;
+  align-items: center;
+  gap: 6px;
+  height: 40px;
+  padding-inline: 24px;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  width: max-content;
+}
+.about_page .banner_about .box_right {
+  flex-shrink: 0;
+}
+.about_page .banner_about .box_right img {
+  margin-top: -60px;
+  max-width: 100%;
+  height: auto;
+  transform: scale(1);
+  vertical-align: middle;
+}
 .about_section .grid_row {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 50px;
+  align-items: center;
 }
 .about_section .grid_row img {
   width: 100%;
@@ -1344,14 +1393,101 @@ footer .copyrights_row ul {
   font-weight: 600;
   margin-bottom: 12px;
 }
+.about_section ul {
+  padding-left: 20px;
+}
 .about_section p,
 .about_section li {
-  color: #666;
+  color: #121212;
   padding-bottom: 12px;
+  font-size: 16px;
   line-height: 24px;
-  font-size: 15px;
+}
+.about_section li {
+  list-style: disc;
 }
 
+/* contact us page */
+.contact_page {
+  padding-block: 60px;
+}
+.contact_page .grid_row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 50px;
+}
+.contact_page .badge {
+  padding: 4px 12px;
+  font-size: 16px;
+  background-color: #223b5c;
+  color: #fff;
+  border-radius: 90px;
+  width: max-content;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+.contact_page h1 {
+  font-size: 36px;
+  color: #0a264a;
+  font-weight: 600;
+  padding-bottom: 12px;
+}
+.contact_page ul li {
+  font-size: 18px;
+  color: #121212;
+  padding-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.contact_page .contact_right form {
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+.contact_page .contact_right h3 {
+  font-weight: 700;
+  color: #0a264a;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  font-size: 24px;
+  border-bottom: 1px solid #ddd;
+}
+.contact_page .contact_right .grid_row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  column-gap: 20px;
+  row-gap: 0;
+}
+.contact_page .contact_right input,
+.contact_page .contact_right textarea {
+  border: 1px solid #ddd;
+  height: 40px;
+  padding-inline: 12px;
+  width: 100%;
+  border-radius: 8px;
+}
+.contact_page .contact_right textarea {
+  padding-block: 20px;
+  height: 100px;
+}
+.contact_page .submit_btn {
+  color: #fff;
+  background: #0a264a;
+  border-radius: 90px;
+  align-items: center;
+  gap: 6px;
+  height: 40px;
+  padding-inline: 24px;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  justify-content: center;
+  min-width: 150px;
+}
+.careers_page .job_card {
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
 /* media queries */
 
 @media (max-width: 1280px) {
@@ -1672,5 +1808,32 @@ footer .copyrights_row ul {
   }
   .home .services_section .row .block {
     background-color: #f3f7fd;
+  }
+  .contact_page {
+    padding-block: 30px;
+  }
+  .contact_page h1 {
+    font-size: 28px;
+  }
+  .contact_page ul li {
+    font-size: 15px;
+    align-items: start;
+  }
+  .contact_page ul li svg {
+    width: 16px;
+    min-width: 16px;
+  }
+  .contact_page .grid_row {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .contact_page .contact_right form {
+    padding: 20px;
+  }
+  .contact_page .contact_right h3 {
+    font-size: 16px;
+  }
+  .contact_page .contact_right .grid_row {
+    grid-template-columns: 1fr;
   }
 }

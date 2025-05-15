@@ -70,10 +70,10 @@ const WebsiteFooter = () => {
                 <Link href={"/"}>Our Services</Link>
               </li>
               <li>
-                <Link href={"/"}>Careers</Link>
+                <Link href={"/careers"}>Careers</Link>
               </li>
               <li>
-                <Link href={"/"}>Contact Us</Link>
+                <Link href={"/contact"}>Contact Us</Link>
               </li>
             </ul>
           </div>

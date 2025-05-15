@@ -42,7 +42,7 @@ const DeveloperCarousel: React.FC = () => {
           {
             breakpoint: 480,
             settings: {
-              slidesToShow: 1,
+              slidesToShow: 2,
             },
           },
         ]}

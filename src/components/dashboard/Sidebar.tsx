@@ -7,7 +7,7 @@ import { Menu } from "antd";
 import type { MenuProps } from "antd";
 import Sider from "antd/es/layout/Sider";
 import Image from "next/image";
-import { MapPinHouse, UsersRound } from "lucide-react";
+import { Mail, MapPinHouse, UsersRound } from "lucide-react";
 
 type MenuItem = {
   label: string;
@@ -110,6 +110,40 @@ const menuItems = [
       {
         label: "Areas",
         key: "/dashboard/master/areas",
+        hideForAgent: true,
+      },
+    ],
+  },
+  {
+    label: "Enquiries",
+    icon: Mail,
+    key: "enquiry", // Changed
+    children: [
+      {
+        label: "Contact Enquiries",
+        key: "/dashboard/enquiry/contact-enquiry",
+        hideForAgent: true,
+      },
+      {
+        label: "Popup Enquiries",
+        key: "/dashboard/enquiry",
+        hideForAgent: true,
+      },
+    ],
+  },
+  {
+    label: "Careers",
+    icon: Mail,
+    key: "careers", // Changed
+    children: [
+      {
+        label: "Jobs",
+        key: "/dashboard/careers",
+        hideForAgent: true,
+      },
+      {
+        label: "Applications",
+        key: "/dashboard/careers/applications",
         hideForAgent: true,
       },
     ],
