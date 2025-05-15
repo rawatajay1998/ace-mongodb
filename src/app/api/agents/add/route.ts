@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import cloudinary from "@/lib/cloudinary";
 import { verifyToken } from "@/lib/auth";
-import Agent from "@/models/user.model"; // Assuming this is the agent model
+import Agent from "@/models/user.model";
 import connectDB from "@/lib/db";
-import bcrypt from "bcryptjs"; // Import bcrypt for password hashing
+import bcrypt from "bcryptjs";
 import { Readable } from "stream";
+import { nanoid } from "nanoid";
 
 export const config = {
   api: {
@@ -15,13 +16,12 @@ export const config = {
 export async function POST(req: NextRequest) {
   await connectDB();
 
-  // Get the token from cookies
+  // Token validation
   const token = req.cookies.get("token")?.value;
   if (!token) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  // Verify the token to check if the user is an admin
   const user = await verifyToken(token);
   if (!user || user.role !== "admin") {
     return NextResponse.json(
@@ -32,13 +32,11 @@ export async function POST(req: NextRequest) {
 
   const formData = await req.formData();
 
-  // Helper function to upload an image to Cloudinary
+  // Helper for Cloudinary upload
   const uploadToCloudinary = async (
     file: FormDataEntryValue
   ): Promise<string> => {
-    if (!file || typeof file === "string") {
-      throw new Error("File is missing or not a file");
-    }
+    if (!file || typeof file === "string") throw new Error("Invalid file");
 
     const buffer = Buffer.from(await file.arrayBuffer());
     const stream = Readable.from(buffer);
@@ -59,14 +57,14 @@ export async function POST(req: NextRequest) {
     return result.secure_url;
   };
 
-  // Extract agent data from the form
+  // Extract form values
   const fullName = formData.get("name")?.toString();
   const email = formData.get("email")?.toString();
   const phoneNumber = formData.get("phoneNumber")?.toString();
   const country = formData.get("country")?.toString();
   const address = formData.get("address")?.toString();
   const about = formData.get("about")?.toString();
-  const password = formData.get("password")?.toString(); // Capture password
+  const password = formData.get("password")?.toString();
   const profileImageFile = formData.get("profileImage");
 
   // Validate required fields
@@ -85,8 +83,12 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // Check if the email already exists
-  const existingAgentByEmail = await Agent.findOne({ email });
+  // Check for existing email / phone
+  const [existingAgentByEmail, existingAgentByPhone] = await Promise.all([
+    Agent.findOne({ email }),
+    Agent.findOne({ phoneNumber }),
+  ]);
+
   if (existingAgentByEmail) {
     return NextResponse.json(
       { error: "Email already in use" },
@@ -94,8 +96,6 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // Check if the phone number already exists
-  const existingAgentByPhone = await Agent.findOne({ phoneNumber });
   if (existingAgentByPhone) {
     return NextResponse.json(
       { error: "Phone number already in use" },
@@ -103,29 +103,36 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // Upload the profile image to Cloudinary if provided
+  // Upload image if present
   let profileImageUrl: string | null = null;
   if (profileImageFile) {
     try {
       profileImageUrl = await uploadToCloudinary(profileImageFile);
     } catch (error) {
-      return NextResponse.json({ error: error }, { status: 500 });
+      console.error("Cloudinary upload error:", error);
+      return NextResponse.json(
+        { error: "Image upload failed" },
+        { status: 500 }
+      );
     }
   }
 
-  // Hash the password before saving
-  const hashedPassword = await bcrypt.hash(password, 10); // Hashing password
+  // Hash password
+  const hashedPassword = await bcrypt.hash(password, 10);
 
-  // Count current agents for a unique number in the slug
-  const totalAgents = await Agent.countDocuments();
-
-  // Create a slug like "nicole-daniels-964959"
-  const slug = `${fullName
+  // Generate modern slug
+  const baseSlug = fullName
     .toLowerCase()
     .replace(/\s+/g, "-")
-    .replace(/[^\w-]+/g, "")}-${totalAgents + 1}`;
+    .replace(/[^\w-]+/g, "");
+  let finalSlug = baseSlug;
 
-  // Create the agent object
+  const existingSlug = await Agent.findOne({ slug: baseSlug });
+  if (existingSlug) {
+    finalSlug = `${baseSlug}-${nanoid(6)}`;
+  }
+
+  // Create new agent
   const newAgent = new Agent({
     name: fullName,
     email,
@@ -133,18 +140,20 @@ export async function POST(req: NextRequest) {
     country,
     address,
     about,
-    password: hashedPassword, // Save the hashed password
-    profileImageUrl: profileImageUrl || "", // Profile image URL can be optional
-    role: "agent", // Assigning the role as "agent" by default
-    slug,
+    password: hashedPassword,
+    profileImageUrl: profileImageUrl || "",
+    role: "agent",
+    slug: finalSlug,
   });
 
   try {
-    // Save the agent to the database
     await newAgent.save();
     return NextResponse.json({ success: true, agent: newAgent });
   } catch (error) {
     console.error("Error saving agent:", error);
-    return NextResponse.json({ error: "Error saving agent" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to save agent" },
+      { status: 500 }
+    );
   }
 }

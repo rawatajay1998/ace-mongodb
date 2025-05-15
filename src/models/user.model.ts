@@ -11,6 +11,7 @@ export interface IUser extends Document {
   about: string;
   slug: string;
   profileImageUrl: string;
+  deleted: boolean;
 }
 
 const UserSchema = new Schema<IUser>({
@@ -28,6 +29,7 @@ const UserSchema = new Schema<IUser>({
     required: true,
     unique: true,
   },
+  deleted: { type: Boolean, default: false },
 });
 
 export default mongoose.models.User ||

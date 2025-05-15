@@ -7,6 +7,8 @@ export interface IPropertyCardProps extends Document {
   propertyStatus: string;
   propertyCategory: string;
   city: string;
+  cityName: string;
+  areaName: string;
   country: string;
   downPayment: string;
   handoverDate: string;

@@ -2,7 +2,7 @@ import cloudinary from "@/lib/cloudinary";
 import connectDB from "@/lib/db";
 import JobApplication from "@/models/jobApplication.model";
 import { NextResponse } from "next/server";
-
+import "@/models/job.model";
 // Configure Cloudinary
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,

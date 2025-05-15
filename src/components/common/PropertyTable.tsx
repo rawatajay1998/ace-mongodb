@@ -236,8 +236,8 @@ export default function PropertyTable({
     },
     {
       title: "City",
-      dataIndex: "city",
-      ...getColumnSearchProps("city"),
+      dataIndex: "cityName",
+      ...getColumnSearchProps("cityName"),
     },
     {
       title: "Category",

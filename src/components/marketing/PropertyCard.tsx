@@ -18,7 +18,7 @@ const PropertyCard = ({ item }: { item: IPropertyCardProps }) => {
         />
         <div className="address">
           <MapPin size={16} />
-          {item.city},{item.country}
+          {item.cityName},{item.areaName}
         </div>
       </div>
       <div className="body">

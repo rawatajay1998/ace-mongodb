@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/db";
 import User from "@/models/user.model";
-import Property from "@/models/property.model"; // import your property model
 
 export async function GET(req: NextRequest) {
   try {
@@ -19,14 +18,18 @@ export async function GET(req: NextRequest) {
     const sortField = searchParams.get("sortField") || "";
     const sortOrder = searchParams.get("sortOrder") === "ascend" ? 1 : -1;
 
-    // Filter object
+    // Filters
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const filters: Record<string, any> = {};
+    const filters: Record<string, any> = {
+      deleted: false,
+      role: { $ne: "admin" },
+    };
+
     if (name) filters.name = { $regex: name, $options: "i" };
     if (email) filters.email = { $regex: email, $options: "i" };
     if (phone) filters.phone = { $regex: phone, $options: "i" };
 
-    // Sort
+    // Sort object
     const sortObj: Record<string, 1 | -1> =
       sortField && ["name"].includes(sortField)
         ? { [sortField]: sortOrder }
@@ -34,27 +37,43 @@ export async function GET(req: NextRequest) {
 
     const skip = (page - 1) * pageSize;
 
-    // Fetch agents
-    const [agents, total] = await Promise.all([
-      User.find(filters).sort(sortObj).skip(skip).limit(pageSize),
-      User.countDocuments(filters),
+    // Get total count of matching users
+    const total = await User.countDocuments(filters);
+
+    // Aggregate pipeline to get users with property counts in one query
+    const agents = await User.aggregate([
+      { $match: filters },
+      { $sort: sortObj },
+      { $skip: skip },
+      { $limit: pageSize },
+
+      // Lookup properties posted by each user
+      {
+        $lookup: {
+          from: "properties", // collection name in MongoDB (usually plural)
+          localField: "_id",
+          foreignField: "postedBy",
+          as: "properties",
+        },
+      },
+
+      // Add totalProperties field with the count of properties
+      {
+        $addFields: {
+          totalProperties: { $size: "$properties" },
+        },
+      },
+
+      // Remove properties array from output to reduce payload size
+      {
+        $project: {
+          properties: 0,
+          // Optionally exclude fields like password, tokens, etc. here
+        },
+      },
     ]);
 
-    // Populate totalProperties for each agent
-    const agentWithCounts = await Promise.all(
-      agents.map(async (agent) => {
-        const propertyCount = await Property.countDocuments({
-          postedBy: agent._id,
-        });
-
-        return {
-          ...agent.toObject(),
-          totalProperties: propertyCount,
-        };
-      })
-    );
-
-    return NextResponse.json({ success: true, data: agentWithCounts, total });
+    return NextResponse.json({ success: true, data: agents, total });
   } catch (error) {
     console.error("Error fetching agents:", error);
     return NextResponse.json(
