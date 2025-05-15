@@ -10,6 +10,8 @@ import Table from "@tiptap/extension-table";
 import TableCell from "@tiptap/extension-table-cell";
 import TableHeader from "@tiptap/extension-table-header";
 import TableRow from "@tiptap/extension-table-row";
+import Link from "@tiptap/extension-link";
+
 import React, { useState } from "react";
 
 // Icons
@@ -22,7 +24,6 @@ import {
   List,
   ListOrdered,
   Codepen,
-  Link,
   Image,
   AlignLeft,
   Undo,
@@ -31,6 +32,8 @@ import {
   HardDrive,
   Code2,
   Table2,
+  Link2,
+  LinkIcon,
 } from "lucide-react";
 
 type TipTapEditorProps = {
@@ -53,6 +56,7 @@ const TipTapEditor: React.FC<TipTapEditorProps> = ({ onEditorChange }) => {
       TableRow,
       TableHeader,
       TableCell,
+      Link,
     ],
     content: "<p>Enter Here</p>",
     onUpdate: ({ editor }) => {
@@ -62,6 +66,35 @@ const TipTapEditor: React.FC<TipTapEditorProps> = ({ onEditorChange }) => {
   });
 
   if (!editor) return null;
+
+  const addLink = () => {
+    let url = window.prompt("Enter URL");
+    if (!url) return;
+
+    // Normalize URL only by adding protocol if missing
+    if (!/^https?:\/\//i.test(url)) {
+      url = "https://" + url;
+    }
+
+    if (editor.state.selection.empty) {
+      // No selection: insert the URL as a clickable link text
+      editor
+        .chain()
+        .focus()
+        .insertContent(
+          `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`
+        )
+        .run();
+    } else {
+      // There is selection: toggle link mark on selection
+      editor
+        .chain()
+        .focus()
+        .extendMarkRange("link")
+        .setLink({ href: url, target: "_blank", rel: "noopener noreferrer" })
+        .run();
+    }
+  };
 
   return (
     <>
@@ -203,6 +236,7 @@ const TipTapEditor: React.FC<TipTapEditorProps> = ({ onEditorChange }) => {
           >
             <HardDrive />
           </button>
+
           <button
             type="button"
             onClick={() => editor.chain().focus().setParagraph().run()}
@@ -273,11 +307,8 @@ const TipTapEditor: React.FC<TipTapEditorProps> = ({ onEditorChange }) => {
           >
             <Redo />
           </button>
-          <button
-            type="button"
-            onClick={() => editor.chain().focus().setColor("#958DF1").run()}
-          >
-            <Link />
+          <button type="button" onClick={addLink} title="Add Link">
+            <LinkIcon />
           </button>
         </div>
       </div>

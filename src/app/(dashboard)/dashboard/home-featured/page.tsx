@@ -1,3 +1,4 @@
+// Client Component
 "use client";
 import { useEffect, useState } from "react";
 import { Tabs, Select, Table, Button, message, Spin, Empty } from "antd";
@@ -7,23 +8,36 @@ import toast from "react-hot-toast";
 const { TabPane } = Tabs;
 const { Option } = Select;
 
+interface Property {
+  _id: string;
+  projectName: string;
+  propertyCategoryName?: string;
+  areaName?: string;
+  highROIProjects?: boolean;
+}
+
+interface Area {
+  _id: string;
+  name: string;
+}
+
 const tabs = [
   { key: "offplan", label: "Offplan" },
   { key: "secondary", label: "Secondary" },
   { key: "rent", label: "Rent" },
   { key: "high-roi-projects", label: "High ROI Projects" },
-  { key: "top-locations", label: "Top Locations (Homepage)" },
+  { key: "top-locations", label: "Top Locations" },
 ];
 
 export default function FeaturedProperties() {
-  const [activeTabKey, setActiveTabKey] = useState("offplan");
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [activeTabKey, setActiveTabKey] = useState<string>("offplan");
+  const [searchResults, setSearchResults] = useState<(Property | Area)[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [featuredMap, setFeaturedMap] = useState<Record<string, any[]>>({});
-  const [maxReached, setMaxReached] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [featuredMap, setFeaturedMap] = useState<
+    Record<string, (Property | Area)[]>
+  >({});
+  const [maxReached, setMaxReached] = useState<boolean>(false);
 
   useEffect(() => {
     fetchFeaturedItems(activeTabKey);
@@ -35,29 +49,44 @@ export default function FeaturedProperties() {
     if (!activeTabKey || maxReached) return;
     try {
       setLoading(true);
-      const res = await axios.get(`/api/properties/feature`, {
+      const res = await axios.get(`/api/home/featured`, {
         params: {
           category: activeTabKey,
           search: query,
           type: "search",
         },
       });
-      setSearchResults(res.data.properties || res.data.cities || []);
+
+      const data = res.data;
+      const results =
+        activeTabKey === "top-locations" ? data.areas : data.properties;
+      setSearchResults(results || []);
+    } catch (err) {
+      toast.error(err.message);
     } finally {
       setLoading(false);
     }
   };
 
   const fetchFeaturedItems = async (tabKey: string) => {
-    const res = await axios.get(`/api/properties/feature`, {
-      params: {
-        category: tabKey,
-        type: "table",
-      },
-    });
-    const featured = res.data.properties || res.data.cities || [];
-    setFeaturedMap((prev) => ({ ...prev, [tabKey]: featured }));
-    setMaxReached(featured.length >= 10);
+    try {
+      const res = await axios.get(`/api/home/featured`, {
+        params: {
+          category: tabKey,
+          type: "table",
+        },
+      });
+
+      const featured =
+        tabKey === "top-locations"
+          ? res.data.topLocations
+          : res.data.properties;
+      setFeaturedMap((prev) => ({ ...prev, [tabKey]: featured || [] }));
+      setMaxReached(featured?.length >= 10);
+    } catch (error) {
+      console.error("Fetch featured error:", error);
+      toast.error("Failed to load featured items");
+    }
   };
 
   const handleFeature = async () => {
@@ -72,39 +101,33 @@ export default function FeaturedProperties() {
     }
 
     try {
-      const res = await axios.post("/api/properties/feature", {
+      await axios.post("/api/home/featured", {
         propertyId: activeTabKey === "top-locations" ? null : selectedId,
-        cityId: activeTabKey === "top-locations" ? selectedId : null,
+        areaId: activeTabKey === "top-locations" ? selectedId : null,
         category: activeTabKey,
       });
-      toast.success(res.data.message);
+      toast.success("Featured successfully");
       setSelectedId(null);
       setSearchResults([]);
       fetchFeaturedItems(activeTabKey);
     } catch (error) {
-      toast.error(error.response?.data?.message || "Something went wrong");
+      toast.error(error.response?.data?.message || "Feature failed");
     }
   };
 
   const handleRemove = async (id: string) => {
     try {
-      const res = await axios.delete("/api/properties/feature", {
+      await axios.delete("/api/home/featured", {
         data: {
           propertyId: activeTabKey === "top-locations" ? null : id,
-          cityId: activeTabKey === "top-locations" ? id : null,
+          areaId: activeTabKey === "top-locations" ? id : null,
           category: activeTabKey,
         },
-        headers: {
-          "Content-Type": "application/json",
-        },
       });
-
-      message.success(res.data.message);
+      message.success("Removed from featured");
       fetchFeaturedItems(activeTabKey);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      console.error("Delete error:", error.response?.data || error.message);
-      message.error(error.response?.data?.message || "Something went wrong");
+    } catch (error) {
+      message.error(error.response?.data?.message || "Remove failed");
     }
   };
 
@@ -113,9 +136,13 @@ export default function FeaturedProperties() {
       <h2 className="font-semibold main_title text-2xl mb-4">
         Manage Featured
       </h2>
-      <Tabs activeKey={activeTabKey} onChange={(key) => setActiveTabKey(key)}>
+      <Tabs activeKey={activeTabKey} onChange={setActiveTabKey}>
         {tabs.map(({ key, label }) => {
-          const count = featuredMap[key]?.length || 0;
+          const featuredItems = featuredMap[key] || [];
+          const count = featuredItems.length;
+          const isTopLocations = key === "top-locations";
+          const isHighROI = key === "high-roi-projects";
+
           return (
             <TabPane key={key} tab={`${label} (${count}/10 featured)`}>
               <div className="mb-4 flex gap-4 items-end">
@@ -124,11 +151,11 @@ export default function FeaturedProperties() {
                   placeholder={
                     maxReached
                       ? "Limit reached"
-                      : `Search ${key === "top-locations" ? "city" : "project"}`
+                      : `Search ${isTopLocations ? "area" : "project"}`
                   }
                   style={{ width: 400 }}
                   size="large"
-                  value={selectedId || undefined}
+                  value={selectedId}
                   onSearch={fetchSearchResults}
                   onChange={setSelectedId}
                   filterOption={false}
@@ -137,7 +164,9 @@ export default function FeaturedProperties() {
                 >
                   {searchResults.map((item) => (
                     <Option key={item._id} value={item._id}>
-                      {key === "top-locations" ? item.name : item.projectName}
+                      {isTopLocations
+                        ? (item as Area).name
+                        : (item as Property).projectName}
                     </Option>
                   ))}
                 </Select>
@@ -153,24 +182,32 @@ export default function FeaturedProperties() {
 
               <h3 className="text-lg font-medium mb-2">Featured List</h3>
               <Table
-                dataSource={featuredMap[key] || []}
+                dataSource={featuredItems}
                 rowKey="_id"
                 pagination={false}
                 columns={[
                   {
-                    title: key === "top-locations" ? "City" : "Project",
-                    render: (_, record) =>
-                      key === "top-locations"
-                        ? record.name
-                        : record.projectName,
+                    title: isTopLocations ? "Area" : "Project",
+                    dataIndex: isTopLocations ? "name" : "projectName",
                   },
-                  key !== "top-locations" && {
+                  !isTopLocations &&
+                    !isHighROI && {
+                      title: "Category",
+                      dataIndex: "propertyCategoryName",
+                    },
+                  !isTopLocations && {
+                    title: "Area",
+                    dataIndex: "areaName",
+                  },
+                  isHighROI && {
                     title: "Category",
-                    render: (_, record) => record.propertyCategoryName,
+                    render: (_, record: Property) =>
+                      record.propertyCategoryName || "N/A",
                   },
-                  key !== "top-locations" && {
-                    title: "City",
-                    render: (_, record) => record.cityName,
+                  isHighROI && {
+                    title: "High ROI",
+                    render: (_, record: Property) =>
+                      record.highROIProjects ? "Yes" : "No",
                   },
                   {
                     title: "Action",

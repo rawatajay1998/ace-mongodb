@@ -10,11 +10,13 @@ const SecondaryProperties = () => {
   useEffect(() => {
     const fetchHighROI = async () => {
       try {
-        const res = await fetch("/api/home/featured");
+        const res = await fetch(
+          "/api/properties/feature?category=secondary&type=table"
+        );
         const data = await res.json();
 
-        if (data.featuredSecondary) {
-          setProperties(data.featuredSecondary);
+        if (data) {
+          setProperties(data.properties);
         }
       } catch (error) {
         console.error("Error fetching High ROI properties:", error);

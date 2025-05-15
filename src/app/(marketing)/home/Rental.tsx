@@ -10,11 +10,13 @@ const RentalProperties = () => {
   useEffect(() => {
     const fetchHighROI = async () => {
       try {
-        const res = await fetch("/api/home/featured");
+        const res = await fetch(
+          "/api/properties/feature?category=rent&type=table"
+        );
         const data = await res.json();
 
-        if (data.feturedRent) {
-          setProperties(data.feturedRent);
+        if (data) {
+          setProperties(data.properties);
         }
       } catch (error) {
         console.error("Error fetching High ROI properties:", error);

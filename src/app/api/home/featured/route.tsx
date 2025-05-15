@@ -1,72 +1,170 @@
+// API Route (/api/properties/feature/route.ts)
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/db";
 import Property from "@/models/property.model";
-import City from "@/models/city.model";
+import Area from "@/models/area.model";
 
-export async function GET() {
+// Map the tab keys to actual property category names in the database
+const CATEGORY_MAP: Record<string, string> = {
+  offplan: "Offplan",
+  secondary: "Secondary",
+  rent: "Rent",
+};
+
+export async function GET(req: Request) {
   try {
     await connectDB();
 
-    const [
-      featuredOffplan,
-      featuredSecondary,
-      feturedRent,
-      featuredHighROI,
-      rawTopLocations,
-    ] = await Promise.all([
-      Property.find({
-        verified: true,
-        propertyCategoryName: { $regex: "^offplan$", $options: "i" },
-        featuredOnHomepage: true,
-      }).limit(10),
+    const { searchParams } = new URL(req.url);
+    const category = searchParams.get("category");
+    const searchQuery = searchParams.get("search") || "";
+    const type = searchParams.get("type");
 
-      Property.find({
-        verified: true,
-        propertyCategoryName: { $regex: "^secondary$", $options: "i" },
-        featuredOnHomepage: true,
-      }).limit(10),
-
-      Property.find({
-        verified: true,
-        propertyCategoryName: { $regex: "^rent$", $options: "i" },
-        featuredOnHomepage: true,
-      }).limit(10),
-
-      Property.find({
-        verified: true,
-        highROIProjects: true,
-        featuredOnHomepage: true,
-      }).limit(10),
-
-      City.find({ featuredOnHomepage: true }).limit(10).lean(), // <-- convert to plain object
-    ]);
-
-    // Add property count per city
-    const topLocations = await Promise.all(
-      rawTopLocations.map(async (city) => {
-        const propertyCount = await Property.countDocuments({
-          cityId: city._id,
-          verified: true,
+    if (type === "search") {
+      if (category === "top-locations") {
+        const areas = await Area.find({
+          name: { $regex: searchQuery, $options: "i" },
         });
+        return NextResponse.json({ areas });
+      } else if (category === "high-roi-projects") {
+        const properties = await Property.find({
+          projectName: { $regex: searchQuery, $options: "i" },
+          verified: true,
+          highROIProjects: true,
+        });
+        return NextResponse.json({ properties });
+      } else {
+        // For offplan, secondary, rent
+        const dbCategory = CATEGORY_MAP[category || ""];
+        if (!dbCategory) {
+          return NextResponse.json(
+            { message: "Invalid category" },
+            { status: 400 }
+          );
+        }
 
-        return {
-          ...city,
-          propertyCount,
-        };
-      })
+        const properties = await Property.find({
+          projectName: { $regex: searchQuery, $options: "i" },
+          verified: true,
+          propertyCategoryName: dbCategory,
+        });
+        return NextResponse.json({ properties });
+      }
+    }
+
+    if (type === "table") {
+      if (category === "top-locations") {
+        const topLocations = await Area.find({
+          featuredOnHomepage: true,
+        }).limit(10);
+        return NextResponse.json({ topLocations });
+      } else if (category === "high-roi-projects") {
+        const properties = await Property.find({
+          highROIProjects: true,
+          featuredOnHomepage: true,
+          verified: true,
+        }).limit(10);
+        return NextResponse.json({ properties });
+      } else {
+        // For offplan, secondary, rent
+        const dbCategory = CATEGORY_MAP[category || ""];
+        if (!dbCategory) {
+          return NextResponse.json(
+            { message: "Invalid category" },
+            { status: 400 }
+          );
+        }
+
+        const properties = await Property.find({
+          propertyCategoryName: dbCategory,
+          featuredOnHomepage: true,
+          verified: true,
+        }).limit(10);
+        return NextResponse.json({ properties });
+      }
+    }
+
+    return NextResponse.json(
+      { message: "Invalid request parameters" },
+      { status: 400 }
     );
-
-    return NextResponse.json({
-      featuredOffplan,
-      featuredSecondary,
-      feturedRent,
-      featuredHighROI,
-      topLocations,
-    });
   } catch (error) {
-    console.error("Homepage Featured Error:", error);
+    console.error("Featured API Error:", error);
     return NextResponse.json(
       { message: "Failed to fetch featured content" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function POST(req: Request) {
+  try {
+    await connectDB();
+    const { propertyId, areaId, category } = await req.json();
+
+    if (category === "top-locations" && areaId) {
+      await Area.findByIdAndUpdate(areaId, { featuredOnHomepage: true });
+      return NextResponse.json({ message: "Area featured successfully" });
+    }
+
+    if (propertyId) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const update: any = { featuredOnHomepage: true };
+
+      if (category === "high-roi-projects") {
+        update.highROIProjects = true;
+      } else {
+        // For regular categories, ensure we don't modify highROIProjects
+        update.highROIProjects = false;
+      }
+
+      await Property.findByIdAndUpdate(propertyId, update);
+      return NextResponse.json({ message: "Property featured successfully" });
+    }
+
+    return NextResponse.json(
+      { message: "Invalid parameters" },
+      { status: 400 }
+    );
+  } catch (error) {
+    console.error("Feature error:", error);
+    return NextResponse.json(
+      { message: "Failed to feature item" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(req: Request) {
+  try {
+    await connectDB();
+    const { propertyId, areaId, category } = await req.json();
+
+    if (category === "top-locations" && areaId) {
+      await Area.findByIdAndUpdate(areaId, { featuredOnHomepage: false });
+      return NextResponse.json({ message: "Area removed from featured" });
+    }
+
+    if (propertyId) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const update: any = { featuredOnHomepage: false };
+
+      if (category === "high-roi-projects") {
+        update.highROIProjects = false;
+      }
+
+      await Property.findByIdAndUpdate(propertyId, update);
+      return NextResponse.json({ message: "Property removed from featured" });
+    }
+
+    return NextResponse.json(
+      { message: "Invalid parameters" },
+      { status: 400 }
+    );
+  } catch (error) {
+    console.error("Remove feature error:", error);
+    return NextResponse.json(
+      { message: "Failed to remove featured status" },
       { status: 500 }
     );
   }

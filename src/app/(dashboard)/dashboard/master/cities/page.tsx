@@ -1,15 +1,6 @@
 "use client";
 
-import {
-  Table,
-  Button,
-  Input,
-  Select,
-  Switch,
-  Tag,
-  message,
-  Modal,
-} from "antd";
+import { Table, Button, Input, Select, message, Modal } from "antd";
 import { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
@@ -29,7 +20,6 @@ interface City {
   name: string;
   stateId: { _id: string; name: string };
   cityImageUrl?: string;
-  topLocation: boolean;
 }
 
 interface State {
@@ -129,20 +119,6 @@ export default function CitiesPage() {
     setModalVisible(true);
   };
 
-  const updateTopLocation = async (id: string, value: boolean) => {
-    try {
-      await fetch("/api/cities/status", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id, topLocation: value }),
-      });
-      message.success("City status updated");
-      fetchCities();
-    } catch {
-      message.error("Failed to update status");
-    }
-  };
-
   const handleDelete = async (id: string) => {
     try {
       const confirmed = confirm("Are you sure you want to delete this city?");
@@ -163,26 +139,6 @@ export default function CitiesPage() {
     { title: "ID", dataIndex: "_id", key: "_id" },
     { title: "Name", dataIndex: "name", key: "name" },
     { title: "State", dataIndex: ["stateId", "name"], key: "state" },
-    {
-      title: "Top Location",
-      key: "topLocation",
-      render: (_, record) => (
-        <Switch
-          checked={record.topLocation}
-          onChange={(checked) => updateTopLocation(record._id, checked)}
-        />
-      ),
-    },
-    {
-      title: "Status",
-      key: "status",
-      render: (_, record) =>
-        record.topLocation ? (
-          <Tag color="blue">Top Location</Tag>
-        ) : (
-          <Tag>Regular</Tag>
-        ),
-    },
     {
       title: "Action",
       key: "action",

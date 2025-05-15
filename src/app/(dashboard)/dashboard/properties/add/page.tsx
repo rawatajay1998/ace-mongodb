@@ -49,9 +49,9 @@ const propertySchema = z.object({
   unitType: z.string().min(1, "Unit type is required"),
   metaTitle: z.string().min(1, "Unit type is required"),
   metaDescription: z.string().min(1, "Unit type is required"),
-  areaSize: z.coerce.number().min(1, "Area size must be at least 1"),
+  areaSize: z.coerce.string().min(1, "Area size must be at least 1"),
   aboutProperty: z.string().min(5, "Description must be at least 5 characters"),
-  propertyPrice: z.coerce.number().min(0, "Price must be 0 or more"),
+  propertyPrice: z.coerce.string().min(0, "Price must be 0 or more"),
   thumbnailImage: z
     .custom<FileList>((val) => val instanceof FileList, {
       message: "Thumbnail image is required",
@@ -636,7 +636,7 @@ export default function AddPropertyForm() {
                   <Input
                     {...field}
                     size="large"
-                    type="number"
+                    type="text"
                     placeholder="Area Size"
                     status={errors.areaSize ? "error" : undefined}
                   />
@@ -657,7 +657,7 @@ export default function AddPropertyForm() {
                   <Input
                     {...field}
                     size="large"
-                    type="number"
+                    type="text"
                     placeholder="Price"
                     status={errors.propertyPrice ? "error" : undefined}
                   />
@@ -709,6 +709,10 @@ export default function AddPropertyForm() {
                     style={{ width: "100%" }}
                     size="large"
                     optionLabelProp="label"
+                    maxTagCount={3} // show max 3 selected tags
+                    maxTagPlaceholder={(omittedValues) =>
+                      `+${omittedValues.length} more`
+                    } // custom placeholder text
                   >
                     {amenities.map((amenity) => (
                       <Select.Option

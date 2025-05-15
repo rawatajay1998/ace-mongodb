@@ -19,11 +19,13 @@ const TopLocations = () => {
   useEffect(() => {
     const fetchTopLocations = async () => {
       try {
-        const res = await fetch("/api/home/featured");
+        const res = await fetch(
+          "/api/properties/feature?category=top-locations&type=table"
+        );
         const data = await res.json();
 
-        if (data.topLocations) {
-          setCities(data.topLocations);
+        if (data) {
+          setCities(data.cities);
         }
       } catch (error) {
         console.error("Error fetching top locations:", error);

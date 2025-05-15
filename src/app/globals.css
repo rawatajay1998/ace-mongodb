@@ -1355,6 +1355,7 @@ footer .copyrights_row ul {
   font-size: 28px;
   line-height: 44px;
   margin-bottom: 20px;
+  font-weight: 600;
 }
 .about_page .banner_about .box_left a {
   color: #fff;
@@ -1835,5 +1836,20 @@ footer .copyrights_row ul {
   }
   .contact_page .contact_right .grid_row {
     grid-template-columns: 1fr;
+  }
+  .about_page .banner_about .flex_row {
+    display: block;
+  }
+  .about_page .banner_about .box_left {
+    padding: 20px;
+  }
+  .about_page .banner_about .box_left h3 {
+    margin-bottom: 20px;
+    font-size: 20px;
+    line-height: 1.4;
+    font-weight: 600;
+  }
+  .about_page .banner_about .box_right img {
+    margin-top: 20px;
   }
 }
