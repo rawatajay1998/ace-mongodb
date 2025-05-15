@@ -16,6 +16,7 @@ interface Property {
   city: string;
   status: string;
   price: number;
+  slug: string;
   beds: number;
   propertyCategoryName: string;
   propertyTypeName: string;
@@ -286,7 +287,7 @@ export default function PropertyTable({
       render: (_, record) => (
         <Space>
           {showEditButton && (
-            <Button onClick={() => handleEdit(record._id)} type="primary">
+            <Button onClick={() => handleEdit(record.slug)} type="primary">
               Edit
             </Button>
           )}

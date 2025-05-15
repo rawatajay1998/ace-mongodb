@@ -8,6 +8,11 @@ import { useFormContext } from "react-hook-form";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
+interface FloorPlanUploadProps {
+  initialImages?: string[]; // initial image URLs
+  name: string; // react-hook-form field name
+}
+
 const getBase64 = (file: FileType): Promise<string> =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -16,30 +21,41 @@ const getBase64 = (file: FileType): Promise<string> =>
     reader.onerror = (error) => reject(error);
   });
 
-const FloorPlanUpload = () => {
+const FloorPlanUpload: React.FC<FloorPlanUploadProps> = ({
+  initialImages = [],
+  name,
+}) => {
   const { setValue } = useFormContext();
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState<UploadFile[]>([]);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [uploading, setUploading] = useState(false);
+
+  React.useEffect(() => {
+    if (fileList.length === 0 && initialImages.length > 0) {
+      const initialFileList = initialImages.map((url, index) => ({
+        uid: `-${index}`,
+        name: `floorplan-${index}`,
+        status: "done",
+        url,
+      })) as UploadFile[];
+
+      setFileList(initialFileList);
+      setValue(name, initialImages);
+    }
+  }, [initialImages, fileList.length, setValue, name]);
 
   const handlePreview = async (file: UploadFile) => {
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj as FileType);
     }
-
     setPreviewImage(file.url || (file.preview as string));
     setPreviewOpen(true);
   };
 
   const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) => {
     setFileList(newFileList);
-    // Update form value with File objects
-    const files = newFileList
-      .filter((file) => file.originFileObj)
-      .map((file) => file.originFileObj);
-    setValue("floorPlansImages", files);
+    const files = newFileList.map((file) => file.originFileObj || file.url);
+    setValue(name, files);
   };
 
   const beforeUpload: UploadProps["beforeUpload"] = (file) => {
@@ -80,7 +96,6 @@ const FloorPlanUpload = () => {
         }}
         multiple
         accept="image/*"
-        disabled={uploading}
       >
         {fileList.length >= 8 ? null : uploadButton}
       </Upload>
@@ -94,7 +109,7 @@ const FloorPlanUpload = () => {
             afterOpenChange: (visible) => !visible && setPreviewImage(""),
           }}
           src={previewImage}
-          alt="gallery Image"
+          alt="floorplan Image"
         />
       )}
     </>

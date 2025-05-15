@@ -85,9 +85,8 @@ export async function POST(req: NextRequest) {
     );
     const bannerUrl = await uploadToCloudinary(formData.get("bannerImage")!);
     const galleryImagesUrl = await uploadMultipleToCloudinary("galleryImages");
-    const floorPlansImagesUrl = await uploadMultipleToCloudinary(
-      "floorPlansImages"
-    );
+    const floorPlansImagesUrl =
+      await uploadMultipleToCloudinary("floorPlansImages");
 
     const projectName = formData.get("projectName")?.toString() || "property";
 
@@ -126,8 +125,9 @@ export async function POST(req: NextRequest) {
       cityName: formData.get("cityName"),
       areaName: formData.get("areaName"),
       paymentPlan: formData.get("paymentPlan"),
-      areaSize: Number(formData.get("areaSize")),
-      propertyPrice: Number(formData.get("propertyPrice")),
+      areaSize: String(formData.get("areaSize")),
+      unitType: String(formData.get("unitType")),
+      propertyPrice: String(formData.get("propertyPrice")),
       thumbnailImage: thumbnailUrl,
       bannerImage: bannerUrl,
       galleryImages: galleryImagesUrl, // Add gallery images to the property

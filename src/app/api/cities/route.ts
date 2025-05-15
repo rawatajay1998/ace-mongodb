@@ -5,6 +5,7 @@ import cloudinary from "cloudinary";
 import connectDB from "@/lib/db";
 import City from "@/models/city.model";
 import "@/models/state.model";
+import mongoose from "mongoose";
 
 cloudinary.v2.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME!,
@@ -32,11 +33,33 @@ const uploadToCloudinary = async (file: File): Promise<string> => {
   return result.secure_url;
 };
 
-export async function GET() {
-  await connectDB();
-  const cities = await City.find().populate("stateId");
-  return NextResponse.json(cities);
-}
+export const GET = async (req: Request) => {
+  try {
+    await connectDB();
+
+    const { searchParams } = new URL(req.url);
+    const state = searchParams.get("state");
+
+    let query = {};
+
+    if (state) {
+      if (mongoose.Types.ObjectId.isValid(state)) {
+        query = { stateId: new mongoose.Types.ObjectId(state) };
+      } else {
+        return NextResponse.json(
+          { error: "Invalid state ID" },
+          { status: 400 }
+        );
+      }
+    }
+
+    const cities = await City.find(query);
+    return NextResponse.json(cities);
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ error: "Server Error" }, { status: 500 });
+  }
+};
 
 export async function POST(req: NextRequest) {
   try {

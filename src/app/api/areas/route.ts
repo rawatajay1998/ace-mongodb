@@ -4,6 +4,7 @@ import { Buffer } from "buffer";
 import cloudinary from "cloudinary";
 import connectDB from "@/lib/db";
 import Area from "@/models/area.model";
+import mongoose from "mongoose";
 import "@/models/city.model";
 
 cloudinary.v2.config({
@@ -32,11 +33,33 @@ const uploadToCloudinary = async (file: File): Promise<string> => {
   return result.secure_url;
 };
 
-export async function GET() {
-  await connectDB();
-  const areas = await Area.find().populate("cityId");
-  return NextResponse.json(areas);
-}
+export const GET = async (req: Request) => {
+  try {
+    await connectDB();
+
+    const { searchParams } = new URL(req.url);
+    const city = searchParams.get("city");
+
+    let query = {};
+
+    if (city) {
+      if (mongoose.Types.ObjectId.isValid(city)) {
+        query = { cityId: new mongoose.Types.ObjectId(city) };
+      } else {
+        return NextResponse.json(
+          { error: "Invalid state ID" },
+          { status: 400 }
+        );
+      }
+    }
+
+    const cities = await Area.find(query);
+    return NextResponse.json(cities);
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ error: "Server Error" }, { status: 500 });
+  }
+};
 
 export async function POST(req: NextRequest) {
   try {

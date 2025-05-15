@@ -32,15 +32,18 @@ import {
   HardDrive,
   Code2,
   Table2,
-  Link2,
   LinkIcon,
 } from "lucide-react";
 
 type TipTapEditorProps = {
+  initialContent?: string;
   onEditorChange?: (content: string) => void;
 };
 
-const TipTapEditor: React.FC<TipTapEditorProps> = ({ onEditorChange }) => {
+const TipTapEditor: React.FC<TipTapEditorProps> = ({
+  initialContent,
+  onEditorChange,
+}) => {
   const [showTableMenu, setShowTableMenu] = useState(false);
   const editor = useEditor({
     extensions: [
@@ -58,11 +61,11 @@ const TipTapEditor: React.FC<TipTapEditorProps> = ({ onEditorChange }) => {
       TableCell,
       Link,
     ],
-    content: "<p>Enter Here</p>",
     onUpdate: ({ editor }) => {
       const html = editor.getHTML();
       onEditorChange?.(html);
     },
+    content: initialContent,
   });
 
   if (!editor) return null;

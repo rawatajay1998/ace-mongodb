@@ -23,10 +23,11 @@ export interface IProperty extends Document {
   metaTitle: string;
   metaDescription: string;
   paymentPlan: string;
-  areaSize: number;
+  areaSize: string;
   thumbnailImage: string;
   bannerImage: string;
-  propertyPrice: number;
+  propertyPrice: string;
+  unitType: string;
   verified: boolean;
   slug: string;
   postedBy: mongoose.Types.ObjectId | IUser;
@@ -112,10 +113,11 @@ const PropertySchema = new Schema<IProperty>(
       required: true,
     },
     paymentPlan: { type: String, required: true },
-    areaSize: { type: Number, required: true, index: true },
+    unitType: { type: String, required: true, index: true },
+    areaSize: { type: String, required: true, index: true },
     thumbnailImage: { type: String, required: true },
     bannerImage: { type: String, required: true },
-    propertyPrice: { type: Number, required: true, index: true },
+    propertyPrice: { type: String, required: true, index: true },
     verified: { type: Boolean, default: false },
     slug: { type: String, required: true, unique: true },
     postedBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
