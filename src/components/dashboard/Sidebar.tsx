@@ -83,6 +83,11 @@ const menuItems = [
         hideForAgent: true,
       },
       {
+        label: "Developer",
+        key: "/dashboard/master/developer",
+        hideForAgent: true,
+      },
+      {
         label: "Property Category",
         key: "/dashboard/master/category",
         hideForAgent: true,
@@ -118,6 +123,7 @@ const menuItems = [
     label: "Enquiries",
     icon: Mail,
     key: "enquiry", // Changed
+    hideForAgent: true,
     children: [
       {
         label: "Contact Enquiries",
@@ -135,6 +141,7 @@ const menuItems = [
     label: "Careers",
     icon: Mail,
     key: "careers", // Changed
+    hideForAgent: true,
     children: [
       {
         label: "Jobs",

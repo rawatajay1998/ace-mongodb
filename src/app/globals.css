@@ -1165,6 +1165,9 @@ footer .copyrights_row ul {
   font-weight: 600;
   color: #121212;
 }
+.property_single_row .content_left .content .ant-image {
+  width: 100% !important;
+}
 
 /* Login page */
 .login_page {
@@ -1598,6 +1601,7 @@ footer .copyrights_row ul {
   .property_single_row .content .title {
     font-size: 18px;
   }
+
   .banner_section .search_form form {
     flex-direction: column;
   }

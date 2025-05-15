@@ -121,8 +121,12 @@ export async function POST(req: NextRequest) {
       city: new mongoose.Types.ObjectId(formData.get("city")?.toString()),
       state: new mongoose.Types.ObjectId(formData.get("state")?.toString()),
       area: new mongoose.Types.ObjectId(formData.get("area")?.toString()),
+      developer: new mongoose.Types.ObjectId(
+        formData.get("developer")?.toString()
+      ),
       stateName: formData.get("stateName"),
       cityName: formData.get("cityName"),
+      developerName: formData.get("developerName"),
       areaName: formData.get("areaName"),
       paymentPlan: formData.get("paymentPlan"),
       areaSize: String(formData.get("areaSize")),

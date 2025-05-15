@@ -80,7 +80,7 @@ export default async function PropertyPage({
 }: {
   params: { slug: string };
 }) {
-  const { slug } = await params;
+  const { slug } = params;
 
   console.log(slug);
 
@@ -115,7 +115,7 @@ export default async function PropertyPage({
           height={500}
           width={1920}
         />
-        <h1 className="name">Binghatti Aquarise Summary</h1>
+        <h1 className="name">{property.projectName}</h1>
       </div>
       <section className="property_content">
         <div className="container">
@@ -125,7 +125,7 @@ export default async function PropertyPage({
                 <div className="content_top">
                   <div className="details">
                     <h1>{property.projectName}</h1>
-                    <p className="developer">By Binghatti Developers</p>
+                    <p className="developer">{property.developerName}</p>
                   </div>
                   <button className="brochuure_btn">
                     <svg
@@ -146,28 +146,30 @@ export default async function PropertyPage({
                 <div className="content_bottom">
                   <div className="row">
                     <div className="block">
-                      <div className="label">Property type</div>
-                      <div className="text">{property.propertyType}</div>
+                      <div className="label">Property Category</div>
+                      <div className="text">
+                        {property.propertyCategoryName}
+                      </div>
                     </div>
                     <div className="block">
-                      <div className="label">Unit type</div>
+                      <div className="label">Property Type</div>
+                      <div className="text">{property.propertyTypeName}</div>
+                    </div>
+                    <div className="block">
+                      <div className="label">Unit Type</div>
                       <div className="text">{property.unitType}</div>
                     </div>
                     <div className="block">
                       <div className="label">Size</div>
-                      <div className="text">{property.size} </div>
+                      <div className="text">{property.areaSize} </div>
                     </div>
                     <div className="block">
                       <div className="label">Down Payment</div>
-                      <div className="text"> {property.downpayment} </div>
+                      <div className="text"> {property.downPayment} </div>
                     </div>
                     <div className="block">
                       <div className="label">Payment Plan:</div>
                       <div className="text"> 70/30 </div>
-                    </div>
-                    <div className="block">
-                      <div className="label">Handover</div>
-                      <div className="text"> {property.handoverDate}</div>
                     </div>
                   </div>
                   <div className="price">

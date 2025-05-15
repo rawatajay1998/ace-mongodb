@@ -39,13 +39,15 @@ const propertySchema = z.object({
   state: z.string().min(1, "State is required"),
   city: z.string().min(1, "City is required"),
   area: z.string().min(1, "Area is required"),
-  propertyTypeName: z.string().min(1, "Area is required"),
-  propertyStatusName: z.string().min(1, "Area is required"),
-  propertyCategoryName: z.string().min(1, "Area is required"),
-  stateName: z.string().min(1, "Area is required"),
-  cityName: z.string().min(1, "Area is required"),
-  areaName: z.string().min(1, "Area is required"),
-  paymentPlan: z.string().min(1, "Down Payment is required"),
+  developer: z.string().min(1, "Developer is required"),
+  developerName: z.string().min(1, "Developer Name is required"),
+  propertyTypeName: z.string().min(1, "Property Type is required"),
+  propertyStatusName: z.string().min(1, "Property Status is required"),
+  propertyCategoryName: z.string().min(1, "Property Category is required"),
+  stateName: z.string().min(1, "State Name is required"),
+  cityName: z.string().min(1, "City name is required"),
+  areaName: z.string().min(1, "Area name is required"),
+  paymentPlan: z.string().min(1, "Payement Plan is required"),
   unitType: z.string().min(1, "Unit type is required"),
   metaTitle: z.string().min(1, "Unit type is required"),
   metaDescription: z.string().min(1, "Unit type is required"),
@@ -86,6 +88,10 @@ interface Category {
   _id: string; // or another type if it's not a string
   name: string;
 }
+interface Developer {
+  _id: string; // or another type if it's not a string
+  developerName: string;
+}
 
 const fetchStates = async () => {
   const response = await axios.get("/api/states");
@@ -121,6 +127,7 @@ export default function AddPropertyForm() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [propertyTypes, setPropertyTypes] = useState<Category[]>([]);
   const [propertyStatusList, setPropertyStatusList] = useState<Category[]>([]);
+  const [developerList, setDeveloperList] = useState<Developer[]>([]);
 
   const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
   const [amenitiesLoaded, setAmenitiesLoaded] = useState(false);
@@ -223,6 +230,7 @@ export default function AddPropertyForm() {
     fetchCategories();
     fetchPropertyTypes();
     fetchPropertyStatuses();
+    fetchDevelopers();
   }, []);
 
   // Load states initially
@@ -309,6 +317,17 @@ export default function AddPropertyForm() {
       setPropertyStatusList(data); // Assuming the data is an array of property types objects
     } catch {
       toast.error("Failed to load property types");
+    }
+  };
+
+  // fetch developers
+  const fetchDevelopers = async () => {
+    try {
+      const response = await fetch("/api/developer"); // Fetch property types from your API
+      const { data } = await response.json();
+      setDeveloperList(data); // Assuming the data is an array of property types objects
+    } catch {
+      toast.error("Failed to load developers list");
     }
   };
 
@@ -487,12 +506,12 @@ export default function AddPropertyForm() {
                   <Select
                     {...field}
                     size="large"
-                    placeholder="Select Property Status"
+                    placeholder="Select Developer"
                     status={errors.propertyStatus ? "error" : undefined}
                     style={{ width: "100%" }}
                     onChange={(value) => {
                       // Find the selected status object
-                      const selectedpropertyStatus = propertyStatusList.find(
+                      const selectedPropertyStatus = propertyStatusList.find(
                         (status) => status._id === value
                       );
 
@@ -500,7 +519,7 @@ export default function AddPropertyForm() {
                       setValue("propertyStatus", value);
                       setValue(
                         "propertyStatusName",
-                        selectedpropertyStatus?.name || ""
+                        selectedPropertyStatus?.name || ""
                       );
                     }}
                   >
@@ -517,6 +536,47 @@ export default function AddPropertyForm() {
               )}
             </div>
 
+            {/* developer */}
+            <div className="form_field">
+              <label>Developer</label>
+              <Controller
+                name="developer"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    size="large"
+                    placeholder="Select Developer"
+                    status={errors.developer ? "error" : undefined}
+                    style={{ width: "100%" }}
+                    onChange={(value) => {
+                      // Find the selected status object
+                      const selectedDeveloper = developerList.find(
+                        (status) => status._id === value
+                      );
+
+                      // Set both ID and Name in form state
+                      setValue("developer", value);
+                      setValue(
+                        "developerName",
+                        selectedDeveloper?.developerName || ""
+                      );
+                    }}
+                  >
+                    {developerList.map((status) => (
+                      <Select.Option key={status._id} value={status._id}>
+                        {status.developerName}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                )}
+              />
+              {errors.developer && (
+                <p className="text-red-500">{errors.developer.message}</p>
+              )}
+            </div>
+
+            {/* state list */}
             <div className="form_field">
               <label>State</label>
               <Controller
@@ -670,7 +730,7 @@ export default function AddPropertyForm() {
 
             {/* Payment Plan */}
             <div className="form_field">
-              <label>Down Payment</label>
+              <label>Payment Plan</label>
               <Controller
                 name="paymentPlan"
                 control={control}
@@ -889,12 +949,12 @@ export default function AddPropertyForm() {
 
           <div className="form_field">
             <label>Gallery Images</label>
-            <ImageUpload />
+            <ImageUpload initialImages={[]} name="galleryImages" />
           </div>
 
           <div className="form_field">
             <label>Floor PLans</label>
-            <FloorPlanUpload />
+            <FloorPlanUpload initialImages={[]} name="floorPlansImages" />
           </div>
 
           {/* File Uploads */}

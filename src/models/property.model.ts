@@ -19,6 +19,8 @@ export interface IProperty extends Document {
   stateName: string;
   cityName: string;
   area: mongoose.Types.ObjectId;
+  developer: mongoose.Types.ObjectId;
+  developerName: string;
   areaName: string;
   metaTitle: string;
   metaDescription: string;
@@ -95,6 +97,16 @@ const PropertySchema = new Schema<IProperty>(
       index: true,
     },
     cityName: {
+      type: String,
+      required: true,
+    },
+    developer: {
+      type: Schema.Types.ObjectId,
+      ref: "City",
+      required: true,
+      index: true,
+    },
+    developerName: {
       type: String,
       required: true,
     },
