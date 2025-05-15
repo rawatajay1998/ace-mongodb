@@ -1,16 +1,16 @@
 "use client";
 
-import CityCard from "@/components/marketing/CityCard";
+import AreaCard from "@/components/marketing/AreaCard";
 import React, { useEffect, useState } from "react";
 
 export interface ICity {
   _id: string;
   name: string;
-  stateId: string;
+  cityId: string;
   topLocation: boolean;
   featuredOnHomepage: boolean;
   propertyCount: number;
-  cityImageUrl: string;
+  areaImageUrl: string;
 }
 
 const TopLocations = () => {
@@ -39,8 +39,8 @@ const TopLocations = () => {
 
   return (
     <div className="city_row">
-      {cities.map((cityData) => (
-        <CityCard key={cityData._id} {...cityData} />
+      {cities.map((areaData) => (
+        <AreaCard key={areaData._id} {...areaData} />
       ))}
     </div>
   );

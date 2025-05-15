@@ -5,11 +5,14 @@ import React from "react";
 
 interface AreaCardProps {
   name: string;
-  areaImageUrl: string;
+  topLocation: boolean;
+  featuredOnHomepage: boolean;
   propertyCount: number;
+  areaImageUrl: string;
 }
 
 const AreaCard = ({ name, areaImageUrl, propertyCount }: AreaCardProps) => {
+  console.log(areaImageUrl);
   return (
     <div className="city_card border rounded-lg overflow-hidden shadow hover:shadow-md transition">
       <div className="image w-full h-40 relative">
