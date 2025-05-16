@@ -162,16 +162,16 @@ export default async function PropertyPage({
                       <div className="text">{property.propertyTypeName}</div>
                     </div>
                     <div className="block">
+                      <div className="label">Property Status</div>
+                      <div className="text">{property.propertyStatusName}</div>
+                    </div>
+                    <div className="block">
                       <div className="label">Unit Type</div>
                       <div className="text">{property.unitType}</div>
                     </div>
                     <div className="block">
                       <div className="label">Size</div>
                       <div className="text">{property.areaSize} </div>
-                    </div>
-                    <div className="block">
-                      <div className="label">Down Payment</div>
-                      <div className="text"> {property.downPayment} </div>
                     </div>
                     <div className="block">
                       <div className="label">Payment Plan:</div>

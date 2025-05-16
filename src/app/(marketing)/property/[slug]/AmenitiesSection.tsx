@@ -21,7 +21,7 @@ export default function AmenitiesSection({ amenities }: Props) {
   const showMore = () => setIsModalOpen(true);
   const hideModal = () => setIsModalOpen(false);
 
-  const visibleAmenities = amenities.slice(0, 1);
+  const visibleAmenities = amenities.slice(0, 5);
   const remainingAmenities = amenities.length - 1;
 
   return (

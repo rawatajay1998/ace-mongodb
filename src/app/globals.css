@@ -543,7 +543,7 @@ section .container {
 }
 .property_card .amenity_row {
   display: flex;
-  gap: 12px;
+  gap: 20px;
   margin-bottom: 20px;
   padding-bottom: 20px;
   border-bottom: 1px solid #ddd;
@@ -1091,6 +1091,7 @@ footer .copyrights_row ul {
   color: #006169;
   font-size: 14px;
   border-radius: 6px;
+  max-width: 120px;
 }
 .property_single_row .content .amenity img {
   width: 32px;
@@ -1208,6 +1209,14 @@ footer .copyrights_row ul {
   justify-content: center;
   border-radius: 6px;
 }
+.property_card .amenity {
+  background-color: transparent;
+  padding: 0;
+  flex-direction: row;
+  min-width: max-content;
+  gap: 6px;
+}
+
 .property_single_row .relaated_property_card {
   display: grid;
   grid-template-columns: 80px calc(100% - 92px);
@@ -1994,5 +2003,8 @@ footer .copyrights_row ul {
   }
   .about_page .banner_about .box_right img {
     margin-top: 20px;
+  }
+  .property_single_row .content .amenity_row button {
+    max-width: max-content;
   }
 }
