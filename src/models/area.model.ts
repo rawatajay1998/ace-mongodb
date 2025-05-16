@@ -6,6 +6,7 @@ export interface IArea extends Document {
   topLocation: boolean;
   featuredOnHomepage: boolean;
   areaImageUrl?: string;
+  slug: string;
 }
 
 const AreaSchema = new Schema<IArea>({
@@ -14,6 +15,7 @@ const AreaSchema = new Schema<IArea>({
   topLocation: { type: Boolean, default: false },
   featuredOnHomepage: { type: Boolean, default: false },
   areaImageUrl: { type: String },
+  slug: { type: String, required: true, unique: true },
 });
 
 export default mongoose.models.Area ||

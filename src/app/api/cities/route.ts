@@ -7,6 +7,17 @@ import City from "@/models/city.model";
 import "@/models/state.model";
 import mongoose from "mongoose";
 
+// Slug generation function
+function generateSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/\s+/g, "-") // Replace spaces with -
+    .replace(/[^\w\-]+/g, "") // Remove all non-word chars
+    .replace(/\-\-+/g, "-") // Replace multiple - with single -
+    .replace(/^-+/, "") // Trim - from start of text
+    .replace(/-+$/, ""); // Trim - from end of text
+}
+
 cloudinary.v2.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME!,
   api_key: process.env.CLOUDINARY_API_KEY!,
@@ -82,6 +93,7 @@ export async function POST(req: NextRequest) {
       name,
       stateId,
       cityImageUrl: imageUrl,
+      slug: generateSlug(name),
     });
 
     return NextResponse.json(newCity);

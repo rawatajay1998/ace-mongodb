@@ -5,6 +5,7 @@ import { IPropertyCardProps } from "@/types/PropertyCardProps";
 import Link from "next/link";
 
 const PropertyCard = ({ item }: { item: IPropertyCardProps }) => {
+  console.log(item);
   return (
     <div className="property_card">
       <div className="image_area overflow-hidden">

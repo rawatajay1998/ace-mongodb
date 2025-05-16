@@ -9,9 +9,15 @@ interface AreaCardProps {
   featuredOnHomepage: boolean;
   propertyCount: number;
   areaImageUrl: string;
+  slug: string;
 }
 
-const AreaCard = ({ name, areaImageUrl, propertyCount }: AreaCardProps) => {
+const AreaCard = ({
+  name,
+  areaImageUrl,
+  propertyCount,
+  slug,
+}: AreaCardProps) => {
   console.log(areaImageUrl);
   return (
     <div className="city_card border rounded-lg overflow-hidden shadow hover:shadow-md transition">
@@ -31,7 +37,7 @@ const AreaCard = ({ name, areaImageUrl, propertyCount }: AreaCardProps) => {
         </p>
 
         <Link
-          href={`/location/${encodeURIComponent(name)}`}
+          href={`/location/area/${slug}`}
           className="view inline-flex items-center text-blue-600 hover:underline text-sm"
         >
           View More <ArrowRight size={16} className="ml-1" />

@@ -3,17 +3,18 @@ import PropertyCard from "@/components/marketing/PropertyCard";
 import db from "@/lib/db";
 import Property from "@/models/property.model";
 import { Metadata } from "next";
+import { IPropertyCardProps } from "@/types/PropertyCardProps";
 
-interface CityPageProps {
+interface AreaPageProps {
   params: {
-    city: string;
+    slug: string;
   };
 }
 
 // Dynamic metadata based on city
 export async function generateMetadata({
   params,
-}: CityPageProps): Promise<Metadata> {
+}: AreaPageProps): Promise<Metadata> {
   const citySlug = decodeURIComponent(params.city);
 
   const formattedCity = citySlug
@@ -53,31 +54,45 @@ export async function generateMetadata({
   };
 }
 
-export default async function CityPage({ params }: CityPageProps) {
+export default async function AreaPage({ params }: AreaPageProps) {
   await db();
 
-  const cityName = decodeURIComponent(params.city);
+  const areaName = params.slug;
+
+  // Decode the URL slug (e.g., "downtown-dubai" => "downtown dubai")
+  const decodedSlug = decodeURIComponent(areaName.replace(/-/g, " "));
+
+  console.log(decodedSlug);
 
   const properties = await Property.find({
-    city: cityName,
-    approved: true,
+    $or: [
+      { areaName: { $regex: new RegExp(`^${decodedSlug}$`, "i") } },
+      { areaName }, // Also check the original slug format
+    ],
+    verified: true,
   }).lean();
+
+  console.log(properties);
 
   if (!properties || properties.length === 0) {
     return (
       <div className="p-6 text-gray-600">
-        No properties found in {cityName}.
+        No properties found in {areaName}.
       </div>
     );
   }
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-semibold mb-4">Properties in {cityName}</h1>
+      <h1 className="text-2xl font-semibold mb-4">Properties in {areaName}</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {properties.map((property: any) => (
-          <PropertyCard key={property._id} property={property} />
-        ))}
+        {properties.map((property: IPropertyCardProps) => {
+          return (
+            <div key={property._id.toString()}>
+              <PropertyCard item={property} />
+            </div>
+          );
+        })}
       </div>
     </div>
   );
