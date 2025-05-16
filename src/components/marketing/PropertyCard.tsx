@@ -1,4 +1,4 @@
-import { BedDouble, MapPin } from "lucide-react";
+import { BedDouble, LandPlot, MapPin } from "lucide-react";
 import Image from "next/image";
 import React from "react";
 import { IPropertyCardProps } from "@/types/PropertyCardProps";
@@ -27,17 +27,10 @@ const PropertyCard = ({ item }: { item: IPropertyCardProps }) => {
         <div className="amenity_row">
           <div className="amenity">
             <BedDouble />
-            <span>Beds</span>
-            {item.beds}
+            {item.unitType}
           </div>
           <div className="amenity">
-            <BedDouble />
-            <span>Bathrooms</span>
-            {item.bathrooms}
-          </div>
-          <div className="amenity">
-            <BedDouble />
-            <span>Area</span>
+            <LandPlot />
             {item.areaSize}
           </div>
         </div>

@@ -1,5 +1,6 @@
 "use client"; // if you're on Next.js 13/14 App Router
 
+import { ChevronDown, ChevronUp } from "lucide-react";
 import React, { useState } from "react";
 
 const ReadMoreText = ({
@@ -29,6 +30,7 @@ const ReadMoreText = ({
       {text.length > maxLength && (
         <button className="p-0 read_more_btn" onClick={toggleReadMore}>
           {expanded ? "Read Less" : "Read More"}
+          {expanded ? <ChevronDown size={20} /> : <ChevronUp size={20} />}
         </button>
       )}
     </div>

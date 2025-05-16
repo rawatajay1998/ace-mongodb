@@ -100,16 +100,9 @@ export const POST = async (request: NextRequest) => {
   }
 };
 
-export const GET = async (request: NextRequest) => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const GET = async (req: NextRequest) => {
   await connectDB();
-
-  const authResult = await verifyAdmin(request);
-  if (authResult.error) {
-    return NextResponse.json(
-      { message: authResult.error },
-      { status: authResult.status }
-    );
-  }
 
   try {
     const developers = await Developer.find()

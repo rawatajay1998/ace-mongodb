@@ -16,7 +16,7 @@ export async function GET(request: Request, { params }) {
       return NextResponse.json({ error: "Agent not found" }, { status: 404 });
     }
     // Fetch properties listed by this agent
-    const properties = await Property.find({ agent: agent._id }).lean();
+    const properties = await Property.find({ postedBy: agent._id }).lean();
 
     console.log(properties);
 

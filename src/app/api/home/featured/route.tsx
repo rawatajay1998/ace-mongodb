@@ -4,6 +4,7 @@ import connectDB from "@/lib/db";
 import Property from "@/models/property.model";
 import Area from "@/models/area.model";
 import Category from "@/models/category.model";
+import "@/models/user.model";
 
 // Map the tab keys to actual property category names in the database
 const CATEGORY_MAP: Record<string, string> = {
@@ -85,7 +86,10 @@ export async function GET(req: Request) {
           highROIProjects: true,
           featuredOnHomepage: true,
           verified: true,
-        }).limit(10);
+        })
+          .limit(10)
+          .populate("postedBy", "name profileImageUrl email");
+
         return NextResponse.json({ properties });
       } else {
         // For offplan, secondary, rent
@@ -101,7 +105,10 @@ export async function GET(req: Request) {
           propertyCategoryName: dbCategory,
           featuredOnHomepage: true,
           verified: true,
-        }).limit(10);
+        })
+          .limit(10)
+          .populate("postedBy", "name profileImageUrl email");
+
         return NextResponse.json({ properties });
       }
     }

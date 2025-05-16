@@ -5,6 +5,15 @@ import { notFound } from "next/navigation";
 import FloorPlanImage from "./FloorPlan";
 import GalleryImage from "./GalleryImage";
 import { Metadata } from "next";
+import AmenitiesSection from "./AmenitiesSection";
+import { CloudDownload, MoveRight } from "lucide-react";
+import ImageBannerGrid from "./ImagebannerGrid";
+import dynamic from "next/dynamic";
+import MortgageCalculator from "./MortgageCalculator";
+import Link from "next/link";
+import CarouselWrapper from "@/components/marketing/CarouselWrapper";
+
+const ShareModal = dynamic(() => import("./ShareModal"));
 
 export async function generateMetadata({
   params,
@@ -27,8 +36,6 @@ export async function generateMetadata({
   }
 
   const { property } = await res.json();
-
-  console.log(property);
 
   return {
     title: `${property.projectName} | Ace Elite Properties`,
@@ -69,11 +76,6 @@ type FAQ = {
   answer: string;
   _id: string;
 };
-type Amenity = {
-  _id: string;
-  name: string;
-  imageUrl: string;
-};
 
 export default async function PropertyPage({
   params,
@@ -81,8 +83,6 @@ export default async function PropertyPage({
   params: { slug: string };
 }) {
   const { slug } = params;
-
-  console.log(slug);
 
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}/api/property/${slug}`,
@@ -95,7 +95,21 @@ export default async function PropertyPage({
     notFound();
   }
 
+  const relatedRes = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/property/related/${slug}`,
+    { cache: "no-store" }
+  );
+
+  const relatedProperties = relatedRes.ok
+    ? (await relatedRes.json()).relatedProperties
+    : [];
+
   const { property } = await res.json();
+
+  const images: string[] = [
+    property.bannerImage,
+    ...(property.galleryImages || []),
+  ];
 
   //set faqs in accordion
   const faqItems =
@@ -108,40 +122,32 @@ export default async function PropertyPage({
 
   return (
     <>
-      <div className="property_banner">
-        <Image
-          src={"/assets/images/home-banner.jpg"}
-          alt="Property banner"
-          height={500}
-          width={1920}
-        />
-        <h1 className="name">{property.projectName}</h1>
-      </div>
       <section className="property_content">
         <div className="container">
+          <div className="banner_property_deatils pt-10 pb-4">
+            {images.length > 0 && <ImageBannerGrid images={images} />}
+          </div>
           <div className="property_single_row">
             <div className="content_left">
               <div className="property_meta">
                 <div className="content_top">
                   <div className="details">
+                    <p className="price">
+                      <span>AED</span> {property.propertyPrice}
+                    </p>
                     <h1>{property.projectName}</h1>
                     <p className="developer">{property.developerName}</p>
                   </div>
-                  <button className="brochuure_btn">
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 15 15"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M2.5 6.5V6H2V6.5H2.5ZM6.5 6.5V6H6V6.5H6.5ZM6.5 10.5H6V11H6.5V10.5ZM13.5 3.5H14V3.29289L13.8536 3.14645L13.5 3.5ZM10.5 0.5L10.8536 0.146447L10.7071 0H10.5V0.5ZM2.5 7H3.5V6H2.5V7ZM3 11V8.5H2V11H3ZM3 8.5V6.5H2V8.5H3ZM3.5 8H2.5V9H3.5V8ZM4 7.5C4 7.77614 3.77614 8 3.5 8V9C4.32843 9 5 8.32843 5 7.5H4ZM3.5 7C3.77614 7 4 7.22386 4 7.5H5C5 6.67157 4.32843 6 3.5 6V7ZM6 6.5V10.5H7V6.5H6ZM6.5 11H7.5V10H6.5V11ZM9 9.5V7.5H8V9.5H9ZM7.5 6H6.5V7H7.5V6ZM9 7.5C9 6.67157 8.32843 6 7.5 6V7C7.77614 7 8 7.22386 8 7.5H9ZM7.5 11C8.32843 11 9 10.3284 9 9.5H8C8 9.77614 7.77614 10 7.5 10V11ZM10 6V11H11V6H10ZM10.5 7H13V6H10.5V7ZM10.5 9H12V8H10.5V9ZM2 5V1.5H1V5H2ZM13 3.5V5H14V3.5H13ZM2.5 1H10.5V0H2.5V1ZM10.1464 0.853553L13.1464 3.85355L13.8536 3.14645L10.8536 0.146447L10.1464 0.853553ZM2 1.5C2 1.22386 2.22386 1 2.5 1V0C1.67157 0 1 0.671573 1 1.5H2ZM1 12V13.5H2V12H1ZM2.5 15H12.5V14H2.5V15ZM14 13.5V12H13V13.5H14ZM12.5 15C13.3284 15 14 14.3284 14 13.5H13C13 13.7761 12.7761 14 12.5 14V15ZM1 13.5C1 14.3284 1.67157 15 2.5 15V14C2.22386 14 2 13.7761 2 13.5H1Z"
-                        fill="#fff"
-                      />
-                    </svg>
-                    Download Brochure
-                  </button>
+                  <div className="btn_wrapper">
+                    <button className="brochuure_btn">
+                      <CloudDownload />
+                      Download Brochure
+                    </button>
+
+                    <ShareModal
+                      url={`https://aceeliteproperties.com/properties/${slug}`}
+                    />
+                  </div>
                 </div>
                 <div className="content_bottom">
                   <div className="row">
@@ -172,12 +178,6 @@ export default async function PropertyPage({
                       <div className="text"> 70/30 </div>
                     </div>
                   </div>
-                  <div className="price">
-                    <p>
-                      <span>Starting From</span>
-                      {property.propertyPrice}
-                    </p>
-                  </div>
                 </div>
               </div>
               <div className="content">
@@ -193,21 +193,8 @@ export default async function PropertyPage({
               </div>
               <div className="content">
                 <h3 className="title">Amenities</h3>
-                <div className="amenity_row">
-                  {property.amenities.map((item: Amenity) => {
-                    return (
-                      <div key={item._id} className="amenity">
-                        <Image
-                          src={item.imageUrl}
-                          width={20}
-                          height={20}
-                          alt={item.name}
-                        />
-                        <h4>{item.name}</h4>
-                      </div>
-                    );
-                  })}
-                </div>
+
+                <AmenitiesSection amenities={property.amenities} />
               </div>
               <div className="content">
                 <h3 className="title">Pricing</h3>
@@ -216,6 +203,12 @@ export default async function PropertyPage({
                   dangerouslySetInnerHTML={{ __html: property.pricingSection }}
                 />
               </div>
+
+              <div className="content">
+                <h3 className="title"> Mortgage Calculator</h3>
+                <MortgageCalculator />
+              </div>
+
               <div className="content">
                 <h3 className="title">Payment Plan</h3>
                 <div className="payment_plan_row">
@@ -262,7 +255,7 @@ export default async function PropertyPage({
               </div>
               <div className="content">
                 <h3 className="title">Gallery</h3>
-                <div className="grid grid-cols-3">
+                <CarouselWrapper slidesToShow={3}>
                   {property.floorPlansImages &&
                     property.floorPlansImages.map((url: string) => {
                       return (
@@ -271,11 +264,12 @@ export default async function PropertyPage({
                         </div>
                       );
                     })}
-                </div>
+                </CarouselWrapper>
               </div>
               <div className="content">
                 <h3 className="title">Gallery</h3>
-                <div className="grid grid-cols-3">
+
+                <CarouselWrapper slidesToShow={3}>
                   {property.galleryImages &&
                     property.galleryImages.map((url: string) => {
                       return (
@@ -284,7 +278,7 @@ export default async function PropertyPage({
                         </div>
                       );
                     })}
-                </div>
+                </CarouselWrapper>
               </div>
               <div className="content">
                 <h3 className="title">Frequently Asked Questions</h3>
@@ -292,26 +286,85 @@ export default async function PropertyPage({
               </div>
             </div>
             <div className="contact_form">
+              <Image
+                src={"/assets/images/ace-logo-blue.png"}
+                height={60}
+                width={60}
+                alt="Ace Elite Properties Logo"
+              />
               <h4 className="title">Contact Our Experts</h4>
-              <form>
-                <div className="form_field">
-                  <label>Full Name</label>
-                  <input placeholder="Full Name" />
+              <div className="contact_btns">
+                <Link
+                  href={"mailto:info@AceEliteProperties.com"}
+                  className="email"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 16 16"
+                  >
+                    <path d="M13.3 2.7H2.7A1.3 1.3 0 0 0 1.3 4v8a1.3 1.3 0 0 0 1.4 1.3h10.6a1.3 1.3 0 0 0 1.4-1.3V4a1.3 1.3 0 0 0-1.4-1.3zm0 2.6L8 8.7 2.7 5.3V4L8 7.3 13.3 4z"></path>
+                    <path fill="none" d="M0 0h16v16H0z"></path>
+                  </svg>
+                </Link>
+                <Link href={"tel:+971 55 526 6579"} className="call">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 16 16"
+                  >
+                    <path d="M13.3 10.3A7.6 7.6 0 0 1 11 10a.7.7 0 0 0-.7.1l-1 1.4a10.1 10.1 0 0 1-4.6-4.6L6 5.7A.7.7 0 0 0 6 5a7.4 7.4 0 0 1-.3-2.3A.7.7 0 0 0 5 2H2.8c-.4 0-.8.2-.8.7A11.4 11.4 0 0 0 13.3 14a.7.7 0 0 0 .7-.8V11a.7.7 0 0 0-.7-.6z"></path>
+                  </svg>
+                </Link>
+                <div className="whatsapp">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M19.2 4.8A10.2 10.2 0 0 0 3.2 17l-1.4 5.3L7.2 21a10.1 10.1 0 0 0 4.8 1 10.2 10.2 0 0 0 7.2-17.3zM12 20.4a8.4 8.4 0 0 1-4.3-1.2h-.3l-3.2.7 1-3.1-.3-.3a8.4 8.4 0 1 1 7.1 4zm4.7-6.3c-.3-.1-1.5-.8-1.8-.8s-.4-.2-.5 0l-.8 1c-.1 0-.3.3-.6.2a7 7 0 0 1-2-1.3 7.7 7.7 0 0 1-1.4-1.8c-.2-.2 0-.4 0-.5l.5-.4a1.7 1.7 0 0 0 .2-.5.5.5 0 0 0 0-.4l-.8-2c-.2-.4-.4-.3-.6-.3h-.4a1 1 0 0 0-.7.3 2.9 2.9 0 0 0-1 2A5 5 0 0 0 8 12.4a11.3 11.3 0 0 0 4.4 4 14.5 14.5 0 0 0 1.4.4 3.4 3.4 0 0 0 1.6 0 2.6 2.6 0 0 0 1.7-1 2.1 2.1 0 0 0 .2-1.3l-.5-.3z"
+                    ></path>
+                  </svg>
                 </div>
-                <div className="form_field">
-                  <label>Full Name</label>
-                  <input placeholder="Email Id" />
+              </div>
+
+              {relatedProperties.length > 0 && (
+                <div className="mt-12">
+                  <h3 className="text-2xl font-bold mb-6">
+                    Similar Properties
+                  </h3>
+
+                  {relatedProperties.map((property) => {
+                    return (
+                      <div
+                        className="relaated_property_card"
+                        key={property._id}
+                      >
+                        <Image
+                          src={property.thumbnailImage}
+                          alt={property.projectName}
+                          height={100}
+                          width={100}
+                        />
+                        <div className="details">
+                          <h4 className="name"> {property.projectName}</h4>
+                          <p className="price">
+                            <span>AED</span> {property.propertyPrice}
+                          </p>
+                          <Link href={property.slug}>
+                            View Property <MoveRight size={16} />
+                          </Link>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
-                <div className="form_field">
-                  <label>Phone Number</label>
-                  <input placeholder="Email Id" />
-                </div>
-                <div className="form_field">
-                  <label>Message</label>
-                  <textarea placeholder="Message"></textarea>
-                </div>
-                <button className="submit">Contact Now!</button>
-              </form>
+              )}
             </div>
           </div>
         </div>
