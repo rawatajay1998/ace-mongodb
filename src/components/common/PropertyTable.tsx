@@ -79,6 +79,7 @@ export default function PropertyTable({
   );
   const [searchTexts, setSearchTexts] = useState<{ [key: string]: string }>({});
   const searchInputs = useRef<{ [key: string]: InputRef | null }>({});
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selectedPropertyId, setSelectedPropertyId] = useState<string | null>(
     null
   );
@@ -86,6 +87,7 @@ export default function PropertyTable({
     null | "images" | "faqs" | "meta" | "editor" | "details"
   >(null);
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   const handleOpenModal = (
