@@ -26,7 +26,6 @@ const ApprovedPropertiesPage = () => {
         fetchUrl="/api/properties/get/approved"
         showApproveButton={true}
         actionButtonText="Reject"
-        showEditButton={false}
         onAction={approveProperty}
       />
     </div>

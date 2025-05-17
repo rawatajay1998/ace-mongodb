@@ -1,14 +1,28 @@
 "use client";
 
-import { Table, Input, Button, Space, Badge, Switch, message } from "antd";
-import { SearchOutlined } from "@ant-design/icons";
+import {
+  Table,
+  Input,
+  Button,
+  Space,
+  Badge,
+  Switch,
+  message,
+  Dropdown,
+  MenuProps,
+} from "antd";
+import { MoreOutlined, SearchOutlined } from "@ant-design/icons";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { InputRef } from "antd";
 import type { ColumnsType, TablePaginationConfig } from "antd/es/table";
 import type { FilterDropdownProps } from "antd/es/table/interface";
-import { useRouter } from "next/navigation";
 import axios from "axios";
 import toast from "react-hot-toast";
+import EditMetaModal from "../dashboard/edit-property-forms/EditMetaModal";
+import EditFAQsModal from "../dashboard/edit-property-forms/EditingFaqModel";
+import EditImagesModal from "../dashboard/edit-property-forms/EditImagesModel";
+import EditorModal from "../dashboard/edit-property-forms/EditEditorContent";
+import EditDetailsModal from "../dashboard/edit-property-forms/EditPropertyDetails";
 
 interface Property {
   _id: string;
@@ -23,7 +37,7 @@ interface Property {
   propertyStatusName: string;
   verified: string;
   featuredOnHomepage?: boolean;
-  highROIProjects?: boolean; // ✅ New field
+  highROIProjects?: boolean;
 }
 
 interface User {
@@ -37,7 +51,7 @@ interface PropertyTableProps {
   showApproveButton?: boolean;
   onAction?: (propertyId: string) => Promise<void>;
   actionButtonText?: string;
-  showEditButton: boolean;
+  myPropertiesView?: boolean;
 }
 
 interface FetchParams {
@@ -54,25 +68,37 @@ export default function PropertyTable({
   fetchUrl,
   onAction,
   actionButtonText,
-  showEditButton,
+  myPropertiesView,
 }: PropertyTableProps) {
   const [data, setData] = useState<Property[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [pagination, setPagination] = useState({
-    current: 1,
-    pageSize: 10,
-  });
+  const [pagination, setPagination] = useState({ current: 1, pageSize: 10 });
   const [filters, setFilters] = useState<{ [key: string]: string | number }>(
     {}
   );
   const [searchTexts, setSearchTexts] = useState<{ [key: string]: string }>({});
   const searchInputs = useRef<{ [key: string]: InputRef | null }>({});
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [selectedPropertyId, setSelectedPropertyId] = useState<string | null>(
+    null
+  );
+  const [openModal, setOpenModal] = useState<
+    null | "images" | "faqs" | "meta" | "editor" | "details"
+  >(null);
+  const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
-  const router = useRouter();
+  const handleOpenModal = (
+    type: typeof openModal,
+    propertyId: string,
+    propertySlug?: string
+  ) => {
+    setSelectedPropertyId(propertyId);
+    if (type === "meta" && propertySlug) {
+      setSelectedSlug(propertySlug);
+    }
+    setOpenModal(type);
+  };
 
   const fetchCurrentUser = async () => {
     try {
@@ -92,11 +118,18 @@ export default function PropertyTable({
         pageSize: params.pagination.pageSize.toString(),
         ...params.filters,
       });
-      const res = await fetch(`${fetchUrl}?${query}`);
-      const json = await res.json();
-      setData(json.data);
-      setTotal(json.total);
-      setLoading(false);
+
+      try {
+        const res = await fetch(`${fetchUrl}?${query}`);
+        const json = await res.json();
+        setData(json.data);
+        setTotal(json.total);
+      } catch (err) {
+        toast.error("Failed to fetch data. Please check your API.");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
     },
     [fetchUrl]
   );
@@ -144,10 +177,6 @@ export default function PropertyTable({
     }
   };
 
-  const handleEdit = (propertyId: string) => {
-    router.push(`/dashboard/properties/edit/${propertyId}`);
-  };
-
   const updateStatus = async (
     id: string,
     field: "highROIProjects" | "featuredOnHomepage",
@@ -161,7 +190,7 @@ export default function PropertyTable({
       message.success(`Property ${field} updated`);
       fetchData({ pagination, filters });
     } catch (error) {
-      toast.error(error);
+      toast.error(error.message);
     }
   };
 
@@ -284,36 +313,128 @@ export default function PropertyTable({
     {
       title: "Actions",
       key: "actions",
-      render: (_, record) => (
-        <Space>
-          {showEditButton && (
-            <Button onClick={() => handleEdit(record.slug)} type="primary">
-              Edit
-            </Button>
-          )}
-          {onAction && (
-            <Button onClick={() => handleApprove(record._id)} type="primary">
-              {actionButtonText}
-            </Button>
-          )}
-        </Space>
-      ),
+      render: (_, record) => {
+        const menuItems: MenuProps["items"] = [
+          {
+            key: "images",
+            label: "Edit Images",
+            onClick: () => {
+              setSelectedSlug(record.slug);
+              handleOpenModal("images", record._id);
+            },
+          },
+          {
+            key: "faqs",
+            label: "Edit FAQs",
+            onClick: () => {
+              setSelectedSlug(record.slug);
+              handleOpenModal("faqs", record._id);
+            },
+          },
+          {
+            key: "meta",
+            label: "Edit Meta Info",
+            onClick: () => handleOpenModal("meta", record._id, record.slug),
+          },
+          {
+            key: "editor",
+            label: "Edit Editor Content",
+            onClick: () => {
+              setSelectedSlug(record.slug);
+              handleOpenModal("editor", record._id);
+            },
+          },
+          {
+            key: "details",
+            label: "Edit Basic Details",
+            onClick: () => {
+              setSelectedSlug(record.slug);
+              handleOpenModal("details", record._id);
+            },
+          },
+        ];
+
+        return (
+          <Space>
+            {onAction && (
+              <Button onClick={() => handleApprove(record._id)} type="primary">
+                {actionButtonText}
+              </Button>
+            )}
+            {myPropertiesView && (
+              <Dropdown menu={{ items: menuItems }} trigger={["click"]}>
+                <Button icon={<MoreOutlined />} />
+              </Dropdown>
+            )}
+          </Space>
+        );
+      },
     },
   ];
 
   return (
-    <Table
-      columns={columns}
-      dataSource={data}
-      rowKey={(record) => record._id}
-      pagination={{
-        ...pagination,
-        total,
-        showSizeChanger: true,
-        pageSizeOptions: ["10", "20", "50"],
-      }}
-      loading={loading}
-      onChange={handleTableChange}
-    />
+    <>
+      <Table
+        columns={columns}
+        dataSource={data}
+        rowKey={(record) => record._id}
+        pagination={{
+          ...pagination,
+          total,
+          showSizeChanger: true,
+          pageSizeOptions: ["10", "20", "50"],
+        }}
+        loading={loading}
+        onChange={handleTableChange}
+      />
+
+      <EditImagesModal
+        visible={openModal === "images" && !!selectedSlug}
+        onClose={() => {
+          setOpenModal(null);
+          setSelectedSlug(null);
+        }}
+        slug={selectedSlug || ""}
+        onSuccess={() => fetchData({ pagination, filters })}
+      />
+      <EditFAQsModal
+        visible={openModal === "faqs" && !!selectedSlug}
+        onClose={() => {
+          setOpenModal(null);
+          setSelectedSlug(null);
+        }}
+        slug={selectedSlug || ""}
+        onSuccess={() => fetchData({ pagination, filters })}
+      />
+      <EditMetaModal
+        visible={openModal === "meta" && !!selectedSlug}
+        onClose={() => {
+          setOpenModal(null);
+          setSelectedSlug(null);
+        }}
+        slug={selectedSlug || ""}
+        onSuccess={() => fetchData({ pagination, filters })}
+      />
+
+      <EditorModal
+        visible={openModal === "editor" && !!selectedSlug}
+        onClose={() => {
+          setOpenModal(null);
+          setSelectedSlug(null);
+        }}
+        slug={selectedSlug || ""}
+        onSuccess={() => fetchData({ pagination, filters })}
+      />
+
+      <EditDetailsModal
+        visible={openModal === "details" && !!selectedSlug}
+        onClose={() => {
+          setOpenModal(null);
+          setSelectedSlug(null);
+        }}
+        slug={selectedSlug || ""}
+        onSuccess={() => fetchData({ pagination, filters })}
+      />
+    </>
   );
 }

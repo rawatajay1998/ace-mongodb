@@ -254,7 +254,7 @@ export default async function PropertyPage({
                 </div>
               </div>
               <div className="content">
-                <h3 className="title">Gallery</h3>
+                <h3 className="title">Floor Plans</h3>
                 <CarouselWrapper slidesToShow={3}>
                   {property.floorPlansImages &&
                     property.floorPlansImages.map((url: string) => {

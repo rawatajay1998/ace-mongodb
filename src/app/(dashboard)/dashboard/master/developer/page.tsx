@@ -137,7 +137,6 @@ export default function DevelopersPage() {
       fetchDevelopers();
       reset();
       setEditingDeveloper(null);
-      setSelectedImageFile(null);
       setModalVisible(false);
     } catch {
       toast.error("Failed to save developer");
@@ -321,14 +320,31 @@ export default function DevelopersPage() {
               >
                 <Button icon={<UploadOutlined />}>Click to Upload</Button>
               </Upload>
-              {editingDeveloper?.developerLogo && !selectedImageFile && (
+              {editingDeveloper && (
                 <div className="mt-2">
-                  <span className="mr-2">Current Logo:</span>
-                  <img
-                    src={editingDeveloper.developerLogo}
-                    alt="Current Logo"
-                    className="w-20 h-20 object-contain border p-1"
-                  />
+                  {selectedImageFile ? (
+                    <div>
+                      <span className="mr-2">Selected Logo Preview:</span>
+                      <Image
+                        src={URL.createObjectURL(selectedImageFile)}
+                        alt="Selected Logo"
+                        className="w-20 h-20 object-contain border p-1"
+                        height={60}
+                        width={60}
+                      />
+                    </div>
+                  ) : editingDeveloper.developerLogo ? (
+                    <div>
+                      <span className="mr-2">Current Logo:</span>
+                      <Image
+                        src={editingDeveloper.developerLogo}
+                        height={60}
+                        width={60}
+                        alt="Current Logo"
+                        className="w-20 h-20 object-contain border p-1"
+                      />
+                    </div>
+                  ) : null}
                 </div>
               )}
             </div>
