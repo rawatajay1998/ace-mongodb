@@ -4,6 +4,8 @@ import connectDB from "@/lib/db";
 import Developer from "@/models/developer.model";
 import { NextRequest, NextResponse } from "next/server";
 import { getUserFromToken } from "@/lib/auth";
+import "@/models/state.model";
+import "@/models/city.model";
 
 // Configure Cloudinary
 cloudinary.config({
