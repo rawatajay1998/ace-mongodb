@@ -325,6 +325,8 @@ export default function AddPropertyForm() {
     try {
       const response = await fetch("/api/developer"); // Fetch property types from your API
       const { data } = await response.json();
+
+      console.log(data);
       setDeveloperList(data); // Assuming the data is an array of property types objects
     } catch {
       toast.error("Failed to load developers list");

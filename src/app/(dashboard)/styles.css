@@ -481,7 +481,7 @@ footer {
   font-weight: 600;
 }
 .ant-modal-body .ant-table-content .ant-table-cell {
-  background: #000;
+  background: #000 !important;
   color: #fff;
   border: none;
   border-radius: 0;

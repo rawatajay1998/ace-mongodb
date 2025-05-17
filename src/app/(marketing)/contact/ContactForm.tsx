@@ -12,11 +12,20 @@ const formSchema = z.object({
   phone: z.string().min(5, "Phone number is required"),
   role: z.string().min(2, "Please specify your role"),
   message: z.string().min(5, "Message is required"),
+  source: z.string().optional(),
 });
 
 type FormData = z.infer<typeof formSchema>;
 
-const ContactForm = () => {
+type ContactFormProps = {
+  source?: "contact-page" | "property";
+  propertyName?: string;
+};
+
+const ContactForm = ({
+  source = "contact-page",
+  propertyName,
+}: ContactFormProps) => {
   const [loading, setLoading] = useState(false);
 
   const {
@@ -32,10 +41,17 @@ const ContactForm = () => {
     setLoading(true);
 
     const toastId = "contact-enquiry";
+
+    const payload = {
+      ...data,
+      source,
+      propertyName: propertyName || null,
+    };
+
     try {
       const res = await fetch("/api/enquiry/contact", {
         method: "POST",
-        body: JSON.stringify(data),
+        body: JSON.stringify(payload),
       });
 
       if (res.ok) {
@@ -54,7 +70,7 @@ const ContactForm = () => {
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <h3>Contact Our Agents for Enquiry</h3>
+        <h3>Contact Our Team for Enquiry</h3>
 
         <div className="grid_row">
           <div className="form_field">

@@ -7,6 +7,8 @@ export interface IContact extends Document {
   phone: string;
   role: string;
   message: string;
+  propertyName: string;
+  source: string;
 }
 
 // Schema definition for Contact
@@ -17,6 +19,14 @@ const ContactSchema = new Schema<IContact>(
     phone: { type: String, required: true },
     role: { type: String, required: true },
     message: { type: String, required: true },
+    propertyName: {
+      type: String,
+      default: null,
+    },
+    source: {
+      type: String,
+      default: "contact-page",
+    },
   },
   { timestamps: true }
 );

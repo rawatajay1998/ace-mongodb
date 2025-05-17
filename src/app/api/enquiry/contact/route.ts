@@ -53,7 +53,25 @@ export async function POST(req: Request) {
     await connectDB();
     const body = await req.json();
 
-    const newContact = await Contact.create(body);
+    const {
+      name,
+      email,
+      phone,
+      role,
+      message,
+      source = "contact-page", // fallback if not provided
+      propertyName = null, // optional
+    } = body;
+
+    const newContact = await Contact.create({
+      name,
+      email,
+      phone,
+      role,
+      message,
+      source,
+      propertyName,
+    });
 
     return NextResponse.json(
       { message: "Enquiry submitted successfully!", contact: newContact },

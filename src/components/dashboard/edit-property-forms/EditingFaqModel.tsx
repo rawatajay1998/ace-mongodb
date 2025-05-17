@@ -125,7 +125,7 @@ export default function EditFAQsModal({
               ]}
               style={{ marginBottom: 0 }}
             >
-              <Input />
+              <Input.TextArea autoSize />
             </Form.Item>
           );
         }
@@ -222,7 +222,7 @@ export default function EditFAQsModal({
               { min: 10, message: "Question must be at least 10 characters" },
             ]}
           >
-            <Input />
+            <Input.TextArea autoSize />
           </Form.Item>
           <Form.Item
             label="Answer"

@@ -966,13 +966,13 @@ footer .copyrights_row ul {
   display: flex;
   cursor: pointer;
 }
-.property_meta h1 {
+.property_meta .price {
   font-size: 18px;
   text-transform: capitalize;
   font-weight: 600;
   color: #0a264a;
 }
-.property_meta .price {
+.property_meta h1 {
   font-size: 34px;
   color: #222;
   font-weight: 600;
@@ -980,11 +980,12 @@ footer .copyrights_row ul {
 .property_meta .price span {
   font-weight: 600;
   color: #222;
-  font-size: 22px;
+  font-size: 16px;
 }
 .property_meta .developer {
   font-size: 15px;
   color: #121212;
+  padding-bottom: 20px;
 }
 
 .property_meta .content_bottom .block {
@@ -1012,6 +1013,7 @@ footer .copyrights_row ul {
   color: #222;
   font-weight: 600;
   font-size: 16px;
+  text-transform: capitalize;
 }
 .property_meta .content_bottom .price {
   padding-left: 20px;
@@ -1172,7 +1174,7 @@ footer .copyrights_row ul {
 }
 .property_single_row .contact_form .contact_btns {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 12px;
   margin-block: 20px;
 }
@@ -1186,7 +1188,7 @@ footer .copyrights_row ul {
   fill: #006169;
   border-color: #e5eff0;
   background-color: #e5eff0;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   height: 36px;
   display: flex;
@@ -1620,6 +1622,7 @@ footer .copyrights_row ul {
   padding-block: 20px;
   height: 100px;
 }
+
 .contact_page .submit_btn {
   color: #fff;
   background: #0a264a;
@@ -1634,6 +1637,93 @@ footer .copyrights_row ul {
   justify-content: center;
   min-width: 150px;
 }
+
+.contact_form .grid_row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  column-gap: 20px;
+  row-gap: 0;
+}
+.contact_form h3 {
+  font-weight: 700;
+  color: #0a264a;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  font-size: 20px;
+  border-bottom: 1px solid #ddd;
+}
+.contact_form input,
+.contact_form textarea {
+  border: 1px solid #ddd;
+  height: 40px;
+  padding-inline: 12px;
+  width: 100%;
+  border-radius: 8px;
+}
+.contact_form textarea {
+  padding-block: 20px;
+  height: 100px;
+}
+
+.contact_form .submit_btn {
+  color: #fff;
+  background: #0a264a;
+  border-radius: 90px;
+  align-items: center;
+  gap: 6px;
+  height: 40px;
+  padding-inline: 24px;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  justify-content: center;
+  min-width: 150px;
+}
+.property_single_row .contact_form .contact_btn {
+  color: #fff;
+  background: #0a264a;
+  border-radius: 90px;
+  align-items: center;
+  gap: 12px;
+  height: 40px;
+  padding-inline: 24px;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  justify-content: center;
+  min-width: 150px;
+  width: 100%;
+  cursor: pointer;
+}
+
+.icon-advanced-email {
+  display: inline-flex;
+  animation: flyMail 2s infinite ease-in-out;
+}
+
+@keyframes flyMail {
+  0% {
+    transform: translateX(0) rotate(0deg);
+    opacity: 1;
+  }
+  25% {
+    transform: translateX(3px) rotate(5deg);
+    opacity: 0.9;
+  }
+  50% {
+    transform: translateX(6px) rotate(0deg);
+    opacity: 1;
+  }
+  75% {
+    transform: translateX(3px) rotate(-5deg);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateX(0) rotate(0deg);
+    opacity: 1;
+  }
+}
+
 .careers_page .job_card {
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 }
@@ -1652,6 +1742,9 @@ footer .copyrights_row ul {
 }
 
 @media (max-width: 800px) {
+  .banner_property_deatils {
+    padding-top: 0;
+  }
   header .nav_container {
     padding-inline: 20px;
   }

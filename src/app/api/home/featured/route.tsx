@@ -178,9 +178,9 @@ export async function DELETE(req: Request) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const update: any = { featuredOnHomepage: false };
 
-      if (category === "high-roi-projects") {
-        update.highROIProjects = false;
-      }
+      // if (category === "high-roi-projects") {
+      //   update.highROIProjects = false;
+      // }
 
       await Property.findByIdAndUpdate(propertyId, update);
       return NextResponse.json({ message: "Property removed from featured" });
