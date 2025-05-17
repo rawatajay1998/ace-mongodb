@@ -1836,6 +1836,8 @@ footer .copyrights_row ul {
     padding-bottom: 20px;
     margin-block: 20px;
     padding: 20px;
+    max-width: calc(100vw - 40px);
+    margin-inline: auto;
   }
   .property_single_row .content .title {
     font-size: 18px;
