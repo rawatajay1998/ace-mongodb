@@ -26,6 +26,7 @@ export async function PUT(req: Request) {
     paymentPlan,
     unitType,
     areaSize,
+    propertyPrice,
   } = body;
 
   if (!slug)
@@ -51,6 +52,7 @@ export async function PUT(req: Request) {
         cityName,
         stateName,
         areaName,
+        propertyPrice,
       },
       { new: true }
     );

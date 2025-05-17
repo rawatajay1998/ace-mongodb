@@ -99,6 +99,7 @@ export default function EditDetailsModal({
           developerName: property.developerName,
 
           // Other fields
+          propertyPrice: property.propertyPrice,
           paymentPlan: property.paymentPlan,
           unitType: property.unitType,
           areaSize: property.areaSize,
@@ -205,6 +206,7 @@ export default function EditDetailsModal({
         cityName,
         stateName,
         areaName,
+        slug,
       };
 
       console.log(payload);
@@ -303,12 +305,21 @@ export default function EditDetailsModal({
           ))}
 
           <Form.Item
+            name="propertyPrice"
+            label="Property Price"
+            rules={[{ required: true }]}
+          >
+            <Input placeholder="Enter property price" />
+          </Form.Item>
+
+          <Form.Item
             name="paymentPlan"
             label="Payment Plan"
             rules={[{ required: true }]}
           >
             <Input placeholder="Enter payment plan" />
           </Form.Item>
+
           <Form.Item
             name="unitType"
             label="Unit Type"
