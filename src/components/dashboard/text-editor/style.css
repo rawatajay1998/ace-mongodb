@@ -1,0 +1,244 @@
+/* ----------------------------- Editor Styles ----------------------------- */
+.ProseMirror {
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  padding: 16px;
+  min-height: 150px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+/* ----------------------------- Text Formatting ----------------------------- */
+
+/* Bold text */
+strong {
+  font-weight: bold;
+}
+
+/* Italic text */
+em {
+  font-style: italic;
+}
+
+/* Underlined text */
+u {
+  text-decoration: underline;
+}
+
+/* Strikethrough text */
+strike {
+  text-decoration: line-through;
+}
+
+/* Code text (inline) */
+code {
+  font-family: monospace;
+  background-color: #f4f4f4;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
+/* Blockquote styling */
+blockquote {
+  border-left: 4px solid #ddd;
+  padding-left: 16px;
+  color: #555;
+  font-style: italic;
+  margin: 16px 0;
+}
+
+/* ----------------------------- Headings ----------------------------- */
+h1 {
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 16px 0;
+}
+
+h2 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 14px 0;
+}
+
+h3 {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin: 12px 0;
+}
+
+h4 {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin: 10px 0;
+}
+
+/* ----------------------------- Paragraphs ----------------------------- */
+p {
+  margin-bottom: 1em;
+  line-height: 1.5;
+}
+
+/* ----------------------------- Lists ----------------------------- */
+
+/* Unordered (Bullet) Lists */
+ul {
+  list-style-type: disc;
+  padding-left: 20px;
+  margin-bottom: 1em;
+}
+
+/* Ordered (Numbered) Lists */
+ol {
+  list-style-type: decimal;
+  padding-left: 20px;
+  margin-bottom: 1em;
+}
+
+/* List Items */
+li {
+  margin-bottom: 8px;
+}
+
+/* ----------------------------- Tables ----------------------------- */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1em;
+}
+
+th,
+td {
+  border: 1px solid #2a2a2a;
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: #0a0a0a;
+}
+
+td {
+  background-color: #0a0a0a;
+}
+
+table td,
+table th {
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+/* Table header cells (if any) */
+th {
+  font-weight: bold;
+}
+
+/* ----------------------------- Links ----------------------------- */
+a {
+  color: #1a73e8;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* ----------------------------- Inline Elements ----------------------------- */
+span {
+  white-space: pre-wrap;
+}
+
+/* ----------------------------- Code Blocks ----------------------------- */
+pre {
+  background-color: var(--bg-light);
+  padding: 16px;
+  font-family: monospace;
+  border-radius: 4px;
+  overflow-x: auto;
+  margin-bottom: 1em;
+}
+
+pre code {
+  font-size: 14px;
+  background: var(--bg-color);
+  padding: 4px;
+}
+
+/* ----------------------------- Horizontal Rule ----------------------------- */
+hr {
+  border: 0;
+  border-top: 1px solid #ddd;
+  margin: 16px 0;
+}
+
+/* ----------------------------- Alignment ----------------------------- */
+
+/* Left Align */
+.text-left {
+  text-align: left;
+}
+
+/* Center Align */
+.text-center {
+  text-align: center;
+}
+
+/* Right Align */
+.text-right {
+  text-align: right;
+}
+
+/* ----------------------------- Highlight ----------------------------- */
+mark {
+  background-color: #ffeb3b;
+  color: #333;
+  padding: 0 4px;
+}
+
+/* ----------------------------- Mention (if using mentions) ----------------------------- */
+.mention {
+  background-color: #e1e1e1;
+  color: #007bff;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.mention:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+/* ----------------------------- Images ----------------------------- */
+img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+  margin: 16px 0;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* ----------------------------- Other Styles ----------------------------- */
+
+/* The image container can have styles to align it within the editor */
+.ProseMirror img {
+  display: block;
+  margin: 0 auto;
+}
+
+/* ----------------------------- Resizable Columns for Tables ----------------------------- */
+.ProseMirror .resize-handle {
+  background-color: #f4f4f4;
+  border-radius: 4px;
+  width: 6px;
+  cursor: ew-resize;
+}
+
+/* Add custom styles for any custom extension like table, etc. */
+
+/* button styling */
+button {
+  background: #fff;
+}
