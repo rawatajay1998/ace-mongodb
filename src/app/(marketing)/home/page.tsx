@@ -21,6 +21,7 @@ import HighROIProperties from "./HIghROI";
 import TopLocations from "./TopLocations";
 import TestimonialsCarousel from "./Testimonials";
 import DeveloperCarousel from "./Developers";
+import BannerVideo from "./BannerVideo";
 
 const teamArray = [
   {
@@ -51,22 +52,11 @@ const teamArray = [
 ];
 
 const HomePgae = () => {
+  console.log("HomePage rendered");
   return (
     <div className="home">
       <section className="banner_section">
-        <div className="vide_container">
-          <video
-            className="absolute top-0 left-0 w-full h-full object-cover"
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="auto"
-          >
-            <source src="/assets/dubai-banner-video.mp4" type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-        </div>
+        <BannerVideo />
         <div className="container">
           <div className="content">
             <h1>Your Safe Path to Owning Properties in Dubai Starts Here </h1>

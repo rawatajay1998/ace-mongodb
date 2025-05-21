@@ -113,7 +113,7 @@ export default async function SearchPage({
   params: { city: string };
   searchParams: { [key: string]: string | string[] };
 }) {
-  const { city } = params;
+  const { city } = await params;
   const resolvedSearchParams = await searchParams;
 
   const getParam = (key: string): string | undefined => {
