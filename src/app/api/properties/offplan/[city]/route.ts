@@ -79,6 +79,7 @@ export async function GET(
     const propertyCategoryName = params.propertyCategoryName || undefined;
 
     // Base filters
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const filters: any = {
       cityName: new RegExp(`^${cityParam.replace(/[-\s]/g, "[\\s-]*")}$`, "i"),
     };

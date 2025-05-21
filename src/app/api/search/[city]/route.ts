@@ -11,6 +11,7 @@ interface QueryParams {
   search: string | null;
   highROI: string | null;
   propertyCategoryName: string | null;
+  propertySubCategoryName: string | null;
   propertyTypeName: string | null;
   minPrice: string | null;
   maxPrice: string | null;
@@ -40,6 +41,7 @@ export async function GET(
       search: searchParams.get("search"),
       highROI: searchParams.get("highROI"),
       propertyCategoryName: searchParams.get("propertyCategoryName"),
+      propertySubCategoryName: searchParams.get("propertySubCategoryName"),
       propertyTypeName: searchParams.get("propertyTypeName"),
       minPrice: searchParams.get("minPrice"),
       maxPrice: searchParams.get("maxPrice"),
@@ -95,6 +97,17 @@ export async function GET(
         );
       } catch (err) {
         console.error("Invalid propertyCategoryName regex:", err);
+      }
+    }
+
+    if (params.propertySubCategoryName) {
+      try {
+        filters.propertySubCategoryName = new RegExp(
+          `^${params.propertySubCategoryName.replace(/[-\s]/g, "[\\s-]*")}$`,
+          "i"
+        );
+      } catch (err) {
+        console.error("Invalid propertySubCategoryName regex:", err);
       }
     }
 
@@ -162,9 +175,6 @@ export async function GET(
 
     const skip = (page - 1) * limit;
 
-    console.log("Query params:", Object.fromEntries(searchParams.entries()));
-    console.log("Final filters:", JSON.stringify(filters, null, 2));
-
     const [properties, total] = await Promise.all([
       Property.find(filters).sort(sortOptions).skip(skip).limit(limit).lean(),
       Property.countDocuments(filters),
@@ -185,7 +195,6 @@ export async function GET(
       },
     });
   } catch (error) {
-    console.error("Search error:", error);
     return NextResponse.json(
       {
         success: false,

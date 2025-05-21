@@ -23,7 +23,7 @@ export function FilterSidebar({
     searchParams.propertyCategoryName || ""
   );
   const [subcategory, setSubcategory] = useState(
-    searchParams.propertySubcategoryName || ""
+    searchParams.propertySubCategoryName || ""
   );
   const [isMobile, setIsMobile] = useState(false);
   const [drawerVisible, setDrawerVisible] = useState(false);
@@ -93,7 +93,7 @@ export function FilterSidebar({
     setType(searchParams.propertyTypeName || "");
     setHighROI(searchParams.highROI === "true");
     setCategory(searchParams.propertyCategoryName || "");
-    setSubcategory(searchParams.propertySubcategoryName || "");
+    setSubcategory(searchParams.propertySubCategoryName || "");
   }, [searchParams]);
 
   // Optionally, keep this if you want to validate status against options:
@@ -117,7 +117,7 @@ export function FilterSidebar({
     if (type) params.set("propertyTypeName", type);
     if (highROI) params.set("highROI", "true");
     if (category) params.set("propertyCategoryName", category);
-    if (subcategory) params.set("propertySubcategoryName", subcategory);
+    if (subcategory) params.set("propertySubCategoryName", subcategory);
     params.set("page", "1");
     router.push(`/search/${city}?${params.toString()}`);
     setDrawerVisible(false);

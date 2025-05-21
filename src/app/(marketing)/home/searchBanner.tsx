@@ -47,7 +47,7 @@ const SearchBanner = () => {
 
   const [searchParams, setSearchParams] = useState({
     propertyCategoryName: "Residential",
-    propertySubcategoryName: undefined,
+    propertySubCategoryName: undefined,
     location: "",
     projectName: "",
     propertyTypeName: undefined,
@@ -100,9 +100,9 @@ const SearchBanner = () => {
   const onChangePrice = (newValue: number[]) => setPrice(newValue);
 
   const handleSearch = async () => {
-    const { propertyCategoryName, propertySubcategoryName, location } =
+    const { propertyCategoryName, propertySubCategoryName, location } =
       searchParams;
-    if (!propertyCategoryName || !propertySubcategoryName || !location) {
+    if (!propertyCategoryName || !propertySubCategoryName || !location) {
       toast.error("Please select category, subcategory and location");
       return;
     }
@@ -115,8 +115,8 @@ const SearchBanner = () => {
         encodeURIComponent(propertyCategoryName)
       );
       params.append(
-        "propertySubcategoryName",
-        encodeURIComponent(propertySubcategoryName)
+        "propertySubCategoryName",
+        encodeURIComponent(propertySubCategoryName)
       );
       if (searchParams.projectName)
         params.append("search", searchParams.projectName);
@@ -140,7 +140,7 @@ const SearchBanner = () => {
   const handleReset = () => {
     setSearchParams({
       propertyCategoryName: undefined,
-      propertySubcategoryName: undefined,
+      propertySubCategoryName: undefined,
       location: "",
       projectName: "",
       propertyTypeName: undefined,
@@ -177,7 +177,7 @@ const SearchBanner = () => {
           setSearchParams((prev) => ({
             ...prev,
             propertyCategoryName: tabToCategoryName[key], // use mapping with Residential for buy
-            propertySubcategoryName: undefined,
+            propertySubCategoryName: undefined,
           }));
         }}
         items={[
@@ -198,11 +198,11 @@ const SearchBanner = () => {
           <CustomDropdown
             placeholder="Select subcategory"
             options={categoryOptions[activeTab]}
-            value={searchParams.propertySubcategoryName}
+            value={searchParams.propertySubCategoryName}
             onChange={(value: string) =>
               setSearchParams({
                 ...searchParams,
-                propertySubcategoryName: value,
+                propertySubCategoryName: value,
               })
             }
           />
