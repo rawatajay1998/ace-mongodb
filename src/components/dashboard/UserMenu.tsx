@@ -134,8 +134,6 @@ const UserMenu: React.FC<Props> = ({ user }) => {
     },
   ];
 
-  console.log(user.profileImageUrl);
-
   return (
     <>
       <Dropdown menu={{ items: menuItems }} trigger={["click"]}>

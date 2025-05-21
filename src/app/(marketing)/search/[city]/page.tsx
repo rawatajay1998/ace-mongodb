@@ -30,14 +30,14 @@ export async function generateMetadata({ params }): Promise<Metadata> {
   }
 
   return {
-    title: `Secondary Properties in ${formattedCity} | Ace Elite Properties`,
-    description: `Find the best secondary properties in ${formattedCity}. Browse new developments, prices, and investment opportunities.`,
+    title: `Properties in ${formattedCity} | Ace Elite Properties`,
+    description: `Find the best properties in ${formattedCity}. Browse new developments, prices, and investment opportunities.`,
     alternates: {
       canonical: getCanonicalUrl(city),
     },
     openGraph: {
-      title: `Secondary Properties in ${formattedCity} | Ace Elite Properties`,
-      description: `Find the best secondary properties in ${formattedCity}. Browse new developments, prices, and investment opportunities.`,
+      title: `Properties in ${formattedCity} | Ace Elite Properties`,
+      description: `Find the best properties in ${formattedCity}. Browse new developments, prices, and investment opportunities.`,
       url: getCanonicalUrl(city),
       siteName: "Ace Elite Properties",
       images: [
@@ -45,7 +45,7 @@ export async function generateMetadata({ params }): Promise<Metadata> {
           url: "/images/secondary-og-image.jpg",
           width: 1200,
           height: 630,
-          alt: `Secondary Properties in ${formattedCity}`,
+          alt: `Properties in ${formattedCity}`,
         },
       ],
       locale: "en_US",
@@ -53,8 +53,8 @@ export async function generateMetadata({ params }): Promise<Metadata> {
     },
     twitter: {
       card: "summary_large_image",
-      title: `Secondary Properties in ${formattedCity} | Ace Elite Properties`,
-      description: `Find the best secondary properties in ${formattedCity}. Browse new developments, prices, and investment opportunities.`,
+      title: `Properties in ${formattedCity} | Ace Elite Properties`,
+      description: `Find the best properties in ${formattedCity}. Browse new developments, prices, and investment opportunities.`,
       images: ["/images/secondary-twitter-image.jpg"],
     },
     robots: {
@@ -106,14 +106,14 @@ export async function validateCity(slug: string): Promise<boolean> {
   }
 }
 
-export default async function SecondaryListingPage({
+export default async function SearchPage({
   params,
   searchParams,
 }: {
-  params: Promise<{ city: string }>;
-  searchParams: Promise<Record<string, string | string[]>>;
+  params: { city: string };
+  searchParams: { [key: string]: string | string[] };
 }) {
-  const { city } = await params;
+  const { city } = params;
   const resolvedSearchParams = await searchParams;
 
   const getParam = (key: string): string | undefined => {

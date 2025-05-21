@@ -1,7 +1,6 @@
 import Image from "next/image";
 
 const PaymentPlanSection = ({ paymentPlans }) => {
-  console.log("ss");
   if (!paymentPlans?.length) return null;
 
   return (

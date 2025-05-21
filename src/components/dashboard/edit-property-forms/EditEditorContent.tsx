@@ -24,7 +24,7 @@ export default function EditorModal({ visible, onClose, slug }: Props) {
         .get(`/api/property/${slug}`)
         .then((res) => {
           setData(res.data.property);
-          console.log(res.data);
+
           form.setFieldsValue(res.data.property);
         })
         .catch(() => toast.error("Failed to fetch data"));

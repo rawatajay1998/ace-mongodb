@@ -34,14 +34,20 @@ const WebsiteHeader = () => {
                 <Link href="/">Home</Link>
               </li>
               <li>
-                <Link href="/offplan/dubai">Off Plan</Link>
+                <Link href={`/search/dubai?propertySubCategoryName=Offplan`}>
+                  Off Plan
+                </Link>
               </li>
 
               <li>
-                <Link href="/secondary/dubai">Secondary</Link>
+                <Link href={`/search/dubai?propertySubCategoryName=Secondary`}>
+                  Secondary
+                </Link>
               </li>
               <li>
-                <Link href="/rental/dubai">Rental</Link>
+                <Link href={`/search/dubai?propertySubCategoryName=Rental`}>
+                  Rental
+                </Link>
               </li>
               <li>
                 <Link href="/about">About Us</Link>

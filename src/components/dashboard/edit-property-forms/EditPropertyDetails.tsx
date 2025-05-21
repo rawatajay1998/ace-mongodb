@@ -218,8 +218,6 @@ export default function EditDetailsModal({
         slug,
       };
 
-      console.log(payload);
-
       await axios.put("/api/property/edit/details", payload);
       toast.success("Property updated");
       onClose();

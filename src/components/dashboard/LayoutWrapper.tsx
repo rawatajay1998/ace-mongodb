@@ -28,8 +28,6 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
     fetchRole();
   }, []);
 
-  console.log(isAdmin);
-
   return (
     <>
       <Sidebar collapsed={collapsed} isAdmin={isAdmin} />

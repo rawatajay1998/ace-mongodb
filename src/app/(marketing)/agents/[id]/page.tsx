@@ -109,8 +109,6 @@ export default async function AgentDetailsPage({ params }) {
   const agent: Agent = data.agent;
   const properties: Property[] = data.properties;
 
-  console.log(data);
-
   return (
     <section className="container mx-auto px-4 py-8">
       {/* Header Section */}

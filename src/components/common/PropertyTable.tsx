@@ -125,8 +125,6 @@ export default function PropertyTable({
     getUser();
   }, []);
 
-  console.log(user);
-
   const fetchData = useCallback(
     async (params: FetchParams) => {
       setLoading(true);
