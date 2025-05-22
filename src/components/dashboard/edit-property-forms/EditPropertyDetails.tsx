@@ -102,6 +102,7 @@ export default function EditDetailsModal({
           propertyStatusName: property.propertyStatusName,
           propertyTypeName: property.propertyTypeName,
           propertyCategoryName: property.propertyCategoryName,
+          propertySubCategoryName: property.propertySubCategoryName,
           stateName: property.stateName,
           cityName: property.cityName,
           areaName: property.areaName,
@@ -160,7 +161,6 @@ export default function EditDetailsModal({
   };
 
   const handleSelectChange = (name: string, value: string) => {
-    // When a select changes, update both the ID and name fields
     const option = options[
       name === "state"
         ? "states"
@@ -174,9 +174,10 @@ export default function EditDetailsModal({
                 ? "types"
                 : name === "propertyCategory"
                   ? "categories"
-                  : "statuses"
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ].find((item: any) => item._id === value);
+                  : name === "propertySubCategory"
+                    ? "subCategories"
+                    : "statuses"
+    ].find((item) => item._id === value);
 
     form.setFieldsValue({
       [name]: value,
@@ -192,6 +193,7 @@ export default function EditDetailsModal({
       const {
         propertyTypeName,
         propertyCategoryName,
+        propertySubCategoryName,
         propertyStatusName,
         cityName,
         stateName,
@@ -211,6 +213,7 @@ export default function EditDetailsModal({
         ...values,
         propertyTypeName,
         propertyCategoryName,
+        propertySubCategoryName,
         propertyStatusName,
         cityName,
         stateName,
