@@ -122,34 +122,44 @@ const SearchBanner = () => {
   const onChangePrice = (newValue: number[]) => setPrice(newValue);
 
   const handleSearch = async () => {
-    const { propertyCategoryName, propertySubCategoryName, location } =
-      searchParams;
-    if (!propertyCategoryName || !propertySubCategoryName || !location) {
-      toast.error("Please select category, subcategory and location");
+    if (!searchParams.projectName || searchParams.projectName.trim() === "") {
+      toast.error("Please enter a project name to search");
       return;
     }
 
     setLoading(true);
     try {
+      const cityName = searchParams.location?.trim() || "Dubai"; // Use selected city or fallback
       const params = new URLSearchParams();
+
       params.append(
         "propertyCategoryName",
-        encodeURIComponent(propertyCategoryName)
+        encodeURIComponent(searchParams.propertyCategoryName || "Residential")
       );
-      params.append(
-        "propertySubCategoryName",
-        encodeURIComponent(propertySubCategoryName)
-      );
-      if (searchParams.projectName)
-        params.append("search", searchParams.projectName);
+
+      if (searchParams.projectName.trim()) {
+        params.append("search", searchParams.projectName.trim());
+      }
+
       if (price[0] > 0) params.append("minPrice", price[0].toString());
       if (price[1] < 20000000) params.append("maxPrice", price[1].toString());
-      if (searchParams.propertyTypeName)
-        params.append("propertyTypeName", searchParams.propertyTypeName);
-      if (searchParams.propertyStatus)
-        params.append("status", searchParams.propertyStatus);
 
-      const citySlug = location.toLowerCase().replace(/\s+/g, "-");
+      if (searchParams.propertySubCategoryName) {
+        params.append(
+          "propertySubCategoryName",
+          encodeURIComponent(searchParams.propertySubCategoryName)
+        );
+      }
+
+      if (searchParams.propertyTypeName) {
+        params.append("propertyTypeName", searchParams.propertyTypeName);
+      }
+
+      if (searchParams.propertyStatus) {
+        params.append("status", searchParams.propertyStatus);
+      }
+
+      const citySlug = cityName.toLowerCase().replace(/\s+/g, "-");
       router.push(`/search/${citySlug}?${params.toString()}`);
     } catch (err) {
       toast.error("Search failed");
@@ -173,12 +183,12 @@ const SearchBanner = () => {
 
   const categoryOptions = {
     buy: [
-      { label: "Off Plan", value: "offplan" },
+      { label: "Off Plan", value: "Off Plan" },
       { label: "Ready to Move", value: "secondary" },
     ],
     rent: [{ label: "Rental", value: "rental" }],
     commercial: [
-      { label: "Off Plan", value: "offplan" },
+      { label: "Off Plan", value: "Off Plan" },
       { label: "Ready to Move", value: "secondary" },
       { label: "Rental", value: "rental" },
     ],
@@ -215,70 +225,107 @@ const SearchBanner = () => {
           handleSearch();
         }}
       >
-        <div className="form_field custom_dropdown">
-          <label>Subcategory</label>
-          <CustomDropdown
-            placeholder="Select subcategory"
-            options={categoryOptions[activeTab]}
-            value={searchParams.propertySubCategoryName}
-            onChange={(value: string) =>
-              setSearchParams({
-                ...searchParams,
-                propertySubCategoryName: value,
-              })
-            }
-          />
+        <div className="flex items-center gap-2 w-full relative">
+          <div className="input_wrapper">
+            <Search size={16} color="#0a264a" />
+            <input
+              className="search_input"
+              placeholder="Search Keyword"
+              value={searchParams.projectName}
+              onChange={(e) =>
+                setSearchParams({
+                  ...searchParams,
+                  projectName: e.target.value,
+                })
+              }
+            />
+          </div>
+
+          {/* Filter Button */}
+          <button
+            type="button"
+            onClick={() => setOpenFilters(!openFilters)}
+            className="filter_btn"
+          >
+            <SlidersHorizontal size={16} />
+          </button>
+
+          {/* Search Button */}
+          <button type="submit" className="search_btn">
+            <Search size={16} />
+          </button>
         </div>
-
-        <div className="form_field custom_dropdown">
-          <label>Location</label>
-          <CustomDropdown
-            placeholder="Select location"
-            options={cities.map((city) => ({
-              label: city.name,
-              value: city.name,
-            }))}
-            value={searchParams.location}
-            onChange={(value: string) =>
-              setSearchParams({ ...searchParams, location: value })
-            }
-          />
-        </div>
-
-        <div className="form_field">
-          <label>Keyword</label>
-          <input
-            className="flex justify-between items-center w-48 px-4 py-2 border rounded-lg text-[#121212]"
-            placeholder="Search Keyword"
-            value={searchParams.projectName}
-            onChange={(e) =>
-              setSearchParams({ ...searchParams, projectName: e.target.value })
-            }
-          />
-        </div>
-
-        <button
-          className="filter_btn"
-          onClick={(e) => {
-            e.preventDefault();
-            setOpenFilters(!openFilters);
-          }}
-        >
-          <SlidersHorizontal size={16} />
-          Filters
-        </button>
-
-        <button className="search_btn" type="submit">
-          <Search size={16} />
-          Search
-        </button>
       </form>
 
       {openFilters && (
         <div className="filters_dropdown" ref={filtersRef}>
           <div className="bg-white p-6 rounded-2xl shadow-md space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              {/* Subcategory Dropdown */}
               <div>
+                <label className="block mb-2 font-medium">Subcategory</label>
+                <CustomDropdown
+                  placeholder="Select subcategory"
+                  options={categoryOptions[activeTab]}
+                  value={searchParams.propertySubCategoryName}
+                  onChange={(value: string) =>
+                    setSearchParams({
+                      ...searchParams,
+                      propertySubCategoryName: value,
+                    })
+                  }
+                />
+              </div>
+
+              {/* Location Dropdown */}
+              <div>
+                <label className="block mb-2 font-medium">Location</label>
+                <CustomDropdown
+                  placeholder="Select location"
+                  options={cities.map((city) => ({
+                    label: city.name,
+                    value: city.name,
+                  }))}
+                  value={searchParams.location}
+                  onChange={(value: string) =>
+                    setSearchParams({ ...searchParams, location: value })
+                  }
+                />
+              </div>
+
+              {/* Property Type Dropdown */}
+              <div>
+                <label className="block mb-2 font-medium">Property Type</label>
+                <CustomDropdown
+                  placeholder="Property Type"
+                  options={propertyTypeOptions}
+                  value={searchParams.propertyTypeName}
+                  onChange={(value: string) =>
+                    setSearchParams({
+                      ...searchParams,
+                      propertyTypeName: value,
+                    })
+                  }
+                />
+              </div>
+
+              {/* Property Status Dropdown */}
+              <div>
+                <label className="block mb-2 font-medium">
+                  Property Status
+                </label>
+                <CustomDropdown
+                  placeholder="Property Status"
+                  options={propertyStatusOptions}
+                  value={searchParams.propertyStatus}
+                  onChange={(value: string) =>
+                    setSearchParams({ ...searchParams, propertyStatus: value })
+                  }
+                />
+              </div>
+
+              {/* Price Slider */}
+              <div className="col-span-full">
                 <label className="block mb-2 font-medium">
                   Price Range: {price[0]} - {price[1]}
                 </label>
@@ -290,30 +337,22 @@ const SearchBanner = () => {
                   max={20}
                 />
               </div>
-              <CustomDropdown
-                placeholder="Property Type"
-                options={propertyTypeOptions}
-                value={searchParams.propertyTypeName}
-                onChange={(value: string) =>
-                  setSearchParams({ ...searchParams, propertyTypeName: value })
-                }
-              />
-
-              <CustomDropdown
-                placeholder="Property Status"
-                options={propertyStatusOptions}
-                value={searchParams.propertyStatus}
-                onChange={(value: string) =>
-                  setSearchParams({ ...searchParams, propertyStatus: value })
-                }
-              />
             </div>
 
             <div className="flex justify-end gap-4">
-              <Button type="default" onClick={handleReset}>
+              <Button
+                className="reset_btn"
+                type="default"
+                onClick={handleReset}
+              >
                 Reset
               </Button>
-              <Button type="primary" onClick={handleSearch} loading={loading}>
+              <Button
+                className="apply_btn"
+                type="primary"
+                onClick={handleSearch}
+                loading={loading}
+              >
                 Apply Filters
               </Button>
             </div>

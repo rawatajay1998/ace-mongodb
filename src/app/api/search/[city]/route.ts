@@ -105,7 +105,7 @@ export async function GET(
     if (params.propertySubCategoryName) {
       try {
         filters.propertySubCategoryName = new RegExp(
-          `^${params.propertySubCategoryName.replace(/[-\s]/g, "[\\s-]*")}$`,
+          `^${params.propertySubCategoryName.replace(/[-\s_]/g, "[\\s_-]*")}$`,
           "i"
         );
       } catch (err) {
