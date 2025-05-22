@@ -201,6 +201,7 @@ export default function EditDetailsModal({
       } = form.getFieldsValue([
         "propertyTypeName",
         "propertyCategoryName",
+        "propertySubCategoryName",
         "propertyStatusName",
         "cityName",
         "stateName",
