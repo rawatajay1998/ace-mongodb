@@ -42,7 +42,7 @@ const CustomDropdown = ({ options, value, onChange, placeholder }) => {
 
 const SearchBanner = () => {
   const [activeTab, setActiveTab] = useState("buy");
-  const [price, setPrice] = useState<number[]>([1, 20]);
+  const [price, setPrice] = useState<number[]>([99999, 999999]);
   const [loading, setLoading] = useState(false);
 
   const [openFilters, setOpenFilters] = useState(false);
@@ -123,7 +123,7 @@ const SearchBanner = () => {
 
   const handleSearch = async () => {
     if (!searchParams.projectName || searchParams.projectName.trim() === "") {
-      toast.error("Please enter a project name to search");
+      toast.error("Please enter search keywords");
       return;
     }
 
@@ -178,7 +178,7 @@ const SearchBanner = () => {
       propertyTypeName: undefined,
       propertyStatus: undefined,
     });
-    setPrice([10000, 1000000]);
+    setPrice([99999, 9999999]);
   };
 
   const categoryOptions = {
@@ -227,7 +227,7 @@ const SearchBanner = () => {
       >
         <div className="flex items-center gap-2 w-full relative">
           <div className="input_wrapper">
-            <Search size={16} color="#0a264a" />
+            <Search size={16} color="#0A264A" />
             <input
               className="search_input"
               placeholder="Search Keyword"
@@ -327,14 +327,16 @@ const SearchBanner = () => {
               {/* Price Slider */}
               <div className="col-span-full">
                 <label className="block mb-2 font-medium">
-                  Price Range: {price[0]} - {price[1]}
+                  Price Range: {price[0].toLocaleString()} -{" "}
+                  {price[1].toLocaleString()}
                 </label>
                 <Slider
                   onChange={onChangePrice}
                   range
                   value={price}
-                  min={0}
-                  max={20}
+                  min={99999}
+                  max={9999999}
+                  step={1000}
                 />
               </div>
             </div>

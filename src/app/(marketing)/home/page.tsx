@@ -170,7 +170,7 @@ const HomePgae = () => {
                     management, leasing, sales and marketing, and property
                     valuation.
                   </p>
-                  <Link href={"/"}>
+                  <Link href={"/about"}>
                     See More
                     <MoveRight size={20} />
                   </Link>
@@ -183,7 +183,7 @@ const HomePgae = () => {
                     and consulting. The market is characterized by a thriving
                     economy, favorable business environment
                   </p>
-                  <Link href={"/"}>
+                  <Link href={"/about"}>
                     See More
                     <MoveRight size={20} />
                   </Link>
@@ -196,7 +196,7 @@ const HomePgae = () => {
                     simplifying the process of managing rental properties and
                     maximizing returns.
                   </p>
-                  <Link href={"/"}>
+                  <Link href={"/about"}>
                     See More
                     <MoveRight size={20} />
                   </Link>
@@ -208,7 +208,7 @@ const HomePgae = () => {
                     support offered to new property owners, often by developers
                     or real estate agents.
                   </p>
-                  <Link href={"/"}>
+                  <Link href={"/about"}>
                     See More
                     <MoveRight size={20} />
                   </Link>

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import ReadMoreText from "@/components/marketing/ReadMoreText";
-import { Collapse, Skeleton } from "antd";
+import { Collapse } from "antd";
 import dynamic from "next/dynamic";
 import ImageBannerGrid from "./ImagebannerGrid";
 import PropertySkeleton from "./PageSkeleton";

@@ -4,6 +4,7 @@ import WebsiteHeader from "@/components/marketing/Header";
 import WebsiteFooter from "@/components/marketing/Footer";
 import { Toaster } from "react-hot-toast";
 import RouteLoader from "@/components/common/progressBar";
+import ScrollToTop from "@/components/common/ScrollToTop";
 
 export const metadata: Metadata = {
   icons: {
@@ -30,6 +31,7 @@ export default function RootLayout({
         {children}
         <WebsiteFooter />
         <Toaster />
+        <ScrollToTop />
       </body>
     </html>
   );

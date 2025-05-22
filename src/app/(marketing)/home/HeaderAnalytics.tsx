@@ -34,7 +34,7 @@ export default function SiteStatsBar() {
   const repeatedStats = [...stats, ...stats]; // Duplicate for seamless scroll
 
   return (
-    <div className="bg-[#0a0f1a] py-3 overflow-hidden text-white">
+    <div className="bg-[#0A264A] py-3 overflow-hidden text-white">
       <div className="marquee">
         <div className="marquee-track">
           {repeatedStats.map((stat, idx) => (
