@@ -2130,6 +2130,9 @@ footer .copyrights_row ul {
   font-weight: 500;
   margin-right: 4px;
 }
+.property_content .ant-skeleton-element.ant-skeleton-active {
+  width: 100%;
+}
 .listing_page_cards .header {
   display: flex;
   align-items: center;
