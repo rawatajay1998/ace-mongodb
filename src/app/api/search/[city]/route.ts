@@ -185,6 +185,7 @@ export async function GET(
             { propertyTypeName: { $regex: term, $options: "i" } },
             { propertyCategoryName: { $regex: term, $options: "i" } },
             { propertySubCategoryName: { $regex: term, $options: "i" } },
+            { propertyStatusName: { $regex: term, $options: "i" } },
           ],
         }));
       }

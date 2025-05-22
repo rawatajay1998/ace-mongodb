@@ -382,8 +382,7 @@ export default function MortgageCalculator() {
               showInfo={false}
               strokeColor="#096dd9"
               trailColor="#d6e4ff"
-              size={12}
-              style={{ borderRadius: 8 }}
+              style={{ borderRadius: 8, width: "100%" }}
             />
 
             <Row

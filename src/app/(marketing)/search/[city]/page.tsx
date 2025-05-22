@@ -6,6 +6,7 @@ import { Pagination } from "./Pagination";
 import { Metadata } from "next";
 import connectDB from "@/lib/db";
 import City from "@/models/city.model";
+import Area from "@/models/area.model";
 import { Suspense } from "react";
 import { ListingSkeleton } from "./ListingSkeleton";
 
@@ -81,15 +82,26 @@ export async function validateCity(slug: string): Promise<string | false> {
   try {
     await connectDB();
 
-    const safeRegex = slug.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const safeSlug = slug.trim().toLowerCase();
 
-    const city = await City.findOne({
-      name: { $regex: `^${safeRegex}$`, $options: "i" },
-    })
-      .select("name")
+    // Try to find city by slug
+    const city = await City.findOne({ slug: safeSlug })
+      .select("name slug")
       .lean();
+    if (city) {
+      return city.name;
+    }
 
-    return city?.name || false;
+    // If not found in city, try to find area by slug
+    const area = await Area.findOne({ slug: safeSlug })
+      .select("name slug")
+      .lean();
+    if (area) {
+      return area.name; // or you could return area.cityName if you want city name
+    }
+
+    // Not found in either collection
+    return false;
   } catch (error) {
     console.error("City validation error:", error);
     return false;
