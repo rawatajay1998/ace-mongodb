@@ -3,7 +3,23 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
-const WebsiteFooter = () => {
+interface ICity {
+  _id: string;
+  name: string;
+  slug: string;
+}
+
+async function getTopLocations(): Promise<ICity[]> {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/home/featured?category=top-locations&type=table&includeCounts=true`,
+    { next: { revalidate: 3600 } } // optional ISR caching
+  );
+  const data = await res.json();
+  return data?.topLocations || [];
+}
+
+const WebsiteFooter = async () => {
+  const topLocations = await getTopLocations();
   return (
     <footer>
       <div className="container">
@@ -80,18 +96,11 @@ const WebsiteFooter = () => {
           <div className="top_locations">
             <h3 className="title">Top Locations</h3>
             <ul>
-              <li>
-                <Link href={"/"}>Business Bay</Link>
-              </li>
-              <li>
-                <Link href={"/"}>Downtown Dubai</Link>
-              </li>
-              <li>
-                <Link href={"/"}>Dubai Marina</Link>
-              </li>
-              <li>
-                <Link href={"/"}>Palm Jumeriah</Link>
-              </li>
+              {topLocations.map((loc) => (
+                <li key={loc._id}>
+                  <Link href={`/search/${loc.slug}`}>{loc.name}</Link>
+                </li>
+              ))}
             </ul>
           </div>
           <div className="contact">

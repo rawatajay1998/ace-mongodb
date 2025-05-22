@@ -30,7 +30,6 @@ export default function RootLayout({
         <Suspense fallback={null}>
           <RouteLoader />
         </Suspense>
-
         <WebsiteHeader />
         {children}
         <WebsiteFooter />
