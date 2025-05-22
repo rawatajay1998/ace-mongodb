@@ -52,8 +52,6 @@ export async function GET(
       amenities: searchParams.getAll("amenities"),
     };
 
-    console.log(params);
-
     const MAX_LIMIT = 100;
     const DEFAULT_LIMIT = 12;
     const VALID_SORT_FIELDS = [
@@ -102,17 +100,28 @@ export async function GET(
       }
     }
 
+    function buildFlexibleRegex(input: string) {
+      // Remove all spaces, hyphens, underscores from input to get a continuous string
+      const cleaned = input.replace(/[-_\s]/g, "").toLowerCase();
+
+      // Build regex pattern to match each character with optional separators in between
+      // For example, "offplan" -> o[\s_-]*f[\s_-]*f[\s_-]*p[\s_-]*l[\s_-]*a[\s_-]*n
+      const pattern = cleaned
+        .split("")
+        .map((char) => `${char}[\\s_-]*`)
+        .join("");
+
+      return new RegExp(`^${pattern}$`, "i");
+    }
     if (params.propertySubCategoryName) {
       try {
-        filters.propertySubCategoryName = new RegExp(
-          `^${params.propertySubCategoryName.replace(/[-\s_]/g, "[\\s_-]*")}$`,
-          "i"
+        filters.propertySubCategoryName = buildFlexibleRegex(
+          params.propertySubCategoryName
         );
       } catch (err) {
         console.error("Invalid propertySubCategoryName regex:", err);
       }
     }
-
     if (params.propertyTypeName) {
       try {
         filters.propertyTypeName = new RegExp(
@@ -152,6 +161,20 @@ export async function GET(
       filters.amenities = { $all: params.amenities };
     }
 
+    // if (params.search) {
+    //   const searchTerms = params.search.trim().split(/\s+/).filter(Boolean);
+
+    //   if (searchTerms.length > 0) {
+    //     filters.$and = searchTerms.map((term) => ({
+    //       $or: [
+    //         { projectName: { $regex: term, $options: "i" } },
+    //         { description: { $regex: term, $options: "i" } },
+    //         { address: { $regex: term, $options: "i" } },
+    //       ],
+    //     }));
+    //   }
+    // }
+
     if (params.search) {
       const searchTerms = params.search.trim().split(/\s+/).filter(Boolean);
 
@@ -159,8 +182,9 @@ export async function GET(
         filters.$and = searchTerms.map((term) => ({
           $or: [
             { projectName: { $regex: term, $options: "i" } },
-            { description: { $regex: term, $options: "i" } },
-            { address: { $regex: term, $options: "i" } },
+            { propertyTypeName: { $regex: term, $options: "i" } },
+            { propertyCategoryName: { $regex: term, $options: "i" } },
+            { propertySubCategoryName: { $regex: term, $options: "i" } },
           ],
         }));
       }

@@ -55,8 +55,7 @@ export default function Amenities() {
       const data = await res.json();
       setAmenities(data);
     } catch (error) {
-      toast.error("Failed to load amenities");
-      console.error("Error fetching amenities:", error);
+      toast.error(error.message);
     }
   };
 
@@ -102,8 +101,7 @@ export default function Amenities() {
       fetchAmenities();
       handleReset(); // Reset form after successful submission
     } catch (error) {
-      toast.error("Failed to save amenity");
-      console.error("Error saving amenity:", error);
+      toast.error(error.message);
     } finally {
       setIsSubmitting(false);
     }

@@ -1,4 +1,5 @@
 import axios from "axios";
+import toast from "react-hot-toast";
 
 // Define API base URL if needed (optional)
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
@@ -9,7 +10,7 @@ export const getPropertyById = async (propertyId: string) => {
     const response = await axios.get(`${API_URL}/api/properties/${propertyId}`);
     return response.data;
   } catch (error) {
-    console.error("Error fetching property data:", error);
+    toast.error(error.message);
     throw new Error("Error fetching property data.");
   }
 };

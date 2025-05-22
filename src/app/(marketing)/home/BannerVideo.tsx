@@ -13,7 +13,7 @@ const BannerVideo = React.memo(() => {
         preload="metadata"
       >
         <source
-          src="https://res.cloudinary.com/dkvtyzdgg/video/upload/f_auto,q_auto:eco,vc_auto,w_1280,h_720/v1747858712/dubai-banner-video_dfkpmy.mp4"
+          src="https://res.cloudinary.com/dxdgzojw6/video/upload/f_auto,q_auto:eco,vc_auto,w_1280,h_720/v1747917983/ace-elite-banner-video_nlthyz.mp4"
           type="video/mp4"
         />
       </video>

@@ -363,10 +363,15 @@ section .container {
   z-index: -1;
 }
 .banner_section .filters_dropdown {
-  position: absolute;
-  top: 110px;
-  left: 20px;
   width: max-content;
+  position: absolute;
+  top: 113px;
+  right: 0px;
+  max-width: 800px;
+}
+.banner_section .filters_dropdown button {
+  width: 100%;
+  min-width: max-content;
 }
 .banner_section .filters_dropdown .ant-select {
   border: 1px solid rgb(228, 228, 228);
@@ -424,6 +429,7 @@ section .container {
   font-size: 13px;
   font-weight: 600;
   display: flex;
+  width: max-content;
 }
 .banner_section .filters_dropdown .reset_btn {
   color: #fff;
@@ -436,6 +442,7 @@ section .container {
   font-size: 13px;
   font-weight: 600;
   display: flex;
+  width: max-content;
 }
 .banner_section .search_form label {
   color: #222;
@@ -2120,7 +2127,7 @@ footer .copyrights_row ul {
 }
 .listing_page_cards .property_details span strong {
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 500;
   margin-right: 4px;
 }
 .listing_page_cards .header {
@@ -2141,7 +2148,7 @@ footer .copyrights_row ul {
 }
 .listing_page_cards .header .project_name {
   font-size: 22px;
-  font-weight: 600;
+  font-weight: 500;
   padding-bottom: 4px;
   text-transform: capitalize;
 }
@@ -2386,6 +2393,7 @@ footer .copyrights_row ul {
   .banner_section .filters_dropdown {
     width: 100%;
     top: 100%;
+    max-width: 100%;
   }
   footer .container {
     padding-inline: 20px;

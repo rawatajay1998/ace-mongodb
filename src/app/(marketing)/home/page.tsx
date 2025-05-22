@@ -52,7 +52,6 @@ const teamArray = [
 ];
 
 const HomePgae = () => {
-  console.log("HomePage rendered");
   return (
     <div className="home">
       <section className="banner_section">

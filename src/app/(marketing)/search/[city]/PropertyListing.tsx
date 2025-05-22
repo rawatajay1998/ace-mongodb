@@ -60,7 +60,7 @@ export function PropertyListing({
 function PropertyCard({ property }: { property: IPropertyCardProps }) {
   return (
     <div className="card flex bg-white rounded-lg">
-      <div className="badge">Secondary</div>
+      <div className="badge">{property.propertySubCategoryName}</div>
       <div className="w-[250px] h-full relative flex-shrink-0 image">
         <Image
           src={property?.thumbnailImage || "/no-image.jpg"}

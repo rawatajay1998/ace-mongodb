@@ -3,6 +3,7 @@
 import React from "react";
 import { Button } from "antd";
 import { LogOut, Menu, X } from "lucide-react";
+import toast from "react-hot-toast";
 // import UserMenu from "./UserMenu";
 
 const DashboardHeader = ({
@@ -37,7 +38,7 @@ const DashboardHeader = ({
         console.error("Logout failed");
       }
     } catch (error) {
-      console.error("Error during logout:", error);
+      toast.error(error.message);
     }
   };
 

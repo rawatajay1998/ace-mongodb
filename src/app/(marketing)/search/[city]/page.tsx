@@ -17,7 +17,12 @@ const getCanonicalUrl = (city: string) => {
 // Generate dynamic metadata
 export async function generateMetadata({ params }): Promise<Metadata> {
   const { city } = await params;
-  const formattedCity = city.replace(/-/g, " ");
+
+  const matchedCity = await validateCity(city);
+  if (!matchedCity) {
+    return { title: "Page Not Found", robots: { index: false, follow: false } };
+  }
+  const formattedCity = matchedCity;
 
   // Validate if city exists
   const isValidCity = await validateCity(city);
@@ -72,36 +77,19 @@ export async function generateMetadata({ params }): Promise<Metadata> {
   };
 }
 
-function normalizeString(str: string) {
-  return str.replace(/[-\s]/g, "").toLowerCase();
-}
-
-export async function validateCity(slug: string): Promise<boolean> {
+export async function validateCity(slug: string): Promise<string | false> {
   try {
     await connectDB();
 
-    const normalizedInput = normalizeString(slug);
+    const safeRegex = slug.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
     const city = await City.findOne({
-      $expr: {
-        $eq: [
-          {
-            $replaceAll: {
-              input: {
-                $replaceAll: { input: "$name", find: "-", replacement: "" },
-              },
-              find: " ",
-              replacement: "",
-            },
-          },
-          normalizedInput,
-        ],
-      },
+      name: { $regex: `^${safeRegex}$`, $options: "i" },
     })
-      .select("_id")
+      .select("name")
       .lean();
 
-    return !!city;
+    return city?.name || false;
   } catch (error) {
     console.error("City validation error:", error);
     return false;
