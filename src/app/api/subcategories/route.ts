@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/db";
-import SubCategory from "@/models/subCategory.mode";
+import SubCategory from "@/models/subCategory.model";
 
 // GET all subcategories
 export async function GET() {

@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import connectDB from "@/lib/db";
 import Property from "@/models/property.model";
 import Area from "@/models/area.model";
-import Category from "@/models/category.model";
+import SubCategory from "@/models/subCategory.model";
 import "@/models/user.model";
 
 // Map the tab keys to actual property category names in the database
@@ -42,7 +42,7 @@ export async function GET(req: Request) {
         });
         return NextResponse.json({ properties });
       } else {
-        const categoryDocs = await Category.find({
+        const categoryDocs = await SubCategory.find({
           $expr: {
             $eq: [
               {
@@ -54,8 +54,6 @@ export async function GET(req: Request) {
             ],
           },
         });
-
-        console.log(categoryDocs);
 
         if (!categoryDocs.length) {
           return NextResponse.json(
@@ -69,8 +67,10 @@ export async function GET(req: Request) {
         const properties = await Property.find({
           projectName: { $regex: searchQuery, $options: "i" },
           verified: true,
-          propertyCategory: { $in: categoryIds }, // Using reference ID
-        }).populate("propertyCategory");
+          propertySubCategory: { $in: categoryIds }, // Using reference ID
+        }).populate("propertySubCategory");
+
+        console.log(properties);
 
         return NextResponse.json({ properties });
       }
@@ -120,7 +120,7 @@ export async function GET(req: Request) {
         }
 
         const properties = await Property.find({
-          propertyCategoryName: dbCategory,
+          propertySubCategoryName: dbCategory,
           featuredOnHomepage: true,
           verified: true,
         })
