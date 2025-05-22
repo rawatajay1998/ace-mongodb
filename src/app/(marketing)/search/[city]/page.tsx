@@ -6,6 +6,8 @@ import { Pagination } from "./Pagination";
 import { Metadata } from "next";
 import connectDB from "@/lib/db";
 import City from "@/models/city.model";
+import { Suspense } from "react";
+import { ListingSkeleton } from "./ListingSkeleton";
 
 // Helper function to generate canonical URL without query params
 const getCanonicalUrl = (city: string) => {
@@ -17,7 +19,7 @@ export async function generateMetadata({ params }): Promise<Metadata> {
   const { city } = await params;
   const formattedCity = city.replace(/-/g, " ");
 
-  // Validate if city exists (you might need to fetch available cities from your API)
+  // Validate if city exists
   const isValidCity = await validateCity(city);
   if (!isValidCity) {
     return {
@@ -71,7 +73,7 @@ export async function generateMetadata({ params }): Promise<Metadata> {
 }
 
 function normalizeString(str: string) {
-  return str.replace(/[-\s]/g, "").toLowerCase(); // remove hyphens/spaces and lowercase
+  return str.replace(/[-\s]/g, "").toLowerCase();
 }
 
 export async function validateCity(slug: string): Promise<boolean> {
@@ -106,6 +108,37 @@ export async function validateCity(slug: string): Promise<boolean> {
   }
 }
 
+async function PropertyResults({ city, filters }: { city: string; filters }) {
+  const { data: properties, meta } = await fetchProperties({
+    city,
+    ...filters,
+    highROI: filters.highROI,
+  });
+
+  return (
+    <>
+      <Suspense fallback={<ListingSkeleton />}>
+        <PropertyListing
+          properties={properties}
+          totalItems={meta.totalItems}
+          currentPage={filters.page}
+          pageSize={filters.limit}
+          error={null}
+        />
+      </Suspense>
+
+      <div className="mt-8 text-center">
+        <Pagination
+          totalItems={meta.totalItems}
+          currentPage={filters.page}
+          pageSize={filters.limit}
+          searchParams={filters}
+        />
+      </div>
+    </>
+  );
+}
+
 export default async function SearchPage({
   params,
   searchParams,
@@ -125,19 +158,14 @@ export default async function SearchPage({
     page: Number(getParam("page")) || 1,
     limit: 9,
     sortBy: getParam("sortBy") || "createdAt",
-
     sortOrder: getParam("sortOrder") || "desc",
     status: getParam("status"),
     propertyCategoryName: getParam("propertyCategoryName"),
+    propertySubCategoryName: getParam("propertySubCategoryName"),
+    propertyTypeName: getParam("propertyTypeName"),
     search: getParam("search"),
     highROI: getParam("highROI") === "true",
   };
-
-  const { data: properties, meta } = await fetchProperties({
-    city,
-    ...filters,
-    highROI: filters.highROI,
-  });
 
   return (
     <div className="listings_page max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 md:grid-cols-[280px_1fr] gap-6">
@@ -165,27 +193,9 @@ export default async function SearchPage({
           />
         </div>
 
-        <PropertyListing
-          properties={properties}
-          totalItems={meta.totalItems}
-          currentPage={filters.page}
-          pageSize={filters.limit}
-          error={null}
-        />
-
-        <div className="mt-8 text-center">
-          <Pagination
-            totalItems={meta.totalItems}
-            currentPage={filters.page}
-            pageSize={filters.limit}
-            searchParams={Object.fromEntries(
-              Object.entries(resolvedSearchParams).map(([key, value]) => [
-                key,
-                Array.isArray(value) ? value[0] : value,
-              ])
-            )}
-          />
-        </div>
+        <Suspense fallback={<ListingSkeleton />}>
+          <PropertyResults city={city} filters={filters} />
+        </Suspense>
       </div>
     </div>
   );

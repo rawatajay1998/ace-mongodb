@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button, Slider, Tabs } from "antd";
 import { Search, SlidersHorizontal, ChevronDown } from "lucide-react";
 import toast from "react-hot-toast";
@@ -45,6 +45,29 @@ const SearchBanner = () => {
   const [price, setPrice] = useState<number[]>([1, 20]);
   const [loading, setLoading] = useState(false);
 
+  const [openFilters, setOpenFilters] = useState(false);
+
+  const filtersRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        filtersRef.current &&
+        !filtersRef.current.contains(event.target as Node)
+      ) {
+        setOpenFilters(false);
+      }
+    };
+
+    if (openFilters) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [openFilters]);
+
   const [searchParams, setSearchParams] = useState({
     propertyCategoryName: "Residential",
     propertySubCategoryName: undefined,
@@ -61,7 +84,6 @@ const SearchBanner = () => {
   const [propertyTypeOptions, setPropertyTypeOptions] = useState<
     { value: string; label: string }[]
   >([{ label: "All", value: "" }]);
-  const [openFilters, setOpenFilters] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -151,12 +173,12 @@ const SearchBanner = () => {
 
   const categoryOptions = {
     buy: [
-      { label: "Offplan", value: "offplan" },
+      { label: "Off Plan", value: "offplan" },
       { label: "Ready to Move", value: "secondary" },
     ],
     rent: [{ label: "Rental", value: "rental" }],
     commercial: [
-      { label: "Offplan", value: "offplan" },
+      { label: "Off Plan", value: "offplan" },
       { label: "Ready to Move", value: "secondary" },
       { label: "Rental", value: "rental" },
     ],
@@ -253,9 +275,9 @@ const SearchBanner = () => {
       </form>
 
       {openFilters && (
-        <div className="filters_dropdown">
+        <div className="filters_dropdown" ref={filtersRef}>
           <div className="bg-white p-6 rounded-2xl shadow-md space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
                 <label className="block mb-2 font-medium">
                   Price Range: {price[0]} - {price[1]}
@@ -268,9 +290,6 @@ const SearchBanner = () => {
                   max={20}
                 />
               </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <CustomDropdown
                 placeholder="Property Type"
                 options={propertyTypeOptions}

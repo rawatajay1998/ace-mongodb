@@ -104,38 +104,38 @@ const HomePgae = () => {
             <h3 className="title">Try Searching For</h3>
           </div>
           <div className="type_row">
-            <Link href={`/search/dubai?propertyType=Apartment`} passHref>
+            <Link href={`/search/dubai?propertyTypeName=Apartment`} passHref>
               <div className="block cursor-pointer hover:opacity-80 transition">
                 <Building2 color="#5c6368" strokeWidth={1.5} size={32} />
                 <h4>Apartment</h4>
               </div>
             </Link>
-            <Link href={`/search/dubai?propertyType=Villa`} passHref>
+            <Link href={`/search/dubai?propertyTypeName=Villa`} passHref>
               <div className="block cursor-pointer hover:opacity-80 transition">
                 <Home color="#5c6368" strokeWidth={1.5} size={32} />
                 <h4>Villa</h4>
               </div>
             </Link>
 
-            <Link href={`/search/dubai?propertyType=Studio`} passHref>
+            <Link href={`/search/dubai?propertyTypeName=Studio`} passHref>
               <div className="block cursor-pointer hover:opacity-80 transition">
                 <Layout color="#5c6368" strokeWidth={1.5} size={32} />
                 <h4>Studio</h4>
               </div>
             </Link>
-            <Link href={`/search/dubai?propertyType=Office`} passHref>
+            <Link href={`/search/dubai?propertyTypeName=Office`} passHref>
               <div className="block cursor-pointer hover:opacity-80 transition">
                 <Briefcase color="#5c6368" strokeWidth={1.5} size={32} />
                 <h4>Office</h4>
               </div>
             </Link>
-            <Link href={`/search/dubai?propertyType=TownHouse`} passHref>
+            <Link href={`/search/dubai?propertyTypeName=TownHouse`} passHref>
               <div className="block cursor-pointer hover:opacity-80 transition">
                 <Landmark color="#5c6368" strokeWidth={1.5} size={32} />
                 <h4>TownHouse</h4>
               </div>
             </Link>
-            <Link href={`/search/dubai?propertyType=Commercial`} passHref>
+            <Link href={`/search/dubai?propertyTypeName=Commercial`} passHref>
               <div className="block cursor-pointer hover:opacity-80 transition">
                 <Store color="#5c6368" strokeWidth={1.5} size={32} />
                 <h4>Commercial</h4>

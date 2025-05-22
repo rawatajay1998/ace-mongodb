@@ -210,6 +210,33 @@ header .nav_container {
   padding-block: 12px;
   margin-inline: auto;
 }
+header .marquee {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+header .marquee-track {
+  display: flex;
+  width: max-content;
+  animation: scroll 30s linear infinite;
+}
+
+header .stat-item {
+  white-space: nowrap;
+  padding-right: 40px;
+}
+
+@keyframes scroll {
+  0% {
+    transform: translateX(0%);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
 header .nav_container ul {
   display: flex;
   align-items: center;
@@ -323,7 +350,7 @@ section .container {
 }
 .banner_section .filters_dropdown {
   position: absolute;
-  top: 110px;
+  top: 170px;
 }
 .banner_section .filters_dropdown .ant-select {
   border: 1px solid rgb(228, 228, 228);
@@ -683,6 +710,9 @@ section .container {
   border: 1px solid #e4e4e4;
   border-radius: 12px;
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+.city_card .image {
+  height: 100%;
 }
 .city_card .image img {
   width: 100%;

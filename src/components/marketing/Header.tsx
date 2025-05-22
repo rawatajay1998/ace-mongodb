@@ -1,5 +1,6 @@
 "use client";
 
+import SiteStatsBar from "@/app/(marketing)/home/HeaderAnalytics";
 import { MenuIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -16,6 +17,7 @@ const WebsiteHeader = () => {
   return (
     <>
       <header>
+        <SiteStatsBar />
         <div className="nav_container">
           <Link href={"/"} className="logo">
             <Image

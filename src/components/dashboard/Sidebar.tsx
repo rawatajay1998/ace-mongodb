@@ -78,6 +78,11 @@ const menuItems = [
     hideForAgent: true,
     children: [
       {
+        label: "Analytics",
+        key: "/dashboard/master/analytics",
+        hideForAgent: true,
+      },
+      {
         label: "Amenities",
         key: "/dashboard/master/amenities",
         hideForAgent: true,

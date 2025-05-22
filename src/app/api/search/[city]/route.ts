@@ -52,6 +52,8 @@ export async function GET(
       amenities: searchParams.getAll("amenities"),
     };
 
+    console.log(params);
+
     const MAX_LIMIT = 100;
     const DEFAULT_LIMIT = 12;
     const VALID_SORT_FIELDS = [
