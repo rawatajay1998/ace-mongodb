@@ -77,7 +77,6 @@ export async function generateMetadata({ params }): Promise<Metadata> {
     },
   };
 }
-
 export async function validateCity(slug: string): Promise<string | false> {
   try {
     await connectDB();
@@ -85,19 +84,15 @@ export async function validateCity(slug: string): Promise<string | false> {
     const safeSlug = slug.trim().toLowerCase();
 
     // Try to find city by slug
-    const city = await City.findOne({ slug: safeSlug })
-      .select("name slug")
-      .lean();
+    const city = await City.findOne({ slug: safeSlug }).select("slug").lean();
     if (city) {
-      return city.name;
+      return city.slug;
     }
 
     // If not found in city, try to find area by slug
-    const area = await Area.findOne({ slug: safeSlug })
-      .select("name slug")
-      .lean();
+    const area = await Area.findOne({ slug: safeSlug }).select("slug").lean();
     if (area) {
-      return area.name; // or you could return area.cityName if you want city name
+      return area.slug; // or you could return area.cityName if you want city name
     }
 
     // Not found in either collection

@@ -30,8 +30,11 @@ const AreaCard = ({
           className="rounded-t-lg"
         />
       </div>
+
       <div className="details p-4 bg-white">
-        <h4 className="name text-lg font-semibold text-gray-800">{name}</h4>
+        <h4 className="name text-lg font-semibold text-gray-800">
+          <Link href={`/search/${slug}`}>{name} </Link>
+        </h4>
         <p className="count text-sm text-gray-500 mb-2">
           {propertyCount}+ Properties
         </p>

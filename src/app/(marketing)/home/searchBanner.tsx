@@ -78,6 +78,7 @@ const SearchBanner = () => {
   });
 
   const [cities, setCities] = useState<{ _id: string; name: string }[]>([]);
+  const [areas, setAreas] = useState<{ _id: string; name: string }[]>([]);
   const [propertyStatusOptions, setPropertyStatusOptions] = useState<
     { value: string; label: string }[]
   >([]);
@@ -89,16 +90,19 @@ const SearchBanner = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [citiesRes, statusRes, typesRes] = await Promise.all([
+        const [citiesRes, statusRes, typesRes, areasRes] = await Promise.all([
           fetch("/api/cities"),
           fetch("/api/property-status"),
           fetch("/api/propertyTypes"),
+          fetch("/api/areas"),
         ]);
         const citiesData = await citiesRes.json();
         const statusData = await statusRes.json();
         const typesData = await typesRes.json();
+        const areaData = await areasRes.json();
 
         setCities(citiesData);
+        setAreas(areaData);
         setPropertyStatusOptions(
           Array.isArray(statusData)
             ? statusData.map((s) => ({ value: s.name, label: s.name }))
@@ -129,7 +133,34 @@ const SearchBanner = () => {
 
     setLoading(true);
     try {
-      const cityName = searchParams.location?.trim() || "Dubai"; // Use selected city or fallback
+      const userInput = searchParams.projectName.trim().toLowerCase();
+
+      // Normalization helper
+      const normalizeToSlug = (str: string) =>
+        str
+          .toLowerCase()
+          .trim()
+          .replace(/[^a-z0-9\s-]/g, "")
+          .replace(/\s+/g, "-");
+
+      // Merge and normalize city/area data
+      const allLocations = [...cities, ...(areas || [])].map((loc) => ({
+        ...loc,
+        slug: normalizeToSlug(loc.name),
+      }));
+
+      // Normalize input to a slug format
+      const inputSlug = normalizeToSlug(userInput);
+
+      // Match: input appears anywhere in slug
+      const matchedLocation =
+        allLocations.find((loc) => loc.slug.includes(inputSlug)) ||
+        allLocations.find((loc) => inputSlug.includes(loc.slug)) ||
+        null;
+
+      const finalSlug = matchedLocation?.slug || "dubai";
+
+      // Construct URL params
       const params = new URLSearchParams();
 
       params.append(
@@ -137,7 +168,7 @@ const SearchBanner = () => {
         encodeURIComponent(searchParams.propertyCategoryName || "Residential")
       );
 
-      if (searchParams.projectName.trim()) {
+      if (searchParams.projectName) {
         params.append("search", searchParams.projectName.trim());
       }
 
@@ -159,8 +190,7 @@ const SearchBanner = () => {
         params.append("status", searchParams.propertyStatus);
       }
 
-      const citySlug = cityName.toLowerCase().replace(/\s+/g, "-");
-      router.push(`/search/${citySlug}?${params.toString()}`);
+      router.push(`/search/${finalSlug}?${params.toString()}`);
     } catch (err) {
       toast.error("Search failed");
       console.error(err);
