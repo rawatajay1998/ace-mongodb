@@ -210,32 +210,6 @@ header .nav_container {
   padding-block: 12px;
   margin-inline: auto;
 }
-header .marquee {
-  position: relative;
-  width: 100%;
-  overflow: hidden;
-}
-
-header .marquee-track {
-  display: flex;
-  width: max-content;
-  animation: scroll 30s linear infinite;
-}
-
-header .stat-item {
-  white-space: nowrap;
-  padding-right: 40px;
-}
-
-@keyframes scroll {
-  0% {
-    transform: translateX(0%);
-  }
-
-  100% {
-    transform: translateX(-50%);
-  }
-}
 
 header .nav_container ul {
   display: flex;
