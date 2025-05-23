@@ -5,7 +5,6 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast, { Toaster } from "react-hot-toast";
 import { useState } from "react";
-import Image from "next/image";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name is required"),
@@ -83,7 +82,7 @@ const PopupForm = ({
           Contact Our Team for Enquiry
         </h3>
 
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="form_field">
             <label>
               Name <span>*</span>
@@ -123,14 +122,6 @@ const PopupForm = ({
           </svg>
           {loading ? "Submitting..." : "Submit"}
         </button>
-
-        <Image
-          width={1200}
-          height={1200}
-          src="/assets/images/popup-image-2.png"
-          alt="Popup Image"
-          loading="lazy"
-        />
       </form>
 
       <Toaster position="top-right" />
