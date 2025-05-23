@@ -69,7 +69,7 @@ const HomePgae = () => {
               <SearchBanner />
             </div>
 
-            <div className="details">
+            {/* <div className="details">
               <div className="icons_row">
                 <div className="block">
                   <p>
@@ -88,11 +88,11 @@ const HomePgae = () => {
                 </div>
                 <div className="block">
                   <p>
-                    <span>100+</span>Million Sales in 2024 Year
+                    <span>100+</span>Million Sales in 2024
                   </p>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </section>

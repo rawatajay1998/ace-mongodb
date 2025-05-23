@@ -186,6 +186,8 @@ export async function GET(
             { propertyCategoryName: { $regex: term, $options: "i" } },
             { propertySubCategoryName: { $regex: term, $options: "i" } },
             { propertyStatusName: { $regex: term, $options: "i" } },
+            { cityName: { $regex: term, $options: "i" } },
+            { areaName: { $regex: term, $options: "i" } },
           ],
         }));
       }

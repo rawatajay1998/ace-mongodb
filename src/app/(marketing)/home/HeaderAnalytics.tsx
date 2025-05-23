@@ -7,6 +7,7 @@ interface Stat {
   _id: string;
   label: string;
   icon: "TrendingUp" | "TrendingDown";
+  url: string;
 }
 
 export default function SiteStatsBar() {
@@ -33,7 +34,7 @@ export default function SiteStatsBar() {
     icon === "TrendingDown" ? (
       <TrendingDown size={16} color="red" />
     ) : (
-      <TrendingUp size={16} color="green" />
+      <TrendingUp size={16} color="#11FE08" />
     );
 
   const renderedStats = useMemo(() => {
@@ -41,10 +42,21 @@ export default function SiteStatsBar() {
     return repeated.map((stat, idx) => (
       <div
         key={idx}
-        className="inline-flex items-center px-4 text-sm font-medium gap-2 whitespace-nowrap"
+        className="inline-flex items-center px-4 text-sm gap-2 whitespace-nowrap"
       >
         {renderIcon(stat.icon)}
-        <p>{stat.label}</p>
+        {stat.url ? (
+          <a
+            href={stat.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline hover:text-blue-300 text-white"
+          >
+            {stat.label}
+          </a>
+        ) : (
+          <p className="text-white">{stat.label}</p>
+        )}
       </div>
     ));
   }, [stats]);

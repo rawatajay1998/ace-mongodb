@@ -1,9 +1,10 @@
 "use client";
 
-import { Card, Tag, Typography, Space } from "antd";
+import { Card, Tag, Typography, Space, Button } from "antd";
+import { useState } from "react";
 import ApplyJobModal from "./ApplyJobModal";
 
-const { Text, Title } = Typography;
+const { Text, Title, Paragraph } = Typography;
 
 interface Job {
   _id: string;
@@ -13,37 +14,71 @@ interface Job {
   description: string;
   salary?: string;
   experience?: string;
+  requirements: string[];
 }
 
 const CareersClient = ({ jobs }: { jobs: Job[] }) => {
   return (
     <section className="careers_page">
-      <div className=" container">
+      <div className="container">
         <Title level={2}>Available Job Positions</Title>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 gap-8">
           {jobs.map((job) => (
-            <Card
-              key={job._id}
-              title={<Text strong>{job.title}</Text>}
-              className="shadow-lg rounded-lg job_card"
-              extra={
-                <Tag color="green" style={{ marginRight: 0 }}>
-                  {job.type}
-                </Tag>
-              }
-            >
-              <Space direction="vertical" size="small">
-                <Tag color="geekblue">{job.location}</Tag>
-                <Text>{job.salary || "Salary not specified"}</Text>
-                <Text type="secondary">{job.description.slice(0, 80)}...</Text>
-                <ApplyJobModal job={job} />
-              </Space>
-            </Card>
+            <JobCard key={job._id} job={job} />
           ))}
         </div>
       </div>
     </section>
+  );
+};
+
+const JobCard = ({ job }: { job: Job }) => {
+  const [expanded, setExpanded] = useState(false);
+
+  const toggleExpanded = () => setExpanded(!expanded);
+  const isLong = job.description.length > 100;
+
+  console.log(job);
+
+  return (
+    <Card
+      title={<Text strong>{job.title}</Text>}
+      className="shadow-lg rounded-lg job_card mb-4"
+      extra={
+        <Tag color="green" style={{ marginRight: 0 }}>
+          {job.type}
+        </Tag>
+      }
+    >
+      <Space direction="vertical" size="small">
+        <Tag color="geekblue">{job.location}</Tag>
+        <div className="flex flex-wrap">
+          <strong className="block mr-2">Job Requirements:</strong>
+          {job.requirements.map((item) => {
+            return <p key={Math.random()}>{item},</p>;
+          })}
+        </div>
+
+        <Paragraph>
+          <div className="flex flex-wrap">
+            <strong className="block mr-2">Job Requirements:</strong>
+            <p>job.description</p>
+          </div>
+          {isLong && (
+            <Button
+              type="link"
+              size="small"
+              onClick={toggleExpanded}
+              style={{ padding: 0 }}
+            >
+              {expanded ? " Show less" : "... Read more"}
+            </Button>
+          )}
+        </Paragraph>
+        <ApplyJobModal job={job} />
+      </Space>
+    </Card>
   );
 };
 

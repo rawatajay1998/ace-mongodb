@@ -230,7 +230,7 @@ const SearchBanner = () => {
             <Search size={16} color="#0A264A" />
             <input
               className="search_input"
-              placeholder="Search Keyword"
+              placeholder="Search Project"
               value={searchParams.projectName}
               onChange={(e) =>
                 setSearchParams({
@@ -327,14 +327,14 @@ const SearchBanner = () => {
               {/* Price Slider */}
               <div className="col-span-full">
                 <label className="block mb-2 font-medium">
-                  Price Range: {price[0].toLocaleString()} -{" "}
-                  {price[1].toLocaleString()}
+                  Price Range: {price[0].toLocaleString()} Million -
+                  {price[1].toLocaleString()} Million
                 </label>
                 <Slider
                   onChange={onChangePrice}
                   range
                   value={price}
-                  min={99999}
+                  min={0}
                   max={9999999}
                   step={1000}
                 />

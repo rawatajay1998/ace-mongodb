@@ -7,6 +7,7 @@ export interface IJobApplication extends Document {
   email: string;
   phone: string;
   coverLetter?: string;
+  resumeUrl?: string;
 }
 
 // Schema definition for Job Application
@@ -17,6 +18,7 @@ const JobApplicationSchema = new Schema<IJobApplication>(
     email: { type: String, required: true },
     phone: { type: String, required: true },
     coverLetter: { type: String },
+    resumeUrl: { type: String },
   },
   { timestamps: true }
 );

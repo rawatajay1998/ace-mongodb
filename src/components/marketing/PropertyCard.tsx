@@ -7,23 +7,32 @@ import Link from "next/link";
 const PropertyCard = ({ item }: { item: IPropertyCardProps }) => {
   return (
     <div className="property_card">
-      <div className="image_area overflow-hidden">
-        <span className="badge">Featured</span>
-        <Image
-          src={item.bannerImage}
-          width={1000}
-          height={1000}
-          alt=""
-          className="w-full"
-          loading="lazy"
-        />
-        <div className="address">
-          <MapPin size={16} />
-          {item.areaName}, {item.cityName}
+      <Link href={`/property/${encodeURIComponent(item.slug)}`}>
+        <div className="image_area overflow-hidden">
+          <span className="badge">Featured</span>
+
+          <Image
+            src={item.bannerImage}
+            width={1000}
+            height={1000}
+            alt=""
+            className="w-full"
+            loading="lazy"
+          />
+
+          <div className="address">
+            <MapPin size={16} />
+            {item.areaName}, {item.cityName}
+          </div>
         </div>
-      </div>
+      </Link>
+
       <div className="body">
-        <h4 className="property_name">{item.projectName}</h4>
+        <h4 className="property_name">
+          <Link href={`/property/${encodeURIComponent(item.slug)}`}>
+            {item.projectName}
+          </Link>
+        </h4>
         <div className="amenity_row">
           <div className="amenity">
             <BedDouble />

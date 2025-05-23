@@ -25,6 +25,8 @@ export async function POST(request: Request) {
     const coverLetter = formData.get("coverLetter") as string | null;
     const resumeFile = formData.get("resume") as File | null;
 
+    const originalFilename = resumeFile.name.split(".")[0];
+
     // Validate required fields
     if (!jobId || !name || !email || !phone || !experience) {
       return NextResponse.json(
@@ -42,7 +44,13 @@ export async function POST(request: Request) {
       const uploadResult = await new Promise((resolve, reject) => {
         cloudinary.uploader
           .upload_stream(
-            { folder: "job_applications", resource_type: "auto" },
+            {
+              folder: "job_applications",
+              resource_type: "raw",
+              public_id: originalFilename,
+              format: "pdf",
+              unique_filename: true,
+            },
             (error, result) => {
               if (error) return reject(error);
               resolve(result);
@@ -91,3 +99,49 @@ export const GET = async () => {
     return NextResponse.json({ success: false, error: err }, { status: 500 });
   }
 };
+
+export async function DELETE(req: NextRequest) {
+  await connectDB();
+
+  try {
+    const body = await req.json();
+    const { id } = body;
+
+    if (!id) {
+      return NextResponse.json(
+        { error: "Application ID is required" },
+        { status: 400 }
+      );
+    }
+
+    // Fetch the application
+    const application = await JobApplication.findById(id);
+    if (!application) {
+      return NextResponse.json(
+        { error: "Application not found" },
+        { status: 404 }
+      );
+    }
+
+    // Delete the resume file from Cloudinary if exists
+    if (application.resumeUrl) {
+      const segments = application.resumeUrl.split("/");
+      const fileName = segments[segments.length - 1];
+      const publicId = fileName.substring(0, fileName.lastIndexOf("."));
+      await cloudinary.uploader.destroy(`job_applications/${publicId}`, {
+        resource_type: "raw",
+      });
+    }
+
+    // Delete the document from DB
+    await JobApplication.findByIdAndDelete(id);
+
+    return NextResponse.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    return NextResponse.json(
+      { error: "Failed to delete application" },
+      { status: 500 }
+    );
+  }
+}

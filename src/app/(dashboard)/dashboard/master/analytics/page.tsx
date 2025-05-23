@@ -12,6 +12,7 @@ interface Stat {
   _id: string;
   label: string;
   icon: "TrendingUp" | "TrendingDown";
+  url?: string;
 }
 
 export default function ManageSiteStats() {
@@ -19,6 +20,7 @@ export default function ManageSiteStats() {
   const [open, setOpen] = useState(false);
   const [label, setLabel] = useState("");
   const [icon, setIcon] = useState<"TrendingUp" | "TrendingDown">("TrendingUp");
+  const [url, setUrl] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -35,10 +37,12 @@ export default function ManageSiteStats() {
     if (stat) {
       setLabel(stat.label);
       setIcon(stat.icon);
+      setUrl(stat.url || "");
       setEditingId(stat._id);
     } else {
       setLabel("");
       setIcon("TrendingUp");
+      setUrl("");
       setEditingId(null);
     }
     setOpen(true);
@@ -48,7 +52,7 @@ export default function ManageSiteStats() {
     if (!label.trim()) return;
 
     setLoading(true);
-    const payload = { label, icon };
+    const payload = { label, icon, url: url.trim() || undefined };
 
     try {
       if (editingId) {
@@ -93,6 +97,19 @@ export default function ManageSiteStats() {
       title: "Label",
       dataIndex: "label",
       key: "label",
+    },
+    {
+      title: "URL",
+      dataIndex: "url",
+      key: "url",
+      render: (url: string) =>
+        url ? (
+          <a href={url} target="_blank" rel="noopener noreferrer">
+            {url}
+          </a>
+        ) : (
+          "—"
+        ),
     },
     {
       title: "Actions",
@@ -141,6 +158,11 @@ export default function ManageSiteStats() {
             <Option value="TrendingUp">Trending Up</Option>
             <Option value="TrendingDown">Trending Down</Option>
           </Select>
+          <Input
+            placeholder="Optional URL"
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+          />
         </div>
       </Modal>
     </div>
