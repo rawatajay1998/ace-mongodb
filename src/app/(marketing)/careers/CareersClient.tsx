@@ -63,7 +63,7 @@ const JobCard = ({ job }: { job: Job }) => {
         <Paragraph>
           <div className="flex flex-wrap">
             <strong className="block mr-2">Job Requirements:</strong>
-            <p>job.description</p>
+            <p>{job.description}</p>
           </div>
           {isLong && (
             <Button
