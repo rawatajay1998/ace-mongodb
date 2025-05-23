@@ -152,6 +152,7 @@ const HomePgae = () => {
                 src={"/assets/images/our-services.jpg"}
                 alt="Home Banner"
                 width={1200}
+                loading="lazy"
                 height={1200}
               />
             </div>

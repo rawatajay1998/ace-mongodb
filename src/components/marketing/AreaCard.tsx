@@ -26,6 +26,7 @@ const AreaCard = ({
           alt={name}
           layout="fill"
           objectFit="cover"
+          loading="lazy"
           className="rounded-t-lg"
         />
       </div>

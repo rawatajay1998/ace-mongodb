@@ -11,7 +11,7 @@ const TeamCard = ({ name, designation, imageUrl }: PersonProps) => {
   return (
     <div className="team_card">
       <div className="image">
-        <Image src={imageUrl} alt="" height={500} width={500} />
+        <Image loading="lazy" src={imageUrl} alt="" height={500} width={500} />
       </div>
       <div className="about">
         <h4 className="name">{name}</h4>

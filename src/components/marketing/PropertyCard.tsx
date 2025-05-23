@@ -15,6 +15,7 @@ const PropertyCard = ({ item }: { item: IPropertyCardProps }) => {
           height={1000}
           alt=""
           className="w-full"
+          loading="lazy"
         />
         <div className="address">
           <MapPin size={16} />
@@ -40,7 +41,8 @@ const PropertyCard = ({ item }: { item: IPropertyCardProps }) => {
                 item.postedBy.profileImageUrl ||
                 "/assets/images/dummy-agent-image.png"
               }
-              alt=""
+              loading="lazy"
+              alt={item.projectName}
               width={60}
               height={60}
             />

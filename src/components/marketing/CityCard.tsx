@@ -17,6 +17,7 @@ const CityCard = ({ name, cityImageUrl, propertyCount }: CityCardProps) => {
           src={cityImageUrl}
           alt={name}
           layout="fill"
+          loading="lazy"
           objectFit="cover"
           className="rounded-t-lg"
         />

@@ -29,6 +29,7 @@ const WebsiteFooter = async () => {
             alt="Logo"
             height={100}
             width={100}
+            loading="lazy"
           />
           <div className="social_links">
             <p>Follow us on:</p>

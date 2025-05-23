@@ -2275,13 +2275,19 @@ footer .copyrights_row ul {
   header .nav.open ul {
     display: flex;
     position: absolute;
-    top: 58px;
+    top: 100px;
     opacity: 0;
     background: #fff;
     left: 0;
     height: max-content;
     width: 100%;
     flex-direction: column;
+  }
+  header .stat-item {
+    padding-right: 20px;
+  }
+  header .stat-item p {
+    font-size: 13px;
   }
   .hamburger {
     margin-left: auto;

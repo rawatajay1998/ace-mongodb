@@ -129,6 +129,7 @@ const PopupForm = ({
           height={1200}
           src="/assets/images/popup-image-2.png"
           alt="Popup Image"
+          loading="lazy"
         />
       </form>
 
