@@ -100,6 +100,7 @@ const ApplyJobModal = ({ job }: { job: Job }) => {
     <>
       <Button
         type="primary"
+        style={{ width: "max-content" }}
         className="btn_primary"
         block
         onClick={() => setVisible(true)}

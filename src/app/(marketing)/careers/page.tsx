@@ -37,6 +37,7 @@ interface Job {
   description: string;
   salary?: string;
   experience?: string;
+  requirements: string[];
 }
 
 async function getJobs() {

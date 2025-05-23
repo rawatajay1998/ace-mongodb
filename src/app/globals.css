@@ -385,6 +385,7 @@ section .container {
   border-radius: 90px;
   padding-inline: 40px 20px;
   font-weight: 600;
+  outline: none;
 }
 .banner_section .filters_dropdown button span {
   font-size: 14px;

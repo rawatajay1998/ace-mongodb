@@ -6,6 +6,7 @@ import { Toaster } from "react-hot-toast";
 import RouteLoader from "@/components/common/progressBar";
 import ScrollToTop from "@/components/common/ScrollToTop";
 import { Suspense } from "react";
+import AlwaysViewTop from "@/components/marketing/AlwaysViewTop";
 
 export const metadata: Metadata = {
   icons: {
@@ -27,6 +28,7 @@ export default function RootLayout({
         />
       </head>
       <body>
+        <AlwaysViewTop />
         <Suspense fallback={null}>
           <RouteLoader />
         </Suspense>

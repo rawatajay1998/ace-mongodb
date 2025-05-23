@@ -40,6 +40,8 @@ export function FilterSidebar({
   const [subcategoryOptions, setSubcategoryOptions] = useState<
     { value: string; label: string }[]
   >([]);
+  const [minPrice, setMinPrice] = useState(searchParams.minPrice || "");
+  const [maxPrice, setMaxPrice] = useState(searchParams.maxPrice || "");
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -94,6 +96,8 @@ export function FilterSidebar({
     setHighROI(searchParams.highROI === "true");
     setCategory(searchParams.propertyCategoryName || "");
     setSubcategory(searchParams.propertySubCategoryName || "");
+    setMinPrice(searchParams.minPrice || "");
+    setMaxPrice(searchParams.maxPrice || "");
   }, [searchParams]);
 
   // Optionally, keep this if you want to validate status against options:
@@ -118,10 +122,23 @@ export function FilterSidebar({
     if (highROI) params.set("highROI", "true");
     if (category) params.set("propertyCategoryName", category);
     if (subcategory) params.set("propertySubCategoryName", subcategory);
+    if (minPrice) params.set("minPrice", minPrice);
+    if (maxPrice) params.set("maxPrice", maxPrice);
     params.set("page", "1");
     router.push(`/search/${city}?${params.toString()}`);
     setDrawerVisible(false);
-  }, [city, search, status, type, highROI, category, subcategory, router]);
+  }, [
+    city,
+    search,
+    status,
+    type,
+    highROI,
+    category,
+    subcategory,
+    router,
+    maxPrice,
+    minPrice,
+  ]);
 
   const clearFilters = useCallback(() => {
     setSearch("");
@@ -217,6 +234,61 @@ export function FilterSidebar({
           }
           options={typeOptions}
         />
+      </div>
+      <div className="pb-4">
+        <label className="block mb-1 text-sm font-medium">Price Range</label>
+        <div className="flex gap-2">
+          {(() => {
+            const priceOptions = Array.from(
+              { length: Math.floor((50000000 - 3000000) / 3000000) + 1 },
+              (_, i) => {
+                const val = 3000000 + i * 3000000;
+                return { value: val.toString(), label: val.toLocaleString() };
+              }
+            );
+
+            const handleMinChange = (val: string) => {
+              const min = parseInt(val, 10);
+              const max = parseInt(maxPrice ?? "0", 10);
+              setMinPrice(val);
+              if (max && min > max) setMaxPrice(val); // auto-adjust max if needed
+            };
+
+            const handleMaxChange = (val: string) => {
+              const max = parseInt(val, 10);
+              const min = parseInt(minPrice ?? "0", 10);
+              setMaxPrice(val);
+              if (min && max < min) setMinPrice(val); // auto-adjust min if needed
+            };
+
+            return (
+              <>
+                <Select
+                  value={minPrice || undefined}
+                  onChange={handleMinChange}
+                  allowClear
+                  placeholder="Min Price"
+                  className="w-1/2"
+                  suffixIcon={
+                    <ChevronDown style={{ color: "#767676", fontSize: 20 }} />
+                  }
+                  options={priceOptions}
+                />
+                <Select
+                  value={maxPrice || undefined}
+                  onChange={handleMaxChange}
+                  allowClear
+                  placeholder="Max Price"
+                  className="w-1/2"
+                  suffixIcon={
+                    <ChevronDown style={{ color: "#767676", fontSize: 20 }} />
+                  }
+                  options={priceOptions}
+                />
+              </>
+            );
+          })()}
+        </div>
       </div>
 
       <div className="flex flex-col gap-3 mt-5">

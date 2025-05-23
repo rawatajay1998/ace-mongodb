@@ -17,9 +17,6 @@ interface QueryParams {
   maxPrice: string | null;
   minSize: string | null;
   maxSize: string | null;
-  beds: string | null;
-  bathrooms: string | null;
-  amenities: string[] | null;
 }
 
 export async function GET(
@@ -47,19 +44,15 @@ export async function GET(
       maxPrice: searchParams.get("maxPrice"),
       minSize: searchParams.get("minSize"),
       maxSize: searchParams.get("maxSize"),
-      beds: searchParams.get("beds"),
-      bathrooms: searchParams.get("bathrooms"),
-      amenities: searchParams.getAll("amenities"),
     };
 
     const MAX_LIMIT = 100;
     const DEFAULT_LIMIT = 12;
     const VALID_SORT_FIELDS = [
       "createdAt",
-      "price",
+      "propertyPrice",
       "name",
       "updatedAt",
-      "bedrooms",
     ];
 
     const page = Math.max(1, parseInt(params.page || "1"));
@@ -138,9 +131,11 @@ export async function GET(
     }
 
     if (params.minPrice || params.maxPrice) {
-      filters.price = {};
-      if (params.minPrice) filters.price.$gte = parseFloat(params.minPrice);
-      if (params.maxPrice) filters.price.$lte = parseFloat(params.maxPrice);
+      filters.propertyPrice = {};
+      if (params.minPrice)
+        filters.propertyPrice.$gte = parseFloat(params.minPrice);
+      if (params.maxPrice)
+        filters.propertyPrice.$lte = parseFloat(params.maxPrice);
     }
 
     if (params.minSize || params.maxSize) {
@@ -148,32 +143,6 @@ export async function GET(
       if (params.minSize) filters.size.$gte = parseFloat(params.minSize);
       if (params.maxSize) filters.size.$lte = parseFloat(params.maxSize);
     }
-
-    if (params.beds) {
-      filters.bedrooms = parseInt(params.beds);
-    }
-
-    if (params.bathrooms) {
-      filters.bathrooms = parseInt(params.bathrooms);
-    }
-
-    if (params.amenities?.length) {
-      filters.amenities = { $all: params.amenities };
-    }
-
-    // if (params.search) {
-    //   const searchTerms = params.search.trim().split(/\s+/).filter(Boolean);
-
-    //   if (searchTerms.length > 0) {
-    //     filters.$and = searchTerms.map((term) => ({
-    //       $or: [
-    //         { projectName: { $regex: term, $options: "i" } },
-    //         { description: { $regex: term, $options: "i" } },
-    //         { address: { $regex: term, $options: "i" } },
-    //       ],
-    //     }));
-    //   }
-    // }
 
     if (params.search) {
       const searchTerms = params.search.trim().split(/\s+/).filter(Boolean);

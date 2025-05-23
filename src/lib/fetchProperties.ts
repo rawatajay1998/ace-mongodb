@@ -9,7 +9,9 @@ export async function fetchProperties({
   propertySubCategoryName,
   propertyTypeName,
   search,
-  highROI, // ✅ NEW
+  highROI,
+  minPrice,
+  maxPrice,
 }: {
   city: string;
   page?: number;
@@ -23,6 +25,8 @@ export async function fetchProperties({
   search?: string;
   signal?: AbortSignal;
   highROI?: boolean;
+  minPrice?: string;
+  maxPrice?: string;
 }) {
   const query = new URLSearchParams({
     page: String(page),
@@ -39,6 +43,8 @@ export async function fetchProperties({
   if (propertyTypeName) query.set("propertyTypeName", propertyTypeName);
   if (search) query.set("search", search);
   if (highROI) query.set("highROI", "true");
+  if (minPrice) query.set("minPrice", minPrice);
+  if (maxPrice) query.set("maxPrice", maxPrice);
 
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}/api/search/${city}?${query.toString()}`,

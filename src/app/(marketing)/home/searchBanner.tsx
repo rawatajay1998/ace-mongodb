@@ -1,15 +1,35 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
-import { Button, Slider, Tabs } from "antd";
+import { Button, Tabs } from "antd";
 import { Search, SlidersHorizontal, ChevronDown } from "lucide-react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
 const CustomDropdown = ({ options, value, onChange, placeholder }) => {
   const [open, setOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setOpen(false);
+      }
+    };
+
+    if (open) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [open]);
 
   return (
-    <div className="relative">
+    <div className="relative" ref={dropdownRef}>
       <button
         type="button"
         onClick={() => setOpen(!open)}
@@ -19,7 +39,7 @@ const CustomDropdown = ({ options, value, onChange, placeholder }) => {
         <ChevronDown size={16} />
       </button>
       {open && (
-        <div className="absolute z-50 mt-2 w-48 bg-white border rounded-lg shadow-lg">
+        <div className="absolute z-50 mt-2 w-48 bg-white border rounded-lg shadow-lg max-h-[200px] overflow-y-auto">
           {options.map((option) => (
             <div
               key={option.value}
@@ -42,31 +62,34 @@ const CustomDropdown = ({ options, value, onChange, placeholder }) => {
 
 const SearchBanner = () => {
   const [activeTab, setActiveTab] = useState("buy");
-  const [price, setPrice] = useState<number[]>([99999, 999999]);
+  const [price, setPrice] = useState<number[]>([3000000, 6000000]);
   const [loading, setLoading] = useState(false);
 
   const [openFilters, setOpenFilters] = useState(false);
 
   const filtersRef = useRef<HTMLDivElement | null>(null);
+  const filterBtnRef = useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node;
+
       if (
-        filtersRef.current &&
-        !filtersRef.current.contains(event.target as Node)
+        filtersRef.current?.contains(target) ||
+        filterBtnRef.current?.contains(target)
       ) {
-        setOpenFilters(false);
+        return; // Click was inside the dropdown or the button — do nothing
       }
+
+      setOpenFilters(false); // Click outside — close the dropdown
     };
 
-    if (openFilters) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
+    document.addEventListener("mousedown", handleClickOutside);
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [openFilters]);
+  }, []);
 
   const [searchParams, setSearchParams] = useState({
     propertyCategoryName: "Residential",
@@ -123,8 +146,6 @@ const SearchBanner = () => {
     fetchData();
   }, []);
 
-  const onChangePrice = (newValue: number[]) => setPrice(newValue);
-
   const handleSearch = async () => {
     if (!searchParams.projectName || searchParams.projectName.trim() === "") {
       toast.error("Please enter search keywords");
@@ -172,8 +193,15 @@ const SearchBanner = () => {
         params.append("search", searchParams.projectName.trim());
       }
 
-      if (price[0] > 0) params.append("minPrice", price[0].toString());
-      if (price[1] < 20000000) params.append("maxPrice", price[1].toString());
+      const defaultMin = 500000;
+      const defaultMax = 5000000;
+
+      if (price[0] !== defaultMin) {
+        params.append("minPrice", price[0].toString());
+      }
+      if (price[1] !== defaultMax) {
+        params.append("maxPrice", price[1].toString());
+      }
 
       if (searchParams.propertySubCategoryName) {
         params.append(
@@ -208,7 +236,7 @@ const SearchBanner = () => {
       propertyTypeName: undefined,
       propertyStatus: undefined,
     });
-    setPrice([99999, 9999999]);
+    setPrice([3000000, 6000000]);
   };
 
   const categoryOptions = {
@@ -274,7 +302,8 @@ const SearchBanner = () => {
           {/* Filter Button */}
           <button
             type="button"
-            onClick={() => setOpenFilters(!openFilters)}
+            ref={filterBtnRef}
+            onClick={() => setOpenFilters((prev) => !prev)}
             className="filter_btn"
           >
             <SlidersHorizontal size={16} />
@@ -354,20 +383,57 @@ const SearchBanner = () => {
                 />
               </div>
 
-              {/* Price Slider */}
+              {/* Price Range Dropdowns using CustomDropdown */}
               <div className="col-span-full">
                 <label className="block mb-2 font-medium">
-                  Price Range: {price[0].toLocaleString()} Million -
-                  {price[1].toLocaleString()} Million
+                  Price Range: {price[0].toLocaleString()} -{" "}
+                  {price[1].toLocaleString()}
                 </label>
-                <Slider
-                  onChange={onChangePrice}
-                  range
-                  value={price}
-                  min={0}
-                  max={9999999}
-                  step={1000}
-                />
+                <div className="flex gap-4">
+                  {(() => {
+                    const priceOptions = Array.from(
+                      {
+                        length: Math.floor((50000000 - 3000000) / 3000000) + 1,
+                      },
+                      (_, i) => {
+                        const val = 3000000 + i * 3000000;
+                        return { value: val, label: val.toLocaleString() };
+                      }
+                    );
+
+                    return (
+                      <>
+                        {/* Min Price Dropdown */}
+                        <div className="w-full">
+                          <CustomDropdown
+                            placeholder="Min Price"
+                            value={price[0]}
+                            options={priceOptions}
+                            onChange={(val: number) => {
+                              const newMin = val;
+                              const newMax = Math.max(val, price[1]);
+                              setPrice([newMin, newMax]);
+                            }}
+                          />
+                        </div>
+
+                        {/* Max Price Dropdown */}
+                        <div className="w-full">
+                          <CustomDropdown
+                            placeholder="Max Price"
+                            value={price[1]}
+                            options={priceOptions}
+                            onChange={(val: number) => {
+                              const newMax = val;
+                              const newMin = Math.min(price[0], val);
+                              setPrice([newMin, newMax]);
+                            }}
+                          />
+                        </div>
+                      </>
+                    );
+                  })()}
+                </div>
               </div>
             </div>
 

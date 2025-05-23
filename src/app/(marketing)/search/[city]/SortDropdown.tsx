@@ -9,8 +9,6 @@ const SORT_OPTIONS = [
   { value: "createdAt", label: "Newest First" },
   { value: "price", label: "Price: Low to High" },
   { value: "-price", label: "Price: High to Low" },
-  { value: "bedrooms", label: "Bedrooms: Low to High" },
-  { value: "-bedrooms", label: "Bedrooms: High to Low" },
 ] as const;
 
 export function SortDropdown({
