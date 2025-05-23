@@ -93,6 +93,7 @@ export default function EditDetailsModal({
           propertyStatus: property.propertyStatus,
           propertyType: property.propertyType,
           propertyCategory: property.propertyCategory,
+          propertySubCategory: property.propertySubCategory,
           state: property.state,
           city: property.city,
           area: property.area,

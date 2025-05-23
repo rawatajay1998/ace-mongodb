@@ -386,7 +386,7 @@ const SearchBanner = () => {
               {/* Price Range Dropdowns using CustomDropdown */}
               <div className="col-span-full">
                 <label className="block mb-2 font-medium">
-                  Price Range: {price[0].toLocaleString()}AED -{" "}
+                  Price Range: {price[0].toLocaleString()} AED -{" "}
                   {price[1].toLocaleString()} AED
                 </label>
                 <div className="flex gap-4">
