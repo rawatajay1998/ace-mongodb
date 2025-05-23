@@ -314,6 +314,11 @@ export default function PropertyTable({
       ...getColumnSearchProps("propertyCategoryName"),
     },
     {
+      title: "Sub Category",
+      dataIndex: "propertySubCategoryName",
+      ...getColumnSearchProps("propertySubCategoryName"),
+    },
+    {
       title: "Property Type",
       dataIndex: "propertyTypeName",
       ...getColumnSearchProps("propertyTypeName"),
