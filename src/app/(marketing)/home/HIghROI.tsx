@@ -27,6 +27,8 @@ const HighROIProperties = () => {
     fetchHighROI();
   }, []);
 
+  if (properties.length === 0) return null;
+
   return (
     <section className="featured_property">
       <div className="container">

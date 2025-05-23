@@ -27,11 +27,13 @@ const ExclusiveProperties = () => {
     fetchExclusive();
   }, []);
 
+  if (properties.length === 0) return null;
+
   return (
     <section className="premium_property">
       <div className="container">
         <div className="heading_block">
-          <h3 className="title">Exlusive Properties</h3>
+          <h3 className="title">Exclusive Properties</h3>
         </div>
         <CarouselWrapper slidesToShow={3}>
           {properties.length > 0 &&
