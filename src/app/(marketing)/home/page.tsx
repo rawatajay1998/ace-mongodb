@@ -22,6 +22,7 @@ import TopLocations from "./TopLocations";
 import TestimonialsCarousel from "./Testimonials";
 import DeveloperCarousel from "./Developers";
 import BannerVideo from "./BannerVideo";
+import ExclusiveProperties from "./ExclusiveListing";
 
 const teamArray = [
   {
@@ -223,22 +224,31 @@ const HomePgae = () => {
       <section className="premium_property">
         <div className="container">
           <div className="heading_block">
-            <h3 className="title">Off Plan Properties</h3>
+            <h3 className="title">Exlusive Properties</h3>
+          </div>
+          <ExclusiveProperties />
+        </div>
+      </section>
+
+      <section className="premium_property bg_section">
+        <div className="container">
+          <div className="heading_block">
+            <h3 className="title">New Launch Properties</h3>
           </div>
           <OffPlanProperties />
         </div>
       </section>
 
-      <section className="featured_property bg_section">
+      <section className="featured_property">
         <div className="container">
           <div className="heading_block">
-            <h3 className="title">Secondary Properties</h3>
+            <h3 className="title">Ready To Move Properties</h3>
           </div>
           <SecondaryProperties />
         </div>
       </section>
 
-      <section className="featured_property">
+      <section className="featured_property bg_section">
         <div className="container">
           <div className="heading_block">
             <h3 className="title">Rental Properties</h3>
@@ -247,7 +257,7 @@ const HomePgae = () => {
         </div>
       </section>
 
-      <section className="cities_section bg_section">
+      <section className="cities_section">
         <div className="container">
           <div className="heading_block">
             <h3 className="title">Top Locations</h3>

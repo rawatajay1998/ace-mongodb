@@ -22,10 +22,11 @@ interface Area {
 }
 
 const tabs = [
-  { key: "offplan", label: "Offplan" },
-  { key: "secondary", label: "Secondary" },
+  { key: "offplan", label: "New Launch" },
+  { key: "secondary", label: "Ready To Move" },
   { key: "rental", label: "Rental" },
   { key: "high-roi-projects", label: "High ROI Projects" },
+  { key: "exclusive-projects", label: "Exclusive Projects" },
   { key: "top-locations", label: "Top Locations" },
 ];
 
@@ -141,6 +142,7 @@ export default function FeaturedProperties() {
           const count = featuredItems.length;
           const isTopLocations = key === "top-locations";
           const isHighROI = key === "high-roi-projects";
+          const isExclusive = key === "exclusive-projects";
 
           return (
             <TabPane key={key} tab={`${label} (${count}/10 featured)`}>
@@ -194,6 +196,10 @@ export default function FeaturedProperties() {
                       title: "Category",
                       dataIndex: "propertyCategoryName",
                     },
+                  {
+                    title: "Subcategory",
+                    dataIndex: "propertySubCategoryName",
+                  },
                   !isTopLocations && {
                     title: "Area",
                     dataIndex: "areaName",
@@ -203,7 +209,7 @@ export default function FeaturedProperties() {
                     render: (_, record: Property) =>
                       record.propertyCategoryName || "N/A",
                   },
-                  isHighROI && {
+                  isExclusive && {
                     title: "High ROI",
                     render: (_, record: Property) =>
                       record.highROIProjects ? "Yes" : "No",

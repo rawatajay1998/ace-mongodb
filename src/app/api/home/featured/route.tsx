@@ -34,6 +34,13 @@ export async function GET(req: Request) {
           name: { $regex: searchQuery, $options: "i" },
         });
         return NextResponse.json({ areas });
+      } else if (category === "exclusive-projects") {
+        const properties = await Property.find({
+          projectName: { $regex: searchQuery, $options: "i" },
+          verified: true,
+          exclusiveListing: true,
+        });
+        return NextResponse.json({ properties });
       } else if (category === "high-roi-projects") {
         const properties = await Property.find({
           projectName: { $regex: searchQuery, $options: "i" },
@@ -99,6 +106,16 @@ export async function GET(req: Request) {
         }
 
         return NextResponse.json({ topLocations });
+      } else if (category === "exclusive-projects") {
+        const properties = await Property.find({
+          exclusiveListing: true,
+          featuredOnHomepage: true,
+          verified: true,
+        })
+          .limit(10)
+          .populate("postedBy", "name profileImageUrl email");
+
+        return NextResponse.json({ properties });
       } else if (category === "high-roi-projects") {
         const properties = await Property.find({
           highROIProjects: true,
@@ -160,9 +177,12 @@ export async function POST(req: Request) {
 
       if (category === "high-roi-projects") {
         update.highROIProjects = true;
+      } else if (category === "exclusive-projects") {
+        update.exclusiveListing = true;
       } else {
         // For regular categories, ensure we don't modify highROIProjects
         update.highROIProjects = false;
+        update.exclusiveListing = false;
       }
 
       await Property.findByIdAndUpdate(propertyId, update);
