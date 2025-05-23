@@ -221,14 +221,7 @@ const HomePgae = () => {
         </div>
       </section>
 
-      <section className="premium_property">
-        <div className="container">
-          <div className="heading_block">
-            <h3 className="title">Exlusive Properties</h3>
-          </div>
-          <ExclusiveProperties />
-        </div>
-      </section>
+      <ExclusiveProperties />
 
       <section className="premium_property bg_section">
         <div className="container">
@@ -270,14 +263,7 @@ const HomePgae = () => {
         </div>
       </section>
 
-      <section className="featured_property">
-        <div className="container">
-          <div className="heading_block">
-            <h3 className="title">Recommended High ROI Projects</h3>
-          </div>
-          <HighROIProperties />
-        </div>
-      </section>
+      <HighROIProperties />
 
       <section className="testimonial_section bg_section">
         <div className="container">

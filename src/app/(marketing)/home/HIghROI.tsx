@@ -28,14 +28,21 @@ const HighROIProperties = () => {
   }, []);
 
   return (
-    <CarouselWrapper slidesToShow={3}>
-      {properties.length > 0 &&
-        properties.map((item: IPropertyCardProps) => (
-          <div key={item._id} style={{ padding: "0 12px" }}>
-            <PropertyCard item={item} />
-          </div>
-        ))}
-    </CarouselWrapper>
+    <section className="featured_property">
+      <div className="container">
+        <div className="heading_block">
+          <h3 className="title">Recommended High ROI Projects</h3>
+        </div>
+        <CarouselWrapper slidesToShow={3}>
+          {properties.length > 0 &&
+            properties.map((item: IPropertyCardProps) => (
+              <div key={item._id} style={{ padding: "0 12px" }}>
+                <PropertyCard item={item} />
+              </div>
+            ))}
+        </CarouselWrapper>
+      </div>
+    </section>
   );
 };
 

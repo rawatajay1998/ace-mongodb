@@ -241,12 +241,12 @@ const SearchBanner = () => {
 
   const categoryOptions = {
     buy: [
-      { label: "Off Plan", value: "Off Plan" },
+      { label: "Off Plan", value: "Offplan" },
       { label: "Ready to Move", value: "secondary" },
     ],
     rent: [{ label: "Rental", value: "rental" }],
     commercial: [
-      { label: "Off Plan", value: "Off Plan" },
+      { label: "Off Plan", value: "Offplan" },
       { label: "Ready to Move", value: "secondary" },
       { label: "Rental", value: "rental" },
     ],
