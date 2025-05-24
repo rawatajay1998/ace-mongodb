@@ -63,7 +63,7 @@ function PropertyCard({ property }: { property: IPropertyCardProps }) {
         <Image
           src={property?.thumbnailImage || "/no-image.jpg"}
           alt={property.projectName}
-          width={250}
+          width={1000}
           className="object-cover rounded-sm"
           preview={false}
         />
