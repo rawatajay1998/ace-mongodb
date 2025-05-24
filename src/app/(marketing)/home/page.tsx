@@ -256,7 +256,7 @@ const HomePgae = () => {
             <h3 className="title">Top Locations</h3>
           </div>
           <TopLocations />
-          <Link href={`/search/dubai`} className="view__all">
+          <Link href={`/dubai/areas`} className="view__all">
             View All
             <MoveRight size={20} />
           </Link>

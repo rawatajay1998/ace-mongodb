@@ -1,0 +1,202 @@
+.map-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* 50% area, 50% map */
+  height: 100vh;
+  overflow: hidden;
+}
+
+.map-sidebar {
+  overflow-y: auto;
+  background: #f9fafb;
+  padding: 40px;
+}
+
+.area-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Two columns inside the left pane */
+  gap: 1.5rem;
+}
+
+.map-card {
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.2s ease-in-out;
+  cursor: pointer;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  position: relative;
+}
+.map-card .main_image {
+  width: 100%;
+  min-height: 200px;
+}
+.map-card h3 {
+  font-size: 18px;
+  font-weight: 450;
+  text-transform: capitalize;
+}
+.map-card .body {
+  padding: 12px;
+  padding-bottom: 28px;
+}
+.map-card .btns_wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  gap: 12px;
+}
+.map-card .btns_wrapper button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: #0a264a;
+  border-radius: 4px;
+  border: 1px solid #0a264a;
+  padding: 4px 12px;
+  font-size: 13px;
+}
+.map-card .btns_wrapper .view_properties {
+  background: #0a264a;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 450;
+  padding: 4px 12px;
+  border-radius: 4px;
+}
+
+.map-card:hover {
+  transform: translateY(-4px);
+}
+
+.area-image-container {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+}
+
+.area-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.area-content {
+  padding: 1rem;
+}
+
+.area-title {
+  font-size: 1.25rem;
+  font-weight: 500;
+  text-transform: capitalize;
+  margin-bottom: 0.25rem;
+}
+
+.area-city {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.area-link {
+  margin-top: 0.5rem;
+  display: inline-block;
+  color: #fff;
+  background-color: #0a264a;
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  text-decoration: none;
+}
+
+.area-link:hover {
+  text-decoration: underline;
+}
+
+.map-card .badge {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  background-color: #fff;
+  color: #0a264a;
+  font-size: 0.75rem;
+  font-weight: 450;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+}
+
+.map-container {
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+}
+
+.map-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.map-sidebar .grid_row {
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  background: #f9fafb;
+  gap: 20px;
+}
+.map-sidebar h2 {
+  padding: 12px;
+  font-size: 24px;
+  font-weight: 450;
+}
+
+.map-container {
+  width: 100%;
+  height: 100%;
+}
+
+@media (max-width: 576px) {
+  .map-sidebar {
+    padding: 20px;
+  }
+  .map-sidebar .grid_row {
+    grid-template-columns: 1fr;
+  }
+  .map-card .main_image {
+    min-height: 140px;
+  }
+  .map-layout {
+    display: block;
+    height: 100%;
+    grid-template-columns: 1fr;
+  }
+
+  .map-container {
+    display: none;
+  }
+
+  .map-panel {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: white;
+    z-index: 1000;
+  }
+
+  .map-panel .leaflet-container {
+    height: 100vh;
+  }
+}
