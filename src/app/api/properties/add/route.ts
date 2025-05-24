@@ -127,14 +127,9 @@ export async function POST(req: NextRequest) {
       return raw.map((v) => v.toString());
     };
 
+    // Parse FAQs from form data
     const faqsString = formData.get("faqs")?.toString();
     const faqs = faqsString ? JSON.parse(faqsString) : [];
-    if (faqs && !Array.isArray(faqs)) {
-      return NextResponse.json(
-        { error: "Invalid FAQs format" },
-        { status: 400 }
-      );
-    }
 
     const newProperty = new Property({
       projectName: formData.get("projectName")?.toString() || "property",
@@ -159,9 +154,11 @@ export async function POST(req: NextRequest) {
       city: new mongoose.Types.ObjectId(formData.get("city")?.toString()),
       state: new mongoose.Types.ObjectId(formData.get("state")?.toString()),
       area: new mongoose.Types.ObjectId(formData.get("area")?.toString()),
-      developer: new mongoose.Types.ObjectId(
+      developer: mongoose.Types.ObjectId.isValid(
         formData.get("developer")?.toString()
-      ),
+      )
+        ? new mongoose.Types.ObjectId(formData.get("developer")!.toString())
+        : undefined,
       stateName: formData.get("stateName")?.toString(),
       cityName: formData.get("cityName")?.toString(),
       developerName: formData.get("developerName")?.toString(),

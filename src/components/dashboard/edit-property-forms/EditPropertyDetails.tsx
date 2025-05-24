@@ -183,7 +183,7 @@ export default function EditDetailsModal({
 
       form.setFieldsValue({
         [name]: value,
-        [`${name}Name`]: option?.name,
+        [`${name}Name`]: option?.name || undefined,
       });
     }
   };
@@ -309,7 +309,7 @@ export default function EditDetailsModal({
               key={name}
               name={name}
               label={label}
-              rules={[{ required: true }]}
+              rules={name === "developer" ? [] : [{ required: true }]}
             >
               <Select
                 mode={mode}

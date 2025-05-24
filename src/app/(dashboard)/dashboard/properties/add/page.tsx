@@ -39,8 +39,8 @@ const propertySchema = z.object({
   state: z.string().min(1, "State is required"),
   city: z.string().min(1, "City is required"),
   area: z.string().min(1, "Area is required"),
-  developer: z.string().min(1, "Developer is required"),
-  developerName: z.string().min(1, "Developer Name is required"),
+  developer: z.string().optional(),
+  developerName: z.string().optional(),
   propertyType: z
     .array(z.string())
     .min(1, "At least one property type is required"),
@@ -355,18 +355,19 @@ export default function AddPropertyForm() {
   const onSubmit = async (data: PropertyFormData) => {
     const formData = new FormData();
 
-    Object.entries(data).forEach(([key, value]) => {
+    // Create a copy of data without faqs to process normally
+    const { faqs, ...otherData } = data;
+
+    // Process all non-faq fields exactly as before
+    Object.entries(otherData).forEach(([key, value]) => {
       if (value instanceof FileList && value.length > 0) {
-        // Append single file from FileList
         formData.append(key, value[0]);
       } else if (Array.isArray(value)) {
         if (value.length > 0 && value[0] instanceof File) {
-          // Append multiple files (e.g., galleryImages, floorPlansImages)
           value.forEach((file, index) => {
             formData.append(`${key}[${index}]`, file);
           });
         } else {
-          // Append array values individually (e.g., propertyType, amenities, etc.)
           value.forEach((item) => {
             formData.append(key, item.toString());
           });
@@ -376,12 +377,11 @@ export default function AddPropertyForm() {
       }
     });
 
-    // Append FAQs explicitly as a JSON string
-    if (data.faqs && data.faqs.length > 0) {
-      formData.append("faqs", JSON.stringify(data.faqs));
+    // Handle FAQs ONLY ONCE as JSON
+    if (faqs && faqs.length > 0) {
+      formData.append("faqs", JSON.stringify(faqs));
     }
 
-    // Append the generated slug (if it's not part of `data`)
     formData.append("slug", slug);
 
     try {
@@ -610,6 +610,7 @@ export default function AddPropertyForm() {
                 render={({ field }) => (
                   <Select
                     {...field}
+                    allowClear // ✅ Allow clearing the select field
                     size="large"
                     placeholder="Select Developer"
                     showSearch
@@ -617,12 +618,16 @@ export default function AddPropertyForm() {
                     status={errors.developer ? "error" : undefined}
                     style={{ width: "100%" }}
                     onChange={(value) => {
-                      // Find the selected status object
+                      if (!value) {
+                        setValue("developer", "");
+                        setValue("developerName", "");
+                        return;
+                      }
+
                       const selectedDeveloper = developerList.find(
-                        (status) => status._id === value
+                        (dev) => dev._id === value
                       );
 
-                      // Set both ID and Name in form state
                       setValue("developer", value);
                       setValue(
                         "developerName",

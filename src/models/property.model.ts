@@ -121,12 +121,12 @@ const PropertySchema = new Schema<IProperty>(
     developer: {
       type: Schema.Types.ObjectId,
       ref: "City",
-      required: true,
       index: true,
+      required: false,
     },
     developerName: {
       type: String,
-      required: true,
+      required: false,
     },
     stateName: {
       type: String,

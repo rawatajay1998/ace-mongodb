@@ -1318,11 +1318,7 @@ footer .copyrights_row ul {
   gap: 12px;
   margin-block: 20px;
 }
-.property_single_row .single_agent_page {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-}
+
 .property_single_row .contact_form .contact_btns svg,
 .property_single_row .single_agent_page svg {
   width: 20px;
@@ -1664,6 +1660,7 @@ footer .copyrights_row ul {
   margin-top: 20px;
   height: 36px;
   font-size: 13px;
+  font-weight: 500;
 }
 .agents_page .agent_card .country {
   font-size: 14px;
@@ -1671,11 +1668,6 @@ footer .copyrights_row ul {
 .agents_page .contact_btns {
   display: flex;
   align-items: center;
-  position: absolute;
-  top: 42px;
-  right: -42px;
-  transform: rotate(270deg);
-  border-color: #e5eff0;
 }
 .agents_page .contact_btns button {
   color: #006169;
@@ -2463,6 +2455,7 @@ footer .copyrights_row ul {
   }
   footer .top_row .social_links .icon svg {
     width: 16px;
+    height: 16px;
   }
   .carousel_wrapper .slick-arrow.slick-prev {
     left: -10px;
@@ -2731,7 +2724,7 @@ footer .copyrights_row ul {
     grid-template-columns: 1fr;
   }
   .agents_page .agent_card .btn_primary {
-    display: none;
+    font-weight: 400;
   }
   .agents_page .agent_card img {
     object-fit: cover;
@@ -2782,5 +2775,25 @@ footer .copyrights_row ul {
   }
   .property_single_row .payment_plan_row .percent:last-child::after {
     display: none;
+  }
+  .agents_page .agent_card h3 {
+    font-size: 14px;
+    font-weight: 400;
+  }
+
+  .agents_page .agent_card .country {
+    font-weight: 13px;
+  }
+  .agents_page .agent_card .country strong {
+    font-weight: 400;
+  }
+
+  .agents_page .contact_btns a {
+    display: flex;
+    height: 100%;
+  }
+  .agents_page .contact_btns button {
+    width: 100%;
+    height: 100%;
   }
 }
