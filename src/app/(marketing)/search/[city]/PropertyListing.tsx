@@ -1,8 +1,7 @@
 "use client";
 
 import { IPropertyCardProps } from "@/types/PropertyCardProps";
-import { Empty, Alert, Tooltip, Typography, Button } from "antd";
-import Image from "next/image";
+import { Empty, Alert, Tooltip, Typography, Button, Image } from "antd";
 import { MapPin } from "lucide-react";
 import Link from "next/link";
 
@@ -64,12 +63,9 @@ function PropertyCard({ property }: { property: IPropertyCardProps }) {
         <Image
           src={property?.thumbnailImage || "/no-image.jpg"}
           alt={property.projectName}
-          width={1000}
-          height={1000}
-          unoptimized
+          width={250}
           className="object-cover rounded-sm"
-          quality={100}
-          priority
+          preview={false}
         />
       </div>
       <div className="flex flex-col justify-between w-full">

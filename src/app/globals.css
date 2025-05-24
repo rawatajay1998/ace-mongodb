@@ -2183,6 +2183,11 @@ footer .copyrights_row ul {
 .listing_page_cards .image_area {
   width: 100%;
 }
+.listing_page_cards .image_area .ant-image {
+  width: 100% !important;
+  height: 100%;
+}
+
 .listing_page_cards .header .project_name {
   font-size: 22px;
   font-weight: 500;
