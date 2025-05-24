@@ -66,7 +66,7 @@ function PropertyCard({ property }: { property: IPropertyCardProps }) {
           alt={property.projectName}
           width={1200}
           height={1200}
-          sizes="800px"
+          sizes="1000px"
           quality={100}
           className="object-cover rounded-sm image"
         />
