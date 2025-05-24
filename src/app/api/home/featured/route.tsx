@@ -39,6 +39,7 @@ export async function GET(req: Request) {
         return NextResponse.json({ areas });
       }
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const query: any = {
         projectName: { $regex: searchQuery, $options: "i" },
         verified: true,
@@ -108,6 +109,7 @@ export async function GET(req: Request) {
         return NextResponse.json({ topLocations });
       }
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const filter: any = {
         verified: true,
         featuredOnHomepage: true,
@@ -167,6 +169,7 @@ export async function POST(req: Request) {
     }
 
     if (propertyId) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const update: any = { featuredOnHomepage: true };
       if (category === "high-roi-projects") {
         update.highROIProjects = true;
