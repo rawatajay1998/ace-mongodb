@@ -104,11 +104,17 @@ export default function EditImagesModal({
       <Space direction="vertical" style={{ width: "100%" }}>
         {/* Upload Placeholder Box */}
         <Upload
+          multiple={key === "galleryImages" || key === "floorPlansImages"}
           beforeUpload={(file) => {
             handleUpload(key, file);
-            return false;
+            return false; // Prevent default upload
           }}
           showUploadList={false}
+          customRequest={({ file, onSuccess }) => {
+            handleUpload(key, file as File).then(() => {
+              onSuccess?.("ok"); // To satisfy Ant Design
+            });
+          }}
         >
           <div className="flex flex-col items-center justify-center h-40 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-colors">
             <span className="text-gray-500 text-sm">

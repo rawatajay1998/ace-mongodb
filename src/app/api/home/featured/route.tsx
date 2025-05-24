@@ -3,6 +3,7 @@ import connectDB from "@/lib/db";
 import Property from "@/models/property.model";
 import Area from "@/models/area.model";
 import SubCategory from "@/models/subCategory.model";
+import HomeOrder from "@/models/homeListingOrder.model";
 import "@/models/user.model";
 
 const CATEGORY_MAP: Record<string, string> = {
@@ -15,9 +16,6 @@ const normalizeCategoryName = (name: string) => {
   return name.toLowerCase().replace(/\s+/g, "");
 };
 
-// In-memory store for order — for persistence, use a DB or Redis
-const featuredOrderStore: Record<string, { id: string; order: number }[]> = {};
-
 export async function GET(req: Request) {
   try {
     await connectDB();
@@ -28,8 +26,9 @@ export async function GET(req: Request) {
     const type = searchParams.get("type");
     const includeCounts = searchParams.get("includeCounts") === "true";
 
-    const orderList = featuredOrderStore[category || ""] || [];
-    const orderMap = new Map(orderList.map((o) => [o.id, o.order]));
+    const orderDoc = await HomeOrder.findOne({ tableName: category });
+    const orderIds = orderDoc?.order.map((id) => id.toString()) || [];
+    const orderMap = new Map(orderIds.map((id, idx) => [id, idx]));
 
     if (type === "search") {
       if (category === "top-locations") {
@@ -85,28 +84,32 @@ export async function GET(req: Request) {
 
     if (type === "table") {
       if (category === "top-locations") {
-        let topLocations = await Area.find({ featuredOnHomepage: true });
+        const topLocations = await Area.find({ featuredOnHomepage: true });
 
-        topLocations = topLocations
-          .map((a) => ({
-            ...a.toObject(),
-            order: orderMap.get(a._id.toString()) ?? 9999,
-          }))
-          .sort((a, b) => a.order - b.order);
+        const itemsMap = new Map(
+          topLocations.map((a) => [a._id.toString(), a.toObject()])
+        );
+
+        const ordered = orderIds.map((id) => itemsMap.get(id)).filter(Boolean);
+        const unordered = [...topLocations]
+          .filter((a) => !orderMap.has(a._id.toString()))
+          .map((a) => a.toObject());
+
+        const result = [...ordered, ...unordered];
 
         if (includeCounts) {
-          const topWithCounts = await Promise.all(
-            topLocations.map(async (area) => {
+          const withCounts = await Promise.all(
+            result.map(async (area) => {
               const propertyCount = await Property.countDocuments({
                 area: area._id,
               });
               return { ...area, propertyCount };
             })
           );
-          return NextResponse.json({ topLocations: topWithCounts });
+          return NextResponse.json({ topLocations: withCounts });
         }
 
-        return NextResponse.json({ topLocations });
+        return NextResponse.json({ topLocations: result });
       }
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -130,18 +133,21 @@ export async function GET(req: Request) {
         filter.propertySubCategoryName = dbCategory;
       }
 
-      let properties = await Property.find(filter)
-        .populate("postedBy", "name profileImageUrl email")
-        .sort({ featuredOrder: 1 });
+      const properties = await Property.find(filter).populate(
+        "postedBy",
+        "name profileImageUrl email"
+      );
 
-      properties = properties
-        .map((p) => ({
-          ...p.toObject(),
-          order: orderMap.get(p._id.toString()) ?? 9999,
-        }))
-        .sort((a, b) => a.order - b.order);
+      const itemsMap = new Map(
+        properties.map((p) => [p._id.toString(), p.toObject()])
+      );
 
-      return NextResponse.json({ properties });
+      const ordered = orderIds.map((id) => itemsMap.get(id)).filter(Boolean);
+      const unordered = [...properties]
+        .filter((p) => !orderMap.has(p._id.toString()))
+        .map((p) => p.toObject());
+
+      return NextResponse.json({ properties: [...ordered, ...unordered] });
     }
 
     return NextResponse.json(
@@ -228,6 +234,7 @@ export async function DELETE(req: Request) {
 
 export async function PUT(req: Request) {
   try {
+    await connectDB();
     const { category, order } = await req.json();
 
     if (!category || !Array.isArray(order)) {
@@ -237,7 +244,14 @@ export async function PUT(req: Request) {
       );
     }
 
-    featuredOrderStore[category] = order;
+    const idsOnly = order.map((item: { id: string }) => item.id);
+
+    await HomeOrder.findOneAndUpdate(
+      { tableName: category },
+      { $set: { order: idsOnly } },
+      { upsert: true, new: true }
+    );
+
     return NextResponse.json({ message: "Order updated successfully" });
   } catch (error) {
     console.error("Order update error:", error);

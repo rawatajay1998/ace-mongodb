@@ -127,7 +127,7 @@ body {
 }
 .main_title {
   font-size: 24px;
-  font-weight: 600;
+  font-weight: 400;
   padding-bottom: 20px;
 }
 .card {
@@ -148,7 +148,7 @@ body {
 }
 .form_field label {
   font-weight: 14px;
-  font-weight: 600;
+  font-weight: 400;
   display: block;
   padding-bottom: 8px;
 }
@@ -161,7 +161,7 @@ body {
   height: 40px;
   padding-inline: 24px;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 400;
   display: flex;
 }
 
@@ -224,7 +224,7 @@ header .nav_container ul a {
 header .nav_container ul a.submmit {
   background: #0a264a;
   color: #fff;
-  font-weight: 600;
+  font-weight: 400;
   font-size: 14px;
   padding-inline: 24px;
   height: 40px;
@@ -253,12 +253,12 @@ section .container {
 .heading_block p {
   color: #0a264a;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 400;
   padding-bottom: 12px;
 }
 .heading_block .title {
   font-size: 32px;
-  font-weight: 500;
+  font-weight: 400;
   line-height: 1.2;
   color: #0a264a;
 }
@@ -323,7 +323,7 @@ section .container {
 }
 .banner_section .ant-tabs-nav .ant-tabs-tab {
   padding: 8px 24px;
-  font-weight: 600;
+  font-weight: 400;
   margin-left: 0;
   color: #fff !important;
 }
@@ -384,7 +384,7 @@ section .container {
   height: 40px;
   border-radius: 90px;
   padding-inline: 40px 20px;
-  font-weight: 600;
+  font-weight: 400;
   outline: none;
 }
 .banner_section .filters_dropdown button span {
@@ -402,7 +402,7 @@ section .container {
   height: 40px;
   padding-inline: 24px;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 400;
   display: flex;
   width: max-content;
 }
@@ -415,14 +415,14 @@ section .container {
   height: 40px;
   padding-inline: 24px;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 400;
   display: flex;
   width: max-content;
 }
 .banner_section .search_form label {
   color: #222;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 400;
   padding-bottom: 8px;
   display: block;
 }
@@ -441,7 +441,7 @@ section .container {
   gap: 8px;
   height: 40px;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 400;
   width: 40px;
   display: flex;
   min-width: 40px;
@@ -459,7 +459,7 @@ section .container {
   width: 40px;
   font-size: 14px;
   min-width: 40px;
-  font-weight: 600;
+  font-weight: 400;
   display: flex;
   cursor: pointer;
   align-items: center;
@@ -488,7 +488,7 @@ section .container {
 .banner_section .icons_row .block p span {
   color: #fff;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 400;
   text-align: center;
 }
 
@@ -496,7 +496,7 @@ section .container {
   color: #fff;
   font-size: 14px;
   margin: 0;
-  font-weight: 600;
+  font-weight: 400;
   gap: 4px;
   display: flex;
   align-items: center;
@@ -551,7 +551,7 @@ section .container {
   margin-top: auto;
   font-size: 14px;
   color: #0a264a;
-  font-weight: 600;
+  font-weight: 400;
 }
 .home .type_section .type_row {
   display: grid;
@@ -619,7 +619,7 @@ section .container {
   gap: 4px;
   color: #fff;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 400;
 }
 .property_card .image_area .badge {
   border-radius: 90px;
@@ -664,7 +664,7 @@ section .container {
   color: #0a264a;
   font-size: 18px;
   padding-bottom: 8px;
-  font-weight: 500;
+  font-weight: 400;
 }
 .property_card .property_name a {
   color: #0a264a;
@@ -683,7 +683,7 @@ section .container {
 .property_card .footer_row .name {
   font-size: 16px;
   color: #666;
-  font-weight: 600;
+  font-weight: 400;
 }
 .property_card .footer_row img {
   width: 40px;
@@ -700,7 +700,7 @@ section .container {
   height: 40px;
   padding-inline: 24px;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 400;
   display: flex;
 }
 .carousel_wrapper .slick-track {
@@ -743,7 +743,7 @@ section .container {
   height: 48px;
   padding-inline: 48px;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 400;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -940,11 +940,11 @@ footer .newsletter input {
   font-size: 14px;
   line-height: 19.6px;
   color: #a3abb0;
-  font-weight: 600;
+  font-weight: 400;
 }
 footer .newsletter input::placeholder {
   color: #a3abb0;
-  font-weight: 600;
+  font-weight: 400;
 }
 footer .copyrights_row {
   display: flex;
@@ -995,7 +995,7 @@ footer .copyrights_row ul {
 .testimonial__card .name {
   font-size: 16px;
   color: #0a264a;
-  font-weight: 600;
+  font-weight: 400;
 }
 .testimonial__card .profile {
   color: #666;
@@ -1039,7 +1039,7 @@ footer .copyrights_row ul {
   left: 50%;
   transform: translate(-50%);
   color: #fff;
-  font-weight: 600;
+  font-weight: 400;
   z-index: 1;
   letter-spacing: 0.5px;
 }
@@ -1070,23 +1070,23 @@ footer .copyrights_row ul {
   height: 40px;
   padding-inline: 24px;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 400;
   display: flex;
   cursor: pointer;
 }
 .property_meta .price {
   font-size: 18px;
   text-transform: capitalize;
-  font-weight: 600;
+  font-weight: 400;
   color: #0a264a;
 }
 .property_meta h1 {
   font-size: 34px;
   color: #222;
-  font-weight: 600;
+  font-weight: 400;
 }
 .property_meta .price span {
-  font-weight: 600;
+  font-weight: 400;
   color: #222;
   font-size: 16px;
 }
@@ -1119,9 +1119,12 @@ footer .copyrights_row ul {
 }
 .property_meta .content_bottom .text {
   color: #222;
-  font-weight: 600;
+  font-weight: 450;
   font-size: 16px;
   text-transform: capitalize;
+}
+.prose.prose-lg strong {
+  font-weight: 400 !important;
 }
 .property_meta .content_bottom .price {
   padding-left: 20px;
@@ -1133,7 +1136,7 @@ footer .copyrights_row ul {
   font-size: 28px;
   align-items: center;
   justify-content: center;
-  font-weight: 600;
+  font-weight: 400;
   display: flex;
   color: #0a264a;
   flex-direction: column;
@@ -1146,7 +1149,7 @@ footer .copyrights_row ul {
 .read_more_btn {
   color: #006169;
   padding-bottom: 4px;
-  font-weight: 600;
+  font-weight: 400;
   font-size: 14px;
   display: flex;
   align-items: center;
@@ -1194,7 +1197,7 @@ footer .copyrights_row ul {
 .property_single_row .content .title {
   font-size: 24px;
   margin-bottom: 20px;
-  font-weight: 600;
+  font-weight: 400;
   color: #222;
 }
 .property_single_row .content p {
@@ -1222,7 +1225,7 @@ footer .copyrights_row ul {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 600;
+  font-weight: 400;
   gap: 12px;
   flex-direction: column;
   background-color: #f5f5f5;
@@ -1273,7 +1276,7 @@ footer .copyrights_row ul {
   left: 50px;
 }
 .property_single_row .payment_plan_row .name {
-  font-weight: 600;
+  font-weight: 400;
   padding-block: 4px 8px;
   color: #121212;
   opacity: 0.9;
@@ -1325,13 +1328,13 @@ footer .copyrights_row ul {
   width: 20px;
   height: 20px;
 }
-.property_single_row .single_agent_page {
+.property_single_row .single_agent_page .contact_btns button {
   color: #006169;
   fill: #006169;
   border-color: #e5eff0;
   background-color: #e5eff0;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 400;
   height: 36px;
   display: flex;
   align-items: center;
@@ -1346,7 +1349,7 @@ footer .copyrights_row ul {
   border-color: #e5eff0;
   background-color: #e5eff0;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 400;
   height: 36px;
   display: flex;
   align-items: center;
@@ -1361,7 +1364,7 @@ footer .copyrights_row ul {
   color: #249f62;
   font-size: 14px;
   gap: 6px;
-  font-weight: 600;
+  font-weight: 400;
   height: 36px;
   display: flex;
   align-items: center;
@@ -1390,7 +1393,7 @@ footer .copyrights_row ul {
 }
 .property_single_row .relaated_property_card .name {
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 400;
   color: #222;
   padding-bottom: 4px;
   text-transform: capitalize;
@@ -1398,12 +1401,12 @@ footer .copyrights_row ul {
 .property_single_row .relaated_property_card .price {
   color: #222;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 400;
   padding-bottom: 4px;
 }
 .property_single_row .relaated_property_card .price span {
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 400;
 }
 .property_single_row .relaated_property_card a {
   display: flex;
@@ -1419,7 +1422,7 @@ footer .copyrights_row ul {
   text-align: center;
   padding: 12px 20px;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 400;
 }
 .property_single_row .contact_form form {
   padding: 20px;
@@ -1451,7 +1454,7 @@ footer .copyrights_row ul {
   height: 40px;
   padding-inline: 24px;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 400;
   display: flex;
   width: 100%;
 }
@@ -1466,7 +1469,7 @@ footer .copyrights_row ul {
   border-radius: 12px;
 }
 .property_single_row .ant-collapse .ant-collapse-header-text {
-  font-weight: 600;
+  font-weight: 400;
   color: #121212;
 }
 .property_single_row .content_left .content .ant-image {
@@ -1490,7 +1493,7 @@ footer .copyrights_row ul {
   transform: translate(-50%);
   color: #fff;
   font-size: 32px;
-  font-weight: 600;
+  font-weight: 400;
   z-index: 1;
   width: 70%;
 }
@@ -1517,7 +1520,7 @@ footer .copyrights_row ul {
 }
 .login_page h3 {
   font-size: 28px;
-  font-weight: 600;
+  font-weight: 400;
   margin-bottom: 20px;
 }
 .login_page .content .logo {
@@ -1530,7 +1533,7 @@ footer .copyrights_row ul {
   color: #0a264a;
   padding-bottom: 8px;
   display: block;
-  font-weight: 600;
+  font-weight: 400;
 }
 .login_page .ant-input-affix-wrapper {
   height: 52px;
@@ -1587,7 +1590,7 @@ footer .copyrights_row ul {
 .topbar_wrapper input {
   border-radius: 90px;
   height: 48px;
-  font-weight: 600;
+  font-weight: 400;
   color: #000;
   padding-inline: 20px;
 }
@@ -1598,7 +1601,7 @@ footer .copyrights_row ul {
   gap: 6px;
   height: 48px;
   border-radius: 90px;
-  font-weight: 600;
+  font-weight: 400;
 }
 .topbar_wrapper .form_field {
   margin-bottom: 0;
@@ -1621,7 +1624,7 @@ footer .copyrights_row ul {
   border-radius: 99px;
   background: #0a264a;
   color: #fff;
-  font-weight: 600;
+  font-weight: 400;
 }
 
 /*  agents page */
@@ -1643,7 +1646,7 @@ footer .copyrights_row ul {
 .agents_page .agent_card h3 {
   font-size: 18px;
   color: #222;
-  font-weight: 600;
+  font-weight: 400;
   text-transform: capitalize;
   padding-bottom: 4px;
 }
@@ -1709,7 +1712,7 @@ footer .copyrights_row ul {
 }
 .about_section .grid_row h3 {
   font-size: 36px;
-  font-weight: 600;
+  font-weight: 400;
   margin-bottom: 12px;
 }
 .about_section .grid_row h3 span {
@@ -1745,7 +1748,7 @@ footer .copyrights_row ul {
   margin-bottom: 15px;
   position: relative;
   padding-bottom: 0;
-  font-weight: 600;
+  font-weight: 400;
 }
 .about_section .pre_heading:before {
   content: "";
@@ -1838,12 +1841,12 @@ footer .copyrights_row ul {
   border-radius: 90px;
   width: max-content;
   margin-bottom: 20px;
-  font-weight: 600;
+  font-weight: 400;
 }
 .contact_page h1 {
   font-size: 36px;
   color: #0a264a;
-  font-weight: 600;
+  font-weight: 400;
   padding-bottom: 12px;
 }
 .contact_page ul li {
@@ -1895,7 +1898,7 @@ footer .copyrights_row ul {
   height: 40px;
   padding-inline: 24px;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 400;
   display: flex;
   justify-content: center;
   min-width: 150px;
@@ -1908,7 +1911,7 @@ footer .copyrights_row ul {
   row-gap: 0;
 }
 .contact_form h3 {
-  font-weight: 700;
+  font-weight: 400;
   color: #0a264a;
   margin-bottom: 20px;
   padding-bottom: 12px;
@@ -1937,7 +1940,7 @@ footer .copyrights_row ul {
   height: 40px;
   padding-inline: 24px;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 400;
   display: flex;
   justify-content: center;
   min-width: 150px;
@@ -1951,7 +1954,7 @@ footer .copyrights_row ul {
   height: 40px;
   padding-inline: 24px;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 400;
   display: flex;
   justify-content: center;
   min-width: 150px;
@@ -2068,7 +2071,7 @@ footer .copyrights_row ul {
   color: #0a264a;
   font-size: 15px;
   height: 36px;
-  font-weight: 600;
+  font-weight: 400;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2081,7 +2084,7 @@ footer .copyrights_row ul {
   color: #fff;
   font-size: 15px;
   height: 36px;
-  font-weight: 600;
+  font-weight: 400;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2095,7 +2098,7 @@ footer .copyrights_row ul {
   top: 12px;
   padding: 4px 12px;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 400;
   text-transform: uppercase;
   border-radius: 4px 0 0 4px;
   background: #e9f7f0;
@@ -2176,7 +2179,7 @@ footer .copyrights_row ul {
   height: 36px;
   padding-inline: 24px;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 400;
   display: flex;
 }
 .listing_page_cards .contact_btns {
