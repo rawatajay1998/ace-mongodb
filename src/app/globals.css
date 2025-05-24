@@ -1120,6 +1120,7 @@ footer .copyrights_row ul {
 }
 .banner_property_deatils .image_small {
   height: 196px;
+  border-radius: 8px;
 }
 .property_meta .content_bottom .row {
   display: grid;
@@ -2833,8 +2834,25 @@ footer .copyrights_row ul {
   .banner_property_deatils .image_area {
     gap: 10px;
   }
+  .banner_property_deatils .image_area .right_box {
+    gap: 0;
+  }
+  .banner_property_deatils .view_more_button {
+    color: #fff;
+    background: #0009;
+    border-radius: 8px;
+    padding: 4px 16px;
+    font-size: 13px;
+    width: max-content;
+    font-weight: 450;
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
   .banner_property_deatils .image_small {
-    height: 120px !important;
+    height: 125px !important;
+    border-radius: 8px;
   }
   .property_single_row .carousel_wrapper .slick-arrow {
     top: 50%;

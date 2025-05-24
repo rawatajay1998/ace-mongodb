@@ -43,7 +43,7 @@ const PropertyImageGallery = ({ images }: { images: string[] }) => {
           </div>
 
           {/* Right Two Stacked Images */}
-          <div className="w-1/3 flex flex-col gap-4">
+          <div className="w-1/3 right_box flex flex-col gap-4">
             {images.slice(1, 3).map((img, i) => (
               <div
                 key={i}
