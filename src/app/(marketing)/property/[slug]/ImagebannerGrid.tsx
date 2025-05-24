@@ -29,7 +29,7 @@ const PropertyImageGallery = ({ images }: { images: string[] }) => {
           </button>
         </div>
       ) : (
-        <div className="flex gap-4">
+        <div className="flex gap-4 image_area">
           {/* Left Large Image */}
           <div className="flex-1">
             <Image
@@ -58,14 +58,13 @@ const PropertyImageGallery = ({ images }: { images: string[] }) => {
                   src={img}
                   alt={`Side ${i}`}
                   width="100%"
-                  height={196}
                   className="image_small"
                   style={{ objectFit: "cover" }}
                   preview={false}
                 />
                 {i === 1 && (
                   <button
-                    className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-white text-base font-medium"
+                    className="view_more_button"
                     onClick={() => setOpen(true)}
                   >
                     View More
