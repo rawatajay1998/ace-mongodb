@@ -17,8 +17,8 @@ export async function generateMetadata({
   const property = data.property;
 
   return {
-    title: `${property.projectName} in ${property.cityName} | ${property.propertyTypeName}`,
-    description: `Explore ${property.projectName}, a premium ${property.propertyTypeName} in ${property.cityName}. Price starts at ${property.propertyPrice ? `AED ${property.propertyPrice.toLocaleString()}` : "competitive rates"}. Learn more about amenities, payment plans, and more.`,
+    title: property.metaTitle,
+    description: property.metaDescription,
   };
 }
 

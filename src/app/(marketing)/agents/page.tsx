@@ -98,11 +98,7 @@ export default function AgentsPage() {
               }`}
             >
               {agents.map((agent) => (
-                <Link
-                  href={`/agents/${agent.slug}`}
-                  key={agent._id}
-                  className="agent_card"
-                >
+                <div key={agent._id} className="agent_card">
                   <Image
                     src={
                       agent.profileImageUrl ||
@@ -138,7 +134,7 @@ export default function AgentsPage() {
                   </div>
                   <div className="contact_btns">
                     <Tooltip title="Email Agent">
-                      <Link href={`mailto:${agent.email}`}>
+                      <a href={`mailto:${agent.email}`}>
                         <button>
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -150,10 +146,10 @@ export default function AgentsPage() {
                             <path fill="none" d="M0 0h16v16H0z"></path>
                           </svg>
                         </button>
-                      </Link>
+                      </a>
                     </Tooltip>
                     <Tooltip title="Call Agent">
-                      <Link href={`tel:${agent.phoneNumber}`}>
+                      <a href={`tel:${agent.phoneNumber}`}>
                         <button>
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -164,11 +160,11 @@ export default function AgentsPage() {
                             <path d="M13.3 10.3A7.6 7.6 0 0 1 11 10a.7.7 0 0 0-.7.1l-1 1.4a10.1 10.1 0 0 1-4.6-4.6L6 5.7A.7.7 0 0 0 6 5a7.4 7.4 0 0 1-.3-2.3A.7.7 0 0 0 5 2H2.8c-.4 0-.8.2-.8.7A11.4 11.4 0 0 0 13.3 14a.7.7 0 0 0 .7-.8V11a.7.7 0 0 0-.7-.6z"></path>
                           </svg>
                         </button>
-                      </Link>
+                      </a>
                     </Tooltip>
                     <Tooltip title="Whatsappp">
-                      <Link
-                        href={`https://wa.me/971555266579?text=${encodeURIComponent(
+                      <a
+                        href={`https://wa.me/${agent.phoneNumber}?text=${encodeURIComponent(
                           `Hi ${agent.name}, I'm interested in one of your property listings. Could you please share more details?`
                         )}`}
                       >
@@ -185,10 +181,10 @@ export default function AgentsPage() {
                             ></path>
                           </svg>
                         </button>
-                      </Link>
+                      </a>
                     </Tooltip>
                   </div>
-                </Link>
+                </div>
               ))}
             </div>
 

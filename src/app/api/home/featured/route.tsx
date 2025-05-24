@@ -130,10 +130,9 @@ export async function GET(req: Request) {
         filter.propertySubCategoryName = dbCategory;
       }
 
-      let properties = await Property.find(filter).populate(
-        "postedBy",
-        "name profileImageUrl email"
-      );
+      let properties = await Property.find(filter)
+        .populate("postedBy", "name profileImageUrl email")
+        .sort({ featuredOrder: 1 });
 
       properties = properties
         .map((p) => ({
