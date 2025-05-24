@@ -1315,9 +1315,29 @@ footer .copyrights_row ul {
   gap: 12px;
   margin-block: 20px;
 }
-.property_single_row .contact_form .contact_btns svg {
+.property_single_row .single_agent_page {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.property_single_row .contact_form .contact_btns svg,
+.property_single_row .single_agent_page svg {
   width: 20px;
   height: 20px;
+}
+.property_single_row .single_agent_page {
+  color: #006169;
+  fill: #006169;
+  border-color: #e5eff0;
+  background-color: #e5eff0;
+  font-size: 14px;
+  font-weight: 600;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: center;
+  border-radius: 6px;
 }
 .property_single_row .contact_form .contact_btns .email,
 .property_single_row .contact_form .contact_btns .call {
@@ -2734,6 +2754,7 @@ footer .copyrights_row ul {
     transform: none;
     width: 100%;
   }
+
   .about_section .grid_row h3 {
     font-size: 24px;
   }
