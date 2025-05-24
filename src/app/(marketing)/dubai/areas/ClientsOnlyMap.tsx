@@ -29,11 +29,9 @@ function MapPanner({ position }: { position: [number, number] | null }) {
 
 function MapInitializer({ onMapReady }: { onMapReady: (map: L.Map) => void }) {
   const map = useMap();
-
   useEffect(() => {
     onMapReady(map);
   }, [map]);
-
   return null;
 }
 
@@ -47,38 +45,41 @@ const customIcon: Icon = new L.Icon({
 export default function ClientOnlyMap({
   areas,
   activePosition,
-  activeAreaId,
+  activeAreaName,
 }: {
   areas: Area[];
   activePosition: [number, number] | null;
-  activeAreaId: string | null;
+  activeAreaName: string | null;
 }) {
   const mapRef = useRef<L.Map | null>(null);
   const markerRefs = useRef<Record<string, LeafletMarker>>({});
 
+  // Open popup when activeAreaName changes
   useEffect(() => {
-    if (activeAreaId && markerRefs.current[activeAreaId]) {
-      markerRefs.current[activeAreaId].openPopup();
+    if (activeAreaName && markerRefs.current[activeAreaName]) {
+      markerRefs.current[activeAreaName].openPopup();
     }
-  }, [activeAreaId]);
+  }, [activeAreaName]);
+
+  // Invalidate map size on position change (esp. mobile fix)
+  useEffect(() => {
+    setTimeout(() => {
+      mapRef.current?.invalidateSize();
+    }, 300);
+  }, [activePosition]);
 
   return (
-    <div className="map-container" style={{ height: "100%", width: "100%" }}>
+    <div style={{ height: "100%", width: "100%" }}>
       <MapContainer
         center={[25.276987, 55.296249]}
         zoom={11}
         scrollWheelZoom={true}
-        className="leaflet-container"
         style={{ height: "100%", width: "100%" }}
       >
-        <MapInitializer
-          onMapReady={(map) => {
-            mapRef.current = map;
-          }}
-        />
+        <MapInitializer onMapReady={(map) => (mapRef.current = map)} />
 
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+          attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
@@ -90,22 +91,19 @@ export default function ClientOnlyMap({
               typeof area.lat === "number" && typeof area.lng === "number"
           )
           .map((area) => {
-            const isActive = area._id === activeAreaId;
+            const isActive = area.name === activeAreaName;
 
             return (
               <Marker
-                key={area._id}
+                key={area.name}
                 position={[area.lat!, area.lng!]}
                 icon={customIcon}
                 ref={(ref) => {
-                  if (ref) {
-                    markerRefs.current[area._id] = ref;
-
-                    // Open popup after ref is available
+                  const marker = ref as unknown as LeafletMarker;
+                  if (marker) {
+                    markerRefs.current[area.name] = marker;
                     if (isActive) {
-                      setTimeout(() => {
-                        ref.openPopup();
-                      }, 0); // delay to ensure ref is mounted
+                      setTimeout(() => marker.openPopup(), 0);
                     }
                   }
                 }}

@@ -30,7 +30,7 @@ export default function AreasPageClient({
   const [activePosition, setActivePosition] = useState<[number, number] | null>(
     null
   );
-  const [activeAreaId, setActiveAreaId] = useState<string | null>(null);
+  const [activeAreaName, setActiveAreaName] = useState<string | null>(null);
   const [showMobileMap, setShowMobileMap] = useState(false);
 
   const handleCardClick = async (area: Area) => {
@@ -52,7 +52,7 @@ export default function AreasPageClient({
     }
 
     setActivePosition(position);
-    setActiveAreaId(area._id);
+    setActiveAreaName(area.name);
 
     if (window.innerWidth < 768) {
       setShowMobileMap(true);
@@ -102,14 +102,14 @@ export default function AreasPageClient({
         <ClientOnlyMap
           areas={initialAreas}
           activePosition={activePosition}
-          activeAreaId={activeAreaId}
+          activeAreaName={activeAreaName}
         />
       </div>
 
       {/* Mobile Slide-Over Map Panel */}
       <div
         className={clsx(
-          "fixed inset-0 z-50 bg-white transition-transform transform md:hidden",
+          "fixed inset-0 z-50 bg-white overflow-hidden touch-auto transition-transform transform md:hidden",
           {
             "translate-x-0": showMobileMap,
             "translate-x-full": !showMobileMap,
@@ -126,7 +126,7 @@ export default function AreasPageClient({
           <ClientOnlyMap
             areas={initialAreas}
             activePosition={activePosition}
-            activeAreaId={activeAreaId}
+            activeAreaName={activeAreaName}
           />
         </div>
       </div>

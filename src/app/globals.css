@@ -2027,6 +2027,8 @@ footer .copyrights_row ul {
   padding: 0;
   position: relative;
   border: 1px solid #ddd;
+  display: grid;
+  grid-template-columns: 250px calc(100% - 250px);
 }
 .listing_sidebar {
   position: sticky;
@@ -2175,9 +2177,11 @@ footer .copyrights_row ul {
   padding-inline: 20px;
 }
 .listing_page_cards .image {
-  width: 250px;
   min-width: 250px;
   max-height: 250px;
+}
+.listing_page_cards .image_area {
+  width: 100%;
 }
 .listing_page_cards .header .project_name {
   font-size: 22px;

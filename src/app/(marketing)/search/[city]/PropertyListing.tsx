@@ -60,17 +60,20 @@ export function PropertyListing({
 function PropertyCard({ property }: { property: IPropertyCardProps }) {
   return (
     <div className="card flex bg-white rounded-lg">
-      <div className="badge">{property.propertySubCategoryName}</div>
-
-      <Image
-        src={property?.thumbnailImage || "/no-image.jpg"}
-        alt={property.projectName}
-        width={1200}
-        height={1200}
-        className="object-cover rounded-sm image"
-      />
-
+      <div className="image_area w-[250px] h-[250px] relative">
+        <Image
+          src={property?.thumbnailImage || "/no-image.jpg"}
+          alt={property.projectName}
+          width={1200}
+          height={1200}
+          sizes="800px"
+          quality={100}
+          className="object-cover rounded-sm image"
+        />
+      </div>
       <div className="flex flex-col justify-between w-full">
+        <div className="badge">{property.propertySubCategoryName}</div>
+
         <div className="header">
           <div>
             <Link href={`/property/${property.slug}`}>

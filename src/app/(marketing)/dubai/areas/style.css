@@ -166,6 +166,13 @@
   height: 100%;
 }
 
+@media (min-width: 768px) {
+  .leaflet-container {
+    height: 100% !important;
+    width: 100% !important;
+  }
+}
+
 @media (max-width: 576px) {
   .map-sidebar {
     padding: 20px;
