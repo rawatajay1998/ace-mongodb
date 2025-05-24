@@ -1,4 +1,3 @@
-// API Route (/api/properties/feature/route.ts)
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/db";
 import Property from "@/models/property.model";
@@ -6,17 +5,18 @@ import Area from "@/models/area.model";
 import SubCategory from "@/models/subCategory.model";
 import "@/models/user.model";
 
-// Map the tab keys to actual property category names in the database
 const CATEGORY_MAP: Record<string, string> = {
   offplan: "Off Plan",
   secondary: "Secondary",
   rental: "Rental",
 };
 
-// Cache for category IDs (in-memory, resets on server restart)
 const normalizeCategoryName = (name: string) => {
   return name.toLowerCase().replace(/\s+/g, "");
 };
+
+// In-memory store for order — for persistence, use a DB or Redis
+const featuredOrderStore: Record<string, { id: string; order: number }[]> = {};
 
 export async function GET(req: Request) {
   try {
@@ -28,33 +28,37 @@ export async function GET(req: Request) {
     const type = searchParams.get("type");
     const includeCounts = searchParams.get("includeCounts") === "true";
 
+    const orderList = featuredOrderStore[category || ""] || [];
+    const orderMap = new Map(orderList.map((o) => [o.id, o.order]));
+
     if (type === "search") {
       if (category === "top-locations") {
         const areas = await Area.find({
           name: { $regex: searchQuery, $options: "i" },
         });
         return NextResponse.json({ areas });
-      } else if (category === "exclusive-projects") {
-        const properties = await Property.find({
-          projectName: { $regex: searchQuery, $options: "i" },
-          verified: true,
-          exclusiveListing: true,
-        });
-        return NextResponse.json({ properties });
+      }
+
+      const query: any = {
+        projectName: { $regex: searchQuery, $options: "i" },
+        verified: true,
+      };
+
+      if (category === "exclusive-projects") {
+        query.exclusiveListing = true;
       } else if (category === "high-roi-projects") {
-        const properties = await Property.find({
-          projectName: { $regex: searchQuery, $options: "i" },
-          verified: true,
-          highROIProjects: true,
-        });
-        return NextResponse.json({ properties });
+        query.highROIProjects = true;
       } else {
         const categoryDocs = await SubCategory.find({
           $expr: {
             $eq: [
               {
                 $toLower: {
-                  $replaceAll: { input: "$name", find: " ", replacement: "" },
+                  $replaceAll: {
+                    input: "$name",
+                    find: " ",
+                    replacement: "",
+                  },
                 },
               },
               normalizeCategoryName(category || ""),
@@ -69,65 +73,51 @@ export async function GET(req: Request) {
           );
         }
 
-        // 2. Then find properties referencing these categories
-        const categoryIds = categoryDocs.map((c) => c._id);
-        const properties = await Property.find({
-          projectName: { $regex: searchQuery, $options: "i" },
-          verified: true,
-          propertySubCategory: { $in: categoryIds }, // Using reference ID
-        }).populate("propertySubCategory");
-
-        console.log(properties);
-
-        return NextResponse.json({ properties });
+        query.propertySubCategory = { $in: categoryDocs.map((c) => c._id) };
       }
+
+      const properties = await Property.find(query).populate(
+        "propertySubCategory"
+      );
+      return NextResponse.json({ properties });
     }
 
     if (type === "table") {
       if (category === "top-locations") {
-        const topLocations = await Area.find({
-          featuredOnHomepage: true,
-        }).limit(10);
+        let topLocations = await Area.find({ featuredOnHomepage: true });
+
+        topLocations = topLocations
+          .map((a) => ({
+            ...a.toObject(),
+            order: orderMap.get(a._id.toString()) ?? 9999,
+          }))
+          .sort((a, b) => a.order - b.order);
 
         if (includeCounts) {
-          // Add propertyCount to each area
-          const topLocationsWithCounts = await Promise.all(
+          const topWithCounts = await Promise.all(
             topLocations.map(async (area) => {
               const propertyCount = await Property.countDocuments({
                 area: area._id,
               });
-              return {
-                ...area.toObject(),
-                propertyCount,
-              };
+              return { ...area, propertyCount };
             })
           );
-          return NextResponse.json({ topLocations: topLocationsWithCounts });
+          return NextResponse.json({ topLocations: topWithCounts });
         }
 
         return NextResponse.json({ topLocations });
-      } else if (category === "exclusive-projects") {
-        const properties = await Property.find({
-          exclusiveListing: true,
-          featuredOnHomepage: true,
-          verified: true,
-        })
-          .limit(10)
-          .populate("postedBy", "name profileImageUrl email");
+      }
 
-        return NextResponse.json({ properties });
+      const filter: any = {
+        verified: true,
+        featuredOnHomepage: true,
+      };
+
+      if (category === "exclusive-projects") {
+        filter.exclusiveListing = true;
       } else if (category === "high-roi-projects") {
-        const properties = await Property.find({
-          highROIProjects: true,
-          featuredOnHomepage: true,
-          verified: true,
-        })
-          .limit(10)
-          .populate("postedBy", "name profileImageUrl email");
-
-        return NextResponse.json({ properties });
+        filter.highROIProjects = true;
       } else {
-        // For offplan, secondary, rental
         const dbCategory = CATEGORY_MAP[category || ""];
         if (!dbCategory) {
           return NextResponse.json(
@@ -135,17 +125,22 @@ export async function GET(req: Request) {
             { status: 400 }
           );
         }
-
-        const properties = await Property.find({
-          propertySubCategoryName: dbCategory,
-          featuredOnHomepage: true,
-          verified: true,
-        })
-          .limit(10)
-          .populate("postedBy", "name profileImageUrl email");
-
-        return NextResponse.json({ properties });
+        filter.propertySubCategoryName = dbCategory;
       }
+
+      let properties = await Property.find(filter).populate(
+        "postedBy",
+        "name profileImageUrl email"
+      );
+
+      properties = properties
+        .map((p) => ({
+          ...p.toObject(),
+          order: orderMap.get(p._id.toString()) ?? 9999,
+        }))
+        .sort((a, b) => a.order - b.order);
+
+      return NextResponse.json({ properties });
     }
 
     return NextResponse.json(
@@ -172,15 +167,12 @@ export async function POST(req: Request) {
     }
 
     if (propertyId) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const update: any = { featuredOnHomepage: true };
-
       if (category === "high-roi-projects") {
         update.highROIProjects = true;
       } else if (category === "exclusive-projects") {
         update.exclusiveListing = true;
       } else {
-        // For regular categories, ensure we don't modify highROIProjects
         update.highROIProjects = false;
         update.exclusiveListing = false;
       }
@@ -215,11 +207,6 @@ export async function DELETE(req: Request) {
     if (propertyId) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const update: any = { featuredOnHomepage: false };
-
-      // if (category === "high-roi-projects") {
-      //   update.highROIProjects = false;
-      // }
-
       await Property.findByIdAndUpdate(propertyId, update);
       return NextResponse.json({ message: "Property removed from featured" });
     }
@@ -232,6 +219,28 @@ export async function DELETE(req: Request) {
     console.error("Remove feature error:", error);
     return NextResponse.json(
       { message: "Failed to remove featured status" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PUT(req: Request) {
+  try {
+    const { category, order } = await req.json();
+
+    if (!category || !Array.isArray(order)) {
+      return NextResponse.json(
+        { message: "Invalid category or order payload" },
+        { status: 400 }
+      );
+    }
+
+    featuredOrderStore[category] = order;
+    return NextResponse.json({ message: "Order updated successfully" });
+  } catch (error) {
+    console.error("Order update error:", error);
+    return NextResponse.json(
+      { message: "Failed to update order" },
       { status: 500 }
     );
   }

@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
-import { Mail, MapPin, Phone, Star } from "lucide-react";
+import { Mail, MapPin, Phone } from "lucide-react";
 import { Tooltip } from "antd";
 
 interface Props {
@@ -128,14 +128,6 @@ export default async function AgentDetailsPage({ params }) {
               />
             </div>
             <h1 className="text-2xl font-bold text-center">{agent.name}</h1>
-            <div className="flex items-center gap-1 mt-2 text-yellow-500">
-              <Star />
-              <Star />
-              <Star />
-              <Star />
-              <Star />
-              <span className="text-gray-600 ml-1">(24)</span>
-            </div>
             <p className="text-gray-500 mt-1">Ace Elite Properties</p>
 
             {/* Badges */}

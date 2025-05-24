@@ -236,54 +236,77 @@ export function FilterSidebar({
         />
       </div>
       <div className="pb-4">
-        <label className="block mb-1 text-sm font-medium">Price Range</label>
-        <div className="flex gap-2">
+        <label className="block mb-1 text-sm font-medium ">
+          Price Range (AED)
+        </label>
+        <div className="flex gap-2 relative ">
           {(() => {
-            const priceOptions = Array.from(
-              { length: Math.floor((50000000 - 3000000) / 3000000) + 1 },
-              (_, i) => {
-                const val = 3000000 + i * 3000000;
-                return { value: val.toString(), label: val.toLocaleString() };
-              }
-            );
+            const priceSteps = [1_000_000];
+            for (let i = 3_000_000; i < 50_000_000; i += 3_000_000) {
+              priceSteps.push(i);
+            }
+            if (priceSteps[priceSteps.length - 1] !== 50_000_000) {
+              priceSteps.push(50_000_000);
+            }
+
+            const priceOptions = priceSteps.map((val) => ({
+              value: val.toString(),
+              label: `AED ${val.toLocaleString()}`,
+            }));
 
             const handleMinChange = (val: string) => {
               const min = parseInt(val, 10);
-              const max = parseInt(maxPrice ?? "0", 10);
+              const max = parseInt(maxPrice || "0", 10);
               setMinPrice(val);
-              if (max && min > max) setMaxPrice(val); // auto-adjust max if needed
+              if (max && min > max) setMaxPrice(val); // sync max if min is higher
             };
 
             const handleMaxChange = (val: string) => {
               const max = parseInt(val, 10);
-              const min = parseInt(minPrice ?? "0", 10);
+              const min = parseInt(minPrice || "0", 10);
               setMaxPrice(val);
-              if (min && max < min) setMinPrice(val); // auto-adjust min if needed
+              if (min && max < min) setMinPrice(val); // sync min if max is lower
             };
 
             return (
               <>
                 <Select
+                  placeholder="Min Price"
                   value={minPrice || undefined}
                   onChange={handleMinChange}
                   allowClear
-                  placeholder="Min Price"
                   className="w-1/2"
-                  suffixIcon={
-                    <ChevronDown style={{ color: "#767676", fontSize: 20 }} />
-                  }
                   options={priceOptions}
+                  suffixIcon={
+                    <ChevronDown
+                      style={{
+                        color: "#767676",
+                        fontSize: 12,
+                        marginTop: "8px",
+                      }}
+                    />
+                  }
+                  popupMatchSelectWidth={180}
+                  getPopupContainer={(trigger) => trigger.parentNode}
                 />
                 <Select
+                  placeholder="Max Price"
                   value={maxPrice || undefined}
                   onChange={handleMaxChange}
                   allowClear
-                  placeholder="Max Price"
                   className="w-1/2"
-                  suffixIcon={
-                    <ChevronDown style={{ color: "#767676", fontSize: 20 }} />
-                  }
                   options={priceOptions}
+                  suffixIcon={
+                    <ChevronDown
+                      style={{
+                        color: "#767676",
+                        fontSize: 12,
+                        marginTop: "8px",
+                      }}
+                    />
+                  }
+                  popupMatchSelectWidth={180}
+                  getPopupContainer={(trigger) => trigger.parentNode}
                 />
               </>
             );

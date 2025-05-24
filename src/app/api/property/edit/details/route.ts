@@ -1,5 +1,3 @@
-// app/api/property/edit/details/route.ts
-
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/db";
 import Property from "@/models/property.model";
@@ -60,8 +58,6 @@ export async function PUT(req: Request) {
       },
       { new: true }
     );
-
-    console.log(updated);
 
     if (!updated)
       return NextResponse.json(

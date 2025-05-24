@@ -30,7 +30,7 @@ const CarouselWrapper = ({ children, slidesToShow }: CarouselWrapperProps) => {
     <div className="carousel_wrapper">
       <Carousel
         arrows
-        infinite={true}
+        infinite={false}
         slidesToShow={slidesToShow}
         responsive={[
           {

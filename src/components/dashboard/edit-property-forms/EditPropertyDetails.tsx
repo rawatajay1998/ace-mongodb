@@ -38,12 +38,10 @@ export default function EditDetailsModal({
 
     const fetchData = async () => {
       try {
-        // Fetch property data first
         const propertyRes = await axios.get(`/api/property/${slug}`);
         const property = propertyRes.data.property;
         setPropertyData(property);
 
-        // Then fetch all options
         const [
           statusesRes,
           typesRes,
@@ -66,19 +64,17 @@ export default function EditDetailsModal({
           categories: categoriesRes.data,
           subCategories: subCategoriesRes.data,
           states: statesRes.data,
-          cities: [], // Will be loaded next if state exists
-          areas: [], // Will be loaded next if city exists
+          cities: [],
+          areas: [],
           developers: developersRes.data.data,
         });
 
-        // Load cities if state exists
         if (property.state) {
           const citiesRes = await axios.get(
             `/api/cities?state=${property.state}`
           );
           setOptions((prev) => ({ ...prev, cities: citiesRes.data }));
 
-          // Load areas if city exists
           if (property.city) {
             const areasRes = await axios.get(
               `/api/areas?city=${property.city}`
@@ -87,11 +83,11 @@ export default function EditDetailsModal({
           }
         }
 
-        // Set form values after all data is loaded
         form.setFieldsValue({
-          // IDs
           propertyStatus: property.propertyStatus,
-          propertyType: property.propertyType,
+          propertyType: Array.isArray(property.propertyType)
+            ? property.propertyType
+            : [property.propertyType],
           propertyCategory: property.propertyCategory,
           propertySubCategory: property.propertySubCategory,
           state: property.state,
@@ -99,9 +95,10 @@ export default function EditDetailsModal({
           area: property.area,
           developer: property.developer,
 
-          // Names
           propertyStatusName: property.propertyStatusName,
-          propertyTypeName: property.propertyTypeName,
+          propertyTypeName: Array.isArray(property.propertyTypeName)
+            ? property.propertyTypeName
+            : [property.propertyTypeName],
           propertyCategoryName: property.propertyCategoryName,
           propertySubCategoryName: property.propertySubCategoryName,
           stateName: property.stateName,
@@ -109,7 +106,6 @@ export default function EditDetailsModal({
           areaName: property.areaName,
           developerName: property.developerName,
 
-          // Other fields
           propertyPrice: property.propertyPrice,
           paymentPlan: property.paymentPlan,
           unitType: property.unitType,
@@ -138,7 +134,7 @@ export default function EditDetailsModal({
       setOptions((prev) => ({
         ...prev,
         cities: res.data,
-        areas: [], // Clear areas when state changes
+        areas: [],
       }));
     } catch {
       toast.error("Failed to load cities");
@@ -161,29 +157,35 @@ export default function EditDetailsModal({
     }
   };
 
-  const handleSelectChange = (name: string, value: string) => {
-    const option = options[
-      name === "state"
-        ? "states"
-        : name === "city"
-          ? "cities"
-          : name === "area"
-            ? "areas"
-            : name === "developer"
-              ? "developers"
-              : name === "propertyType"
-                ? "types"
+  const handleSelectChange = (name: string, value, optionList?) => {
+    if (name === "propertyType" && Array.isArray(optionList)) {
+      const typeNames = optionList.map((opt) => opt.label);
+      form.setFieldsValue({
+        propertyType: value,
+        propertyTypeName: typeNames,
+      });
+    } else {
+      const option = options[
+        name === "state"
+          ? "states"
+          : name === "city"
+            ? "cities"
+            : name === "area"
+              ? "areas"
+              : name === "developer"
+                ? "developers"
                 : name === "propertyCategory"
                   ? "categories"
                   : name === "propertySubCategory"
                     ? "subCategories"
                     : "statuses"
-    ].find((item) => item._id === value);
+      ].find((item) => item._id === value);
 
-    form.setFieldsValue({
-      [name]: value,
-      [`${name}Name`]: option?.name,
-    });
+      form.setFieldsValue({
+        [name]: value,
+        [`${name}Name`]: option?.name,
+      });
+    }
   };
 
   const handleSubmit = async () => {
@@ -209,11 +211,13 @@ export default function EditDetailsModal({
         "areaName",
       ]);
 
-      // Prepare the payload according to your schema
       const payload = {
         ...propertyData,
         ...values,
-        propertyTypeName,
+        propertyType: values.propertyType,
+        propertyTypeName: Array.isArray(propertyTypeName)
+          ? propertyTypeName
+          : [propertyTypeName],
         propertyCategoryName,
         propertySubCategoryName,
         propertyStatusName,
@@ -266,6 +270,7 @@ export default function EditDetailsModal({
               name: "propertyType",
               label: "Property Type",
               data: options.types,
+              mode: "multiple" as const,
             },
             {
               name: "propertyCategory",
@@ -298,7 +303,8 @@ export default function EditDetailsModal({
                 name: dev.developerName || dev.name,
               })),
             },
-          ].map(({ name, label, data, onChange }) => (
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          ].map(({ name, label, data, onChange, mode }) => (
             <Form.Item
               key={name}
               name={name}
@@ -306,16 +312,16 @@ export default function EditDetailsModal({
               rules={[{ required: true }]}
             >
               <Select
+                mode={mode}
                 showSearch
                 optionFilterProp="label"
                 options={data.map((item) => ({
                   label: item.name,
                   value: item._id,
                 }))}
-                onChange={(value) => {
-                  handleSelectChange(name, value);
-                  if (onChange) onChange(value);
-                }}
+                onChange={(value, optionList) =>
+                  handleSelectChange(name, value, optionList)
+                }
                 placeholder={`Select ${label}`}
               />
             </Form.Item>

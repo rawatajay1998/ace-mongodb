@@ -36,7 +36,7 @@ const WebsiteHeader = () => {
                 <Link href="/">Home</Link>
               </li>
               <li>
-                <Link href={`/search/dubai?propertySubCategoryName=Offplan`}>
+                <Link href={`/search/dubai?propertySubCategoryName=OffPlan`}>
                   Off Plan
                 </Link>
               </li>

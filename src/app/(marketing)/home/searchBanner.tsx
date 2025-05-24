@@ -62,7 +62,7 @@ const CustomDropdown = ({ options, value, onChange, placeholder }) => {
 
 const SearchBanner = () => {
   const [activeTab, setActiveTab] = useState("buy");
-  const [price, setPrice] = useState<number[]>([3000000, 6000000]);
+  const [price, setPrice] = useState<number[]>([1000000, 50000000]);
   const [loading, setLoading] = useState(false);
 
   const [openFilters, setOpenFilters] = useState(false);
@@ -236,7 +236,7 @@ const SearchBanner = () => {
       propertyTypeName: undefined,
       propertyStatus: undefined,
     });
-    setPrice([3000000, 6000000]);
+    setPrice([1000000, 50000000]);
   };
 
   const categoryOptions = {
@@ -386,20 +386,22 @@ const SearchBanner = () => {
               {/* Price Range Dropdowns using CustomDropdown */}
               <div className="col-span-full">
                 <label className="block mb-2 font-medium">
-                  Price Range: {price[0].toLocaleString()} AED -{" "}
-                  {price[1].toLocaleString()} AED
+                  Price Range (AED)
                 </label>
                 <div className="flex gap-4">
                   {(() => {
-                    const priceOptions = Array.from(
-                      {
-                        length: Math.floor((50000000 - 3000000) / 3000000) + 1,
-                      },
-                      (_, i) => {
-                        const val = 3000000 + i * 3000000;
-                        return { value: val, label: val.toLocaleString() };
-                      }
-                    );
+                    const priceSteps = [1_000_000];
+                    for (let i = 3_000_000; i < 50_000_000; i += 3_000_000) {
+                      priceSteps.push(i);
+                    }
+                    if (priceSteps[priceSteps.length - 1] !== 50_000_000) {
+                      priceSteps.push(50_000_000);
+                    }
+
+                    const priceOptions = priceSteps.map((val) => ({
+                      value: val,
+                      label: `AED ${val.toLocaleString()}`,
+                    }));
 
                     return (
                       <>

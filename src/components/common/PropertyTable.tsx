@@ -321,6 +321,8 @@ export default function PropertyTable({
     {
       title: "Property Type",
       dataIndex: "propertyTypeName",
+      render: (value: string | string[]) =>
+        Array.isArray(value) ? value.join(", ") : value,
       ...getColumnSearchProps("propertyTypeName"),
     },
     {

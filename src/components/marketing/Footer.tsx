@@ -84,7 +84,7 @@ const WebsiteFooter = async () => {
                 <Link href={"/about"}>About</Link>
               </li>
               <li>
-                <Link href={"/"}>Our Services</Link>
+                <Link href={"/agents"}>Agents</Link>
               </li>
               <li>
                 <Link href={"/careers"}>Careers</Link>

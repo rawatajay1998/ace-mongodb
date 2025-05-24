@@ -33,7 +33,6 @@ const faqSchema = z.object({
 
 const propertySchema = z.object({
   projectName: z.string().min(1, "Project name is required"),
-  propertyType: z.string().min(1, "Property type is required"),
   propertyStatus: z.string().min(1, "Property status is required"),
   propertyCategory: z.string().min(1, "Property category is required"),
   propertySubCategory: z.string().min(1, "Property category is required"),
@@ -42,7 +41,12 @@ const propertySchema = z.object({
   area: z.string().min(1, "Area is required"),
   developer: z.string().min(1, "Developer is required"),
   developerName: z.string().min(1, "Developer Name is required"),
-  propertyTypeName: z.string().min(1, "Property Type is required"),
+  propertyType: z
+    .array(z.string())
+    .min(1, "At least one property type is required"),
+  propertyTypeName: z
+    .array(z.string())
+    .min(1, "At least one property type name is required"),
   propertyStatusName: z.string().min(1, "Property Status is required"),
   propertyCategoryName: z.string().min(1, "Property Category is required"),
   propertySubCategoryName: z.string().min(1, "Property Category is required"),
@@ -353,28 +357,31 @@ export default function AddPropertyForm() {
 
     Object.entries(data).forEach(([key, value]) => {
       if (value instanceof FileList && value.length > 0) {
+        // Append single file from FileList
         formData.append(key, value[0]);
       } else if (Array.isArray(value)) {
-        if (value[0] instanceof File) {
-          // Append all file arrays
+        if (value.length > 0 && value[0] instanceof File) {
+          // Append multiple files (e.g., galleryImages, floorPlansImages)
           value.forEach((file, index) => {
             formData.append(`${key}[${index}]`, file);
           });
         } else {
-          // Append non-file arrays like amenities, faqs
-          formData.append(key, JSON.stringify(value));
+          // Append array values individually (e.g., propertyType, amenities, etc.)
+          value.forEach((item) => {
+            formData.append(key, item.toString());
+          });
         }
-      } else {
+      } else if (value !== undefined && value !== null) {
         formData.append(key, String(value));
       }
     });
 
-    // Append FAQs as JSON string
+    // Append FAQs explicitly as a JSON string
     if (data.faqs && data.faqs.length > 0) {
       formData.append("faqs", JSON.stringify(data.faqs));
     }
 
-    // Append the generated slug
+    // Append the generated slug (if it's not part of `data`)
     formData.append("slug", slug);
 
     try {
@@ -514,6 +521,7 @@ export default function AddPropertyForm() {
                 </p>
               )}
             </div>
+
             {/* Property Type */}
             <div className="form_field">
               <label>Property Type</label>
@@ -523,23 +531,22 @@ export default function AddPropertyForm() {
                 render={({ field }) => (
                   <Select
                     {...field}
+                    mode="multiple"
                     size="large"
-                    placeholder="Select Property Type"
+                    placeholder="Select Property Type(s)"
                     status={errors.propertyType ? "error" : undefined}
                     style={{ width: "100%" }}
-                    onChange={(value) => {
-                      // Find the selected type object
-                      const selectedPropertyType = propertyTypes.find(
-                        (type) => type._id === value
+                    onChange={(selectedIds: string[]) => {
+                      const selectedTypes = propertyTypes.filter((type) =>
+                        selectedIds.includes(type._id)
                       );
+                      const names = selectedTypes.map((type) => type.name);
 
-                      // Set both ID and Name in form state
-                      setValue("propertyType", value);
-                      setValue(
-                        "propertyTypeName",
-                        selectedPropertyType?.name || ""
-                      );
+                      // Set both values
+                      setValue("propertyType", selectedIds);
+                      setValue("propertyTypeName", names);
                     }}
+                    value={field.value}
                   >
                     {propertyTypes.map((type) => (
                       <Select.Option key={type._id} value={type._id}>
@@ -605,6 +612,8 @@ export default function AddPropertyForm() {
                     {...field}
                     size="large"
                     placeholder="Select Developer"
+                    showSearch
+                    optionFilterProp="children"
                     status={errors.developer ? "error" : undefined}
                     style={{ width: "100%" }}
                     onChange={(value) => {
@@ -645,6 +654,8 @@ export default function AddPropertyForm() {
                     {...field}
                     size="large"
                     placeholder="Select State"
+                    showSearch
+                    optionFilterProp="children"
                     style={{ width: "100%" }}
                     status={errors.state ? "error" : undefined}
                     onChange={(value) => {
@@ -676,6 +687,8 @@ export default function AddPropertyForm() {
                       size="large"
                       placeholder="Select City"
                       style={{ width: "100%" }}
+                      showSearch
+                      optionFilterProp="children"
                       status={errors.city ? "error" : undefined}
                       onChange={(value) => {
                         field.onChange(value);
@@ -706,6 +719,8 @@ export default function AddPropertyForm() {
                       {...field}
                       size="large"
                       placeholder="Select Area"
+                      showSearch
+                      optionFilterProp="children"
                       style={{ width: "100%" }}
                       status={errors.area ? "error" : undefined}
                       onChange={(value) => {

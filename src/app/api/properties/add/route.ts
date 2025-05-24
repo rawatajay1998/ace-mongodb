@@ -19,14 +19,12 @@ export async function POST(req: NextRequest) {
 
   const formData = await req.formData();
 
-  // upload image files to cloudinary
   const uploadToCloudinary = async (
     file: FormDataEntryValue
   ): Promise<string> => {
     if (!file || typeof file === "string") {
       throw new Error("File is missing or not a file");
     }
-
     const buffer = Buffer.from(await file.arrayBuffer());
     const stream = Readable.from(buffer);
 
@@ -46,7 +44,6 @@ export async function POST(req: NextRequest) {
     return result.secure_url;
   };
 
-  // upload multiple files to cloudinary
   const uploadMultipleToCloudinary = async (
     field: string
   ): Promise<string[]> => {
@@ -56,21 +53,13 @@ export async function POST(req: NextRequest) {
       files.push(formData.get(`${field}[${index}]`)!);
       index++;
     }
-
-    const urls = await Promise.all(
-      files.map((file) => uploadToCloudinary(file))
-    );
-
-    return urls;
+    return await Promise.all(files.map((file) => uploadToCloudinary(file)));
   };
 
   const slug = formData.get("slug")?.toString();
-
-  if (!slug) {
+  if (!slug)
     return NextResponse.json({ error: "Slug is required" }, { status: 400 });
-  }
 
-  // Check if slug already exists
   const existingProperty = await Property.findOne({ slug });
   if (existingProperty) {
     return NextResponse.json(
@@ -88,13 +77,58 @@ export async function POST(req: NextRequest) {
     const floorPlansImagesUrl =
       await uploadMultipleToCloudinary("floorPlansImages");
 
-    const projectName = formData.get("projectName")?.toString() || "property";
+    const parseObjectIdArray = (key: string): mongoose.Types.ObjectId[] => {
+      const raw = formData.getAll(key);
+      if (!raw || raw.length === 0) return [];
 
-    // Parse FAQs from form data
+      // If single value and looks like a JSON array
+      if (raw.length === 1 && typeof raw[0] === "string") {
+        try {
+          const parsed = JSON.parse(raw[0]);
+          if (Array.isArray(parsed)) {
+            return parsed.map((id) => {
+              if (!mongoose.Types.ObjectId.isValid(id)) {
+                throw new Error(`Invalid ObjectId: ${id}`);
+              }
+              return new mongoose.Types.ObjectId(id);
+            });
+          }
+        } catch {
+          // Not a JSON array — treat as plain string
+        }
+      }
+
+      // Treat as multiple values (or one raw)
+      return raw.map((id) => {
+        if (!mongoose.Types.ObjectId.isValid(id.toString())) {
+          throw new Error(`Invalid ObjectId: ${id}`);
+        }
+        return new mongoose.Types.ObjectId(id.toString());
+      });
+    };
+
+    const parseStringArray = (key: string): string[] => {
+      const raw = formData.getAll(key);
+      if (!raw || raw.length === 0) return [];
+
+      // Try to parse single stringified JSON array
+      if (raw.length === 1 && typeof raw[0] === "string") {
+        try {
+          const parsed = JSON.parse(raw[0]);
+          if (Array.isArray(parsed)) {
+            return parsed.map((item) => item.toString());
+          }
+        } catch {
+          // Not a JSON array – fall through
+        }
+      }
+
+      // Return as string array
+      return raw.map((v) => v.toString());
+    };
+
     const faqsString = formData.get("faqs")?.toString();
     const faqs = faqsString ? JSON.parse(faqsString) : [];
-
-    // Validate FAQs structure
     if (faqs && !Array.isArray(faqs)) {
       return NextResponse.json(
         { error: "Invalid FAQs format" },
@@ -103,55 +137,52 @@ export async function POST(req: NextRequest) {
     }
 
     const newProperty = new Property({
-      projectName,
-      slug: formData.get("slug"),
-      propertyType: new mongoose.Types.ObjectId(
-        formData.get("propertyType")?.toString()
-      ),
-      propertyTypeName: formData.get("propertyTypeName"),
+      projectName: formData.get("projectName")?.toString() || "property",
+      slug,
+      propertyType: parseObjectIdArray("propertyType"),
+      propertyTypeName: parseStringArray("propertyTypeName"),
+      amenities: parseObjectIdArray("amenities"),
       propertyStatus: new mongoose.Types.ObjectId(
         formData.get("propertyStatus")?.toString()
       ),
-      propertyStatusName: formData.get("propertyStatusName"),
+      propertyStatusName: formData.get("propertyStatusName")?.toString(),
       propertyCategory: new mongoose.Types.ObjectId(
         formData.get("propertyCategory")?.toString()
       ),
       propertySubCategory: new mongoose.Types.ObjectId(
         formData.get("propertySubCategory")?.toString()
       ),
-      propertyCategoryName: formData.get("propertyCategoryName"),
-      propertySubCategoryName: formData.get("propertySubCategoryName"),
-
+      propertyCategoryName: formData.get("propertyCategoryName")?.toString(),
+      propertySubCategoryName: formData
+        .get("propertySubCategoryName")
+        ?.toString(),
       city: new mongoose.Types.ObjectId(formData.get("city")?.toString()),
       state: new mongoose.Types.ObjectId(formData.get("state")?.toString()),
       area: new mongoose.Types.ObjectId(formData.get("area")?.toString()),
       developer: new mongoose.Types.ObjectId(
         formData.get("developer")?.toString()
       ),
-      stateName: formData.get("stateName"),
-      cityName: formData.get("cityName"),
-      developerName: formData.get("developerName"),
-      areaName: formData.get("areaName"),
-      paymentPlan: formData.get("paymentPlan"),
-      areaSize: String(formData.get("areaSize")),
-      unitType: String(formData.get("unitType")),
-      propertyPrice: String(formData.get("propertyPrice")),
+      stateName: formData.get("stateName")?.toString(),
+      cityName: formData.get("cityName")?.toString(),
+      developerName: formData.get("developerName")?.toString(),
+      areaName: formData.get("areaName")?.toString(),
+      paymentPlan: formData.get("paymentPlan")?.toString(),
+      areaSize: formData.get("areaSize")?.toString(),
+      unitType: formData.get("unitType")?.toString(),
+      propertyPrice: formData.get("propertyPrice")?.toString(),
       thumbnailImage: thumbnailUrl,
       bannerImage: bannerUrl,
-      galleryImages: galleryImagesUrl, // Add gallery images to the property
+      galleryImages: galleryImagesUrl,
       floorPlansImages: floorPlansImagesUrl,
       createdBy: user.id,
       postedBy: user.id,
       status: "pending",
-      aboutProperty: formData.get("aboutProperty"),
-      metaTitle: formData.get("metaTitle"),
-      metaDescription: formData.get("metaDescription"),
-      pricingSection: formData.get("pricingSection"),
-      locationAdvantages: formData.get("locationAdvantages"),
-      faqs: faqs,
-      amenities: formData.get("amenities")
-        ? JSON.parse(formData.get("amenities") as string)
-        : [],
+      aboutProperty: formData.get("aboutProperty")?.toString(),
+      metaTitle: formData.get("metaTitle")?.toString(),
+      metaDescription: formData.get("metaDescription")?.toString(),
+      pricingSection: formData.get("pricingSection")?.toString(),
+      locationAdvantages: formData.get("locationAdvantages")?.toString(),
+      faqs,
     });
 
     await newProperty.save();

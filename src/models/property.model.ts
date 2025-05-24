@@ -8,8 +8,8 @@ export interface IFAQ {
 
 export interface IProperty extends Document {
   projectName: string;
-  propertyType: mongoose.Types.ObjectId;
-  propertyTypeName: string;
+  propertyType: mongoose.Types.ObjectId[];
+  propertyTypeName: string[];
   propertyStatus: mongoose.Types.ObjectId;
   propertyStatusName: string;
   propertyCategory: mongoose.Types.ObjectId;
@@ -50,16 +50,19 @@ export interface IProperty extends Document {
 const PropertySchema = new Schema<IProperty>(
   {
     projectName: { type: String, required: true, index: true },
-    propertyType: {
-      type: Schema.Types.ObjectId,
-      ref: "PropertyType",
-      required: true,
-      index: true,
-    },
-    propertyTypeName: {
-      type: String,
-      required: true,
-    },
+    propertyType: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "PropertyType",
+        required: true,
+      },
+    ],
+    propertyTypeName: [
+      {
+        type: String,
+        required: true,
+      },
+    ],
     propertyCategory: {
       type: Schema.Types.ObjectId,
       ref: "Category",

@@ -218,7 +218,7 @@ header .nav_container ul {
 }
 header .nav_container ul a {
   font-size: 14.5px;
-  font-weight: 600;
+  font-weight: 400;
   opacity: 0.9;
 }
 header .nav_container ul a.submmit {
@@ -578,7 +578,7 @@ section .container {
 .home .type_section .type_row h4 {
   font-size: 18px;
   color: #0a264a;
-  font-weight: 600;
+  font-weight: 400;
 }
 .home .type_section .type_row p {
   color: #5c6368;
@@ -650,7 +650,7 @@ section .container {
   align-items: center;
   gap: 4px;
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 500;
   color: #121212;
 }
 .property_card .amenity svg {
@@ -664,7 +664,7 @@ section .container {
   color: #0a264a;
   font-size: 18px;
   padding-bottom: 8px;
-  font-weight: 600;
+  font-weight: 500;
 }
 .property_card .property_name a {
   color: #0a264a;
@@ -779,6 +779,7 @@ section .container {
   font-size: 18px;
   color: #161e2d;
   padding-bottom: 8px;
+  font-weight: 400;
 }
 .city_card .details .count {
   color: #161e2d;
@@ -792,7 +793,7 @@ section .container {
   gap: 6px;
   height: 32px;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 400;
   display: flex;
   width: max-content;
   align-items: center;
@@ -815,11 +816,14 @@ section .container {
 }
 .home .team_card .about h4 {
   font-size: 18px;
-  font-weight: 600;
+  font-weight: 500;
 }
 .home .team_card .about .designation {
   font-size: 14.5px;
   color: #5c6368;
+}
+.slick-slider .slick-dots {
+  display: none !important;
 }
 
 footer {
@@ -2191,6 +2195,15 @@ footer .copyrights_row ul {
 }
 
 /* media queries */
+
+@media (max-width: 1320px) {
+  .carousel_wrapper .slick-arrow.slick-next {
+    right: 0px;
+  }
+  .carousel_wrapper .slick-arrow.slick-prev {
+    left: 0px;
+  }
+}
 
 @media (max-width: 1280px) {
   footer .container {
