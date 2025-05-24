@@ -143,58 +143,6 @@ export default async function AgentDetailsPage({ params }) {
                 Responsive Broker
               </span>
             </div>
-            <div className="contact_btns">
-              <Tooltip title="Email Agent">
-                <a href={`mailto:${agent.email}`}>
-                  <button>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 16 16"
-                    >
-                      <path d="M13.3 2.7H2.7A1.3 1.3 0 0 0 1.3 4v8a1.3 1.3 0 0 0 1.4 1.3h10.6a1.3 1.3 0 0 0 1.4-1.3V4a1.3 1.3 0 0 0-1.4-1.3zm0 2.6L8 8.7 2.7 5.3V4L8 7.3 13.3 4z"></path>
-                      <path fill="none" d="M0 0h16v16H0z"></path>
-                    </svg>
-                  </button>
-                </a>
-              </Tooltip>
-              <Tooltip title="Call Agent">
-                <a href={`tel:${agent.phoneNumber}`}>
-                  <button>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 16 16"
-                    >
-                      <path d="M13.3 10.3A7.6 7.6 0 0 1 11 10a.7.7 0 0 0-.7.1l-1 1.4a10.1 10.1 0 0 1-4.6-4.6L6 5.7A.7.7 0 0 0 6 5a7.4 7.4 0 0 1-.3-2.3A.7.7 0 0 0 5 2H2.8c-.4 0-.8.2-.8.7A11.4 11.4 0 0 0 13.3 14a.7.7 0 0 0 .7-.8V11a.7.7 0 0 0-.7-.6z"></path>
-                    </svg>
-                  </button>
-                </a>
-              </Tooltip>
-              <Tooltip title="Whatsappp">
-                <a
-                  href={`https://wa.me/${agent.phoneNumber}?text=${encodeURIComponent(
-                    `Hi ${agent.name}, I'm interested in one of your property listings. Could you please share more details?`
-                  )}`}
-                >
-                  <button>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="24"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M19.2 4.8A10.2 10.2 0 0 0 3.2 17l-1.4 5.3L7.2 21a10.1 10.1 0 0 0 4.8 1 10.2 10.2 0 0 0 7.2-17.3zM12 20.4a8.4 8.4 0 0 1-4.3-1.2h-.3l-3.2.7 1-3.1-.3-.3a8.4 8.4 0 1 1 7.1 4zm4.7-6.3c-.3-.1-1.5-.8-1.8-.8s-.4-.2-.5 0l-.8 1c-.1 0-.3.3-.6.2a7 7 0 0 1-2-1.3 7.7 7.7 0 0 1-1.4-1.8c-.2-.2 0-.4 0-.5l.5-.4a1.7 1.7 0 0 0 .2-.5.5.5 0 0 0 0-.4l-.8-2c-.2-.4-.4-.3-.6-.3h-.4a1 1 0 0 0-.7.3 2.9 2.9 0 0 0-1 2A5 5 0 0 0 8 12.4a11.3 11.3 0 0 0 4.4 4 14.5 14.5 0 0 0 1.4.4 3.4 3.4 0 0 0 1.6 0 2.6 2.6 0 0 0 1.7-1 2.1 2.1 0 0 0 .2-1.3l-.5-.3z"
-                      ></path>
-                    </svg>
-                  </button>
-                </a>
-              </Tooltip>
-            </div>
           </div>
 
           {/* Contact Info */}
@@ -214,9 +162,10 @@ export default async function AgentDetailsPage({ params }) {
               <div className="flex items-center gap-2 text-gray-700">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  width="16"
+                  width="24"
                   height="24"
                   viewBox="0 0 24 24"
+                  fill="oklch(54.6% .245 262.881)"
                 >
                   <path
                     fillRule="evenodd"

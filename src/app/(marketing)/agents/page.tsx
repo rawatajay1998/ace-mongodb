@@ -117,7 +117,7 @@ export default function AgentsPage() {
                     <div>
                       <h3 className="text-lg font-bold">{agent.name}</h3>
                       <p className="country pb-2">
-                        <strong className="mr-2">Country</strong>
+                        <strong className="mr-2">Country:</strong>
                         {agent.country || "Not Known"}
                       </p>
                       <p className="total_rpoperties">
@@ -172,7 +172,7 @@ export default function AgentsPage() {
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             width="16"
-                            height="24"
+                            height="16"
                             viewBox="0 0 24 24"
                           >
                             <path
