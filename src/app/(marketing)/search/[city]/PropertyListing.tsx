@@ -64,11 +64,11 @@ function PropertyCard({ property }: { property: IPropertyCardProps }) {
         <Image
           src={property?.thumbnailImage || "/no-image.jpg"}
           alt={property.projectName}
-          width={1200}
-          height={1200}
-          sizes="1000px"
+          fill
+          className="object-cover rounded-sm"
+          sizes="(max-width: 768px) 100vw, 250px" // Correct size declaration
           quality={100}
-          className="object-cover rounded-sm image"
+          priority
         />
       </div>
       <div className="flex flex-col justify-between w-full">
