@@ -2183,6 +2183,9 @@ footer .copyrights_row ul {
 .listing_page_cards .image_area {
   width: 100%;
 }
+.listing_page_cards .image_area img {
+  height: 100%;
+}
 .listing_page_cards .image_area .ant-image {
   width: 100% !important;
   height: 100%;
