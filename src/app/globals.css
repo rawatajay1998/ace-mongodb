@@ -1103,6 +1103,12 @@ footer .copyrights_row ul {
   align-items: center;
   justify-content: space-between;
 }
+.banner_property_deatils .image_large {
+  height: 400px;
+}
+.banner_property_deatils .image_small {
+  height: 196px;
+}
 .property_meta .content_bottom .row {
   display: grid;
   max-width: 100%;
@@ -2795,5 +2801,18 @@ footer .copyrights_row ul {
   .agents_page .contact_btns button {
     width: 100%;
     height: 100%;
+  }
+  .banner_property_deatils .image_large {
+    height: 260px;
+  }
+  .banner_property_deatils .image_small {
+    height: 130px;
+  }
+  .property_single_row .carousel_wrapper .slick-arrow {
+    top: 50%;
+  }
+  .home .property_card .footer_row {
+    flex-direction: row;
+    flex-wrap: wrap;
   }
 }

@@ -17,9 +17,9 @@ const PropertyImageGallery = ({ images }: { images: string[] }) => {
             src={images[0]}
             alt="Main"
             width="100%"
-            height={400}
             style={{ objectFit: "cover", borderRadius: 8 }}
             preview={false}
+            className="image_large"
           />
           <button
             className="absolute bottom-4 right-4 bg-black bg-opacity-60 text-white px-4 py-2 rounded-md text-sm"
@@ -36,7 +36,7 @@ const PropertyImageGallery = ({ images }: { images: string[] }) => {
               src={images[0]}
               alt="Main"
               width="100%"
-              height={400}
+              className="image_large"
               style={{ objectFit: "cover", borderRadius: 8 }}
               preview={false}
             />
@@ -59,6 +59,7 @@ const PropertyImageGallery = ({ images }: { images: string[] }) => {
                   alt={`Side ${i}`}
                   width="100%"
                   height={196}
+                  className="image_small"
                   style={{ objectFit: "cover" }}
                   preview={false}
                 />
