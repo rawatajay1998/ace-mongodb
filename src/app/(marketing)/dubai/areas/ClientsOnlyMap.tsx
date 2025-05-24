@@ -4,6 +4,7 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L, { Icon } from "leaflet";
 import { useEffect, useRef } from "react";
 import "leaflet/dist/leaflet.css";
+import { Marker as LeafletMarker } from "leaflet";
 
 interface Area {
   _id: string;
@@ -46,21 +47,20 @@ const customIcon: Icon = new L.Icon({
 export default function ClientOnlyMap({
   areas,
   activePosition,
+  activeAreaId,
 }: {
   areas: Area[];
   activePosition: [number, number] | null;
+  activeAreaId: string | null;
 }) {
   const mapRef = useRef<L.Map | null>(null);
+  const markerRefs = useRef<Record<string, LeafletMarker>>({});
 
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      if (mapRef.current) {
-        mapRef.current.invalidateSize();
-      }
-    }, 300); // give some time for animation or display
-
-    return () => clearTimeout(timeout);
-  }, [activePosition]);
+    if (activeAreaId && markerRefs.current[activeAreaId]) {
+      markerRefs.current[activeAreaId].openPopup();
+    }
+  }, [activeAreaId]);
 
   return (
     <div className="map-container" style={{ height: "100%", width: "100%" }}>
@@ -89,19 +89,35 @@ export default function ClientOnlyMap({
             (area) =>
               typeof area.lat === "number" && typeof area.lng === "number"
           )
-          .map((area) => (
-            <Marker
-              key={area._id}
-              position={[area.lat!, area.lng!]}
-              icon={customIcon}
-            >
-              <Popup>
-                <strong>{area.name}</strong>
-                <br />
-                City: {area.cityId}
-              </Popup>
-            </Marker>
-          ))}
+          .map((area) => {
+            const isActive = area._id === activeAreaId;
+
+            return (
+              <Marker
+                key={area._id}
+                position={[area.lat!, area.lng!]}
+                icon={customIcon}
+                ref={(ref) => {
+                  if (ref) {
+                    markerRefs.current[area._id] = ref;
+
+                    // Open popup after ref is available
+                    if (isActive) {
+                      setTimeout(() => {
+                        ref.openPopup();
+                      }, 0); // delay to ensure ref is mounted
+                    }
+                  }
+                }}
+              >
+                <Popup>
+                  <strong>{area.name}</strong>
+                  <br />
+                  City: {area.cityId}
+                </Popup>
+              </Marker>
+            );
+          })}
       </MapContainer>
     </div>
   );

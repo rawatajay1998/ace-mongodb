@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import clsx from "clsx"; // install if not: npm i clsx
+import clsx from "clsx";
 
 const ClientOnlyMap = dynamic(() => import("./ClientsOnlyMap"), {
   ssr: false,
@@ -30,25 +30,30 @@ export default function AreasPageClient({
   const [activePosition, setActivePosition] = useState<[number, number] | null>(
     null
   );
+  const [activeAreaId, setActiveAreaId] = useState<string | null>(null);
   const [showMobileMap, setShowMobileMap] = useState(false);
 
   const handleCardClick = async (area: Area) => {
+    let position: [number, number] | null = null;
+
     if (area.lat && area.lng) {
-      setActivePosition([area.lat, area.lng]);
+      position = [area.lat, area.lng];
     } else {
       const response = await fetch(
         `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(area.name)}`
       );
       const data = await response.json();
       if (data.length > 0) {
-        const { lat, lon } = data[0];
-        setActivePosition([parseFloat(lat), parseFloat(lon)]);
+        position = [parseFloat(data[0].lat), parseFloat(data[0].lon)];
       } else {
         alert("Location not found");
+        return;
       }
     }
 
-    // Show panel on mobile
+    setActivePosition(position);
+    setActiveAreaId(area._id);
+
     if (window.innerWidth < 768) {
       setShowMobileMap(true);
     }
@@ -94,7 +99,11 @@ export default function AreasPageClient({
 
       {/* Desktop Map */}
       <div className="map-container hidden md:block" style={{ flex: 1 }}>
-        <ClientOnlyMap areas={initialAreas} activePosition={activePosition} />
+        <ClientOnlyMap
+          areas={initialAreas}
+          activePosition={activePosition}
+          activeAreaId={activeAreaId}
+        />
       </div>
 
       {/* Mobile Slide-Over Map Panel */}
@@ -114,7 +123,11 @@ export default function AreasPageClient({
           </button>
         </div>
         <div className="h-[calc(100%-56px)] w-full">
-          <ClientOnlyMap areas={initialAreas} activePosition={activePosition} />
+          <ClientOnlyMap
+            areas={initialAreas}
+            activePosition={activePosition}
+            activeAreaId={activeAreaId}
+          />
         </div>
       </div>
     </div>
