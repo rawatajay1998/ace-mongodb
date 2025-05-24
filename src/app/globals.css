@@ -1114,6 +1114,9 @@ footer .copyrights_row ul {
   border-radius: 8px;
   font-size: 14px;
   font-weight: 450;
+  color: #fff;
+  padding: 4px 20px;
+  right: 20px;
 }
 .banner_property_deatils .image_small {
   height: 196px;

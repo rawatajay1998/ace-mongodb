@@ -49,7 +49,6 @@ const PropertyImageGallery = ({ images }: { images: string[] }) => {
                 key={i}
                 className="relative"
                 style={{
-                  height: "196px",
                   borderRadius: 8,
                   overflow: "hidden",
                 }}
