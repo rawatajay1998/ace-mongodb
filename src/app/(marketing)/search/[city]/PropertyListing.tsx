@@ -61,15 +61,14 @@ function PropertyCard({ property }: { property: IPropertyCardProps }) {
   return (
     <div className="card flex bg-white rounded-lg">
       <div className="badge">{property.propertySubCategoryName}</div>
-      <div className="w-[250px] h-full relative flex-shrink-0 image">
-        <Image
-          src={property?.thumbnailImage || "/no-image.jpg"}
-          alt={property.projectName}
-          width={1200}
-          height={1200}
-          className="object-cover rounded-sm"
-        />
-      </div>
+
+      <Image
+        src={property?.thumbnailImage || "/no-image.jpg"}
+        alt={property.projectName}
+        width={1200}
+        height={1200}
+        className="object-cover rounded-sm image"
+      />
 
       <div className="flex flex-col justify-between w-full">
         <div className="header">

@@ -2127,6 +2127,8 @@ footer .copyrights_row ul {
   align-items: center;
   gap: 20px;
   margin-bottom: 20px;
+  flex-wrap: wrap;
+  row-gap: 12px;
 }
 .listing_page_cards .property_details span {
   display: flex;
@@ -2154,6 +2156,11 @@ footer .copyrights_row ul {
 }
 .listing_page_cards .body {
   padding-inline: 20px;
+}
+.listing_page_cards .image {
+  width: 250px;
+  min-width: 250px;
+  max-height: 250px;
 }
 .listing_page_cards .header .project_name {
   font-size: 22px;
