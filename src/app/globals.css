@@ -1212,6 +1212,7 @@ footer .copyrights_row ul {
 .property_single_row .content.pricing_section table td span,
 .property_single_row .content.pricing_section table td p {
   padding-bottom: 0;
+  width: max-content;
 }
 .property_single_row .content .title {
   font-size: 24px;
@@ -2860,5 +2861,14 @@ footer .copyrights_row ul {
   .home .property_card .footer_row {
     flex-direction: row;
     flex-wrap: wrap;
+  }
+  .property_single_row .content.pricing_section table th > * {
+    font-size: 14px;
+  }
+  .property_single_row .content.pricing_section table td span,
+  .property_single_row .content.pricing_section table td p {
+    padding-bottom: 0;
+    width: max-content;
+    font-size: 14px;
   }
 }
