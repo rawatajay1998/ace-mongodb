@@ -314,7 +314,7 @@ export function FilterSidebar({
         </div>
       </div>
 
-      <div className="flex flex-col gap-3 mt-5">
+      <div className="flex flex-col gap-3 mt-5 filerts__buttons">
         <button onClick={clearFilters} className="reset_button">
           Clear All
         </button>
@@ -333,7 +333,7 @@ export function FilterSidebar({
         <>
           <button
             onClick={() => setDrawerVisible(true)}
-            className="fixed bottom-4 right-4 bg-black text-white p-3 rounded-full shadow-md z-50"
+            className="fixed bottom-4 left-4 bg-black text-white p-3 rounded-full shadow-md z-50"
           >
             <SlidersHorizontal size={20} />
           </button>

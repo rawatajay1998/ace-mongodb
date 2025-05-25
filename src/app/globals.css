@@ -2883,4 +2883,18 @@ footer .copyrights_row ul {
     width: max-content;
     font-size: 14px;
   }
+  .listing_sidebar .filerts__buttons {
+    flex-direction: row;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background: #fff;
+    padding: 12px;
+    left: 0;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  }
+  .filter_drawer.ant-drawer-content {
+    max-height: 100vh;
+    overflow: auto;
+  }
 }

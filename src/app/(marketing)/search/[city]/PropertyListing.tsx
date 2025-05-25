@@ -61,7 +61,7 @@ function PropertyCard({ property }: { property: IPropertyCardProps }) {
     <div className="card flex bg-white rounded-lg">
       <div className="image_area w-[250px] h-[250px] relative">
         <Image
-          src={property?.thumbnailImage || "/no-image.jpg"}
+          src={property?.bannerImage || property?.thumbnailImage}
           alt={property.projectName}
           width={1000}
           className="object-cover rounded-sm"
