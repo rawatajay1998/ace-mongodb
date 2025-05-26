@@ -54,7 +54,12 @@ export default function PropertyDetailsClient({
     <section className="property_content">
       <div className="container">
         <div className="banner_property_deatils pt-0 pb-4">
-          {images.length > 0 && <ImageBannerGrid images={images} />}
+          {images.length > 0 && (
+            <ImageBannerGrid
+              bannerImage={property.bannerImage}
+              images={images}
+            />
+          )}
         </div>
         <div className="property_single_row">
           <div className="content_left">

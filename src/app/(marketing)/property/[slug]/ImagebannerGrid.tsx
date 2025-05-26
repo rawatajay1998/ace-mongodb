@@ -2,7 +2,13 @@
 import { useState } from "react";
 import { Modal, Image } from "antd";
 
-const PropertyImageGallery = ({ images }: { images: string[] }) => {
+const PropertyImageGallery = ({
+  images,
+  bannerImage,
+}: {
+  images: string[];
+  bannerImage: string;
+}) => {
   const [open, setOpen] = useState(false);
 
   if (!images?.length) return null;
@@ -14,10 +20,16 @@ const PropertyImageGallery = ({ images }: { images: string[] }) => {
       {isCompact ? (
         <div className="relative w-full">
           <Image
-            src={images[0]}
+            src={bannerImage}
             alt="Main"
-            width="100%"
-            style={{ objectFit: "cover", borderRadius: 8 }}
+            style={{
+              width: "100%",
+              height: "auto",
+              objectFit: "cover",
+              borderRadius: 8,
+            }}
+            width={1200}
+            height={800}
             preview={false}
             className="image_large"
           />
