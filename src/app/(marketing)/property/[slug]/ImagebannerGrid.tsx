@@ -93,6 +93,7 @@ const PropertyImageGallery = ({
         onCancel={() => setOpen(false)}
         footer={null}
         width={900}
+        className="gallery_modal_details"
       >
         <Image.PreviewGroup>
           <div className="grid grid-cols-2 gap-2 p-4">

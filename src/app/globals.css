@@ -1116,6 +1116,9 @@ footer .copyrights_row ul {
 .banner_property_deatils .image_large {
   height: 400px !important;
 }
+.gallery_modal_details .ant-image img {
+  height: 100%;
+}
 .banner_property_deatils .view_more_button {
   position: absolute;
   right: 20px;
