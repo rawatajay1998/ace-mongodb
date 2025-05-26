@@ -1,12 +1,23 @@
 "use client";
 
-import { Table, Button, Input, Select, Switch, Tag, Modal } from "antd";
+import {
+  Table,
+  Button,
+  Input,
+  Select,
+  Switch,
+  Tag,
+  Modal,
+  Upload,
+  Image,
+} from "antd";
 import { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
 import type { ColumnsType } from "antd/es/table";
+import { UploadOutlined } from "@ant-design/icons";
 
 const { Option } = Select;
 
@@ -83,10 +94,13 @@ export default function AreasPage() {
 
       if (editingArea) {
         formData.append("id", editingArea._id);
-        const dummyFile = new File(["dummy"], "dummy.jpg", {
-          type: "image/jpeg",
-        });
-        formData.append("image", dummyFile);
+        if (selectedImageFile) {
+          formData.append("image", selectedImageFile);
+        } else {
+          // Send a dummy file when editing but no new image selected
+          const dummyFile = new File([""], "dummy.jpg", { type: "image/jpeg" });
+          formData.append("image", dummyFile);
+        }
       } else if (selectedImageFile) {
         formData.append("image", selectedImageFile);
       } else {
@@ -145,9 +159,24 @@ export default function AreasPage() {
   };
 
   const columns: ColumnsType<Area> = [
-    { title: "ID", dataIndex: "_id", key: "_id" },
     { title: "Name", dataIndex: "name", key: "name" },
     { title: "City", dataIndex: ["cityId", "name"], key: "city" },
+    {
+      title: "Image",
+      key: "areaImageUrl",
+      render: (_, record) =>
+        record.areaImageUrl ? (
+          <Image
+            src={record.areaImageUrl}
+            alt="Area Image"
+            height={40}
+            width={40}
+            className="w-10 h-10 object-contain"
+          />
+        ) : (
+          <span>No Image</span>
+        ),
+    },
     {
       title: "Top Location",
       key: "topLocation",
@@ -209,6 +238,7 @@ export default function AreasPage() {
         }}
         footer={null}
         destroyOnClose
+        width={800}
       >
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
@@ -245,27 +275,61 @@ export default function AreasPage() {
             />
           </div>
 
-          {!editingArea && (
-            <div>
-              <label>Area Image</label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) =>
-                  setSelectedImageFile(e.target.files?.[0] || null)
-                }
-              />
-            </div>
-          )}
+          <div>
+            <label>Area Image</label>
+            <Upload
+              beforeUpload={(file) => {
+                setSelectedImageFile(file);
+                return false;
+              }}
+              maxCount={1}
+              showUploadList={true}
+            >
+              <Button icon={<UploadOutlined />}>Click to Upload</Button>
+            </Upload>
+            {editingArea && (
+              <div className="mt-2">
+                {selectedImageFile ? (
+                  <div className="flex items-center">
+                    <span className="mr-2 text-white">
+                      Selected Image Preview:
+                    </span>
+                    <Image
+                      src={URL.createObjectURL(selectedImageFile)}
+                      alt="Selected Image"
+                      className="w-20 h-20 object-contain p-1"
+                      height={120}
+                      width={120}
+                    />
+                  </div>
+                ) : editingArea.areaImageUrl ? (
+                  <div className="flex items-center">
+                    <span className="mr-2 text-white">Current Image:</span>
+                    <Image
+                      src={editingArea.areaImageUrl}
+                      height={120}
+                      width={120}
+                      alt="Current Image"
+                      className="w-20 h-20 object-contain p-1"
+                    />
+                  </div>
+                ) : null}
+              </div>
+            )}
+          </div>
 
-          <div className="text-right pt-2">
+          <div className="text-right pt-4">
             <Button
               onClick={() => setModalVisible(false)}
               style={{ marginRight: 8 }}
             >
               Cancel
             </Button>
-            <Button type="primary" htmlType="submit" disabled={!isValid}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              disabled={!isValid && !(editingArea && selectedImageFile)}
+            >
               {editingArea ? "Update" : "Add"}
             </Button>
           </div>

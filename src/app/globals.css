@@ -1157,7 +1157,7 @@ footer .copyrights_row ul {
   text-transform: capitalize;
 }
 .prose.prose-lg strong {
-  font-weight: 400 !important;
+  font-weight: 450 !important;
 }
 .property_meta .content_bottom .price {
   padding-left: 20px;
@@ -1231,7 +1231,7 @@ footer .copyrights_row ul {
 .property_single_row .content .title {
   font-size: 24px;
   margin-bottom: 20px;
-  font-weight: 400;
+  font-weight: 450;
   color: #222;
 }
 .property_single_row .content p {

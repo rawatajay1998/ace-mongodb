@@ -2,24 +2,30 @@
 
 import { Modal, Tooltip, message } from "antd";
 import { Twitter, Facebook, MessageCircle, Copy, Share2 } from "lucide-react";
-import { WechatOutlined, WhatsAppOutlined } from "@ant-design/icons";
+import { WhatsAppOutlined } from "@ant-design/icons";
 import { useState } from "react";
 
-const shareOptions = [
-  { icon: <Twitter color="#1DA1F2" />, label: "Twitter" },
-  { icon: <Facebook color="#1877F2" />, label: "Facebook" },
-
+const getShareOptions = (url: string) => [
+  {
+    icon: <Twitter color="#1DA1F2" />,
+    label: "Twitter",
+    shareUrl: `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}`,
+  },
+  {
+    icon: <Facebook color="#1877F2" />,
+    label: "Facebook",
+    shareUrl: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
+  },
   {
     icon: <WhatsAppOutlined style={{ color: "#25D366", fontSize: 20 }} />,
     label: "WhatsApp",
+    shareUrl: `https://wa.me/?text=${encodeURIComponent(url)}`,
   },
-  { icon: <MessageCircle color="#006AFF" />, label: "Messenger" },
-
   {
-    icon: <WechatOutlined style={{ color: "#7BB32E", fontSize: 20 }} />,
-    label: "WeChat",
+    icon: <MessageCircle color="#006AFF" />,
+    label: "Messenger",
+    shareUrl: `fb-messenger://share/?link=${encodeURIComponent(url)}`,
   },
-  { icon: <Share2 />, label: "More" },
 ];
 
 export default function ShareModal({ url }: { url: string }) {
@@ -49,9 +55,38 @@ export default function ShareModal({ url }: { url: string }) {
         title="Share"
       >
         <div className="grid grid-cols-4 gap-4 text-center py-2">
-          {shareOptions.map(({ icon, label }) => (
+          {getShareOptions(url).map(({ icon, label, shareUrl }) => (
             <div key={label} className="flex flex-col items-center gap-1">
-              <div className="rounded-full bg-gray-100 p-3">{icon}</div>
+              {shareUrl ? (
+                <a
+                  href={shareUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-full bg-gray-100 p-3 hover:opacity-80"
+                >
+                  {icon}
+                </a>
+              ) : (
+                <button
+                  className="rounded-full bg-gray-100 p-3 hover:opacity-80"
+                  onClick={() => {
+                    if (label === "More" && navigator.share) {
+                      navigator
+                        .share({
+                          title: document.title,
+                          url,
+                        })
+                        .catch(() => message.error("Sharing failed"));
+                    } else {
+                      message.info(
+                        "This share option is not supported in browser."
+                      );
+                    }
+                  }}
+                >
+                  {icon}
+                </button>
+              )}
               <span className="text-xs">{label}</span>
             </div>
           ))}

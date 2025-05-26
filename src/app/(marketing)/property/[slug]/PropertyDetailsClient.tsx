@@ -78,7 +78,7 @@ export default function PropertyDetailsClient({
                   <DownloadBrochure propertyName={property.projectName} />
 
                   <ShareModal
-                    url={`https://aceeliteproperties.com/properties/${slug}`}
+                    url={`https://aceeliteproperties.com/property/${slug}`}
                   />
                 </div>
               </div>

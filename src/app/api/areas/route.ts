@@ -64,8 +64,8 @@ export const GET = async (req: Request) => {
       }
     }
 
-    const cities = await Area.find(query);
-    return NextResponse.json(cities);
+    const areas = await Area.find(query).populate("cityId");
+    return NextResponse.json(areas);
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: "Server Error" }, { status: 500 });
@@ -81,18 +81,23 @@ export async function POST(req: NextRequest) {
     const cityId = formData.get("cityId") as string;
     const file = formData.get("image");
 
-    if (!name || !cityId || !file || typeof file === "string") {
+    if (!name || !cityId || !file) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 }
       );
     }
 
-    const imageUrl = await uploadToCloudinary(file as File);
+    // Skip upload if it's a dummy file
+    let imageUrl = "";
+    if (file && typeof file !== "string" && file.name !== "dummy.jpg") {
+      imageUrl = await uploadToCloudinary(file as File);
+    }
+
     const newArea = await Area.create({
       name,
       cityId,
-      areaImageUrl: imageUrl,
+      areaImageUrl: imageUrl || undefined,
       slug: generateSlug(name),
     });
 
@@ -122,14 +127,18 @@ export async function PUT(req: NextRequest) {
 
     area.name = name;
     area.cityId = cityId;
+    area.slug = generateSlug(name);
 
-    if (
-      file &&
-      typeof file !== "string" &&
-      (file as File).name !== "dummy.jpg"
-    ) {
-      const imageUrl = await uploadToCloudinary(file as File);
-      area.areaImageUrl = imageUrl;
+    if (file && typeof file !== "string" && file.name !== "dummy.jpg") {
+      // Delete old image if exists
+      if (area.areaImageUrl) {
+        const publicId = area.areaImageUrl.split("/").pop()?.split(".")[0];
+        if (publicId) {
+          await cloudinary.v2.uploader.destroy(`areas/${publicId}`);
+        }
+      }
+      // Upload new image
+      area.areaImageUrl = await uploadToCloudinary(file as File);
     }
 
     await area.save();
@@ -158,7 +167,7 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json({ error: "Area not found" }, { status: 404 });
     }
 
-    // Optional: Delete image from Cloudinary
+    // Delete image from Cloudinary if exists
     if (deletedArea.areaImageUrl) {
       const publicId = deletedArea.areaImageUrl.split("/").pop()?.split(".")[0];
       if (publicId) {

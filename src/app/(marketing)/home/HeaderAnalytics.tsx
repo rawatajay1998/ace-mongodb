@@ -77,7 +77,7 @@ export default function SiteStatsBar() {
         style={{
           display: "inline-block",
           minWidth: "100vw",
-          animation: "scroll 12s linear infinite",
+          animation: "scroll 30s linear infinite",
         }}
       >
         {renderedStats}

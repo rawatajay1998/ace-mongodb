@@ -58,6 +58,7 @@
     "react-hook-form": "^7.56.1",
     "react-hot-toast": "^2.5.2",
     "react-leaflet": "^5.0.0",
+    "react-map-gl": "^8.0.4",
     "resend": "^4.5.1",
     "slate": "^0.114.0",
     "slate-react": "^0.114.2",
