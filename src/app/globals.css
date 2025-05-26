@@ -1109,6 +1109,7 @@ footer .copyrights_row ul {
   height: 400px;
   max-height: 400px !important;
 }
+.banner_property_deatils .right_box .ant-image,
 .banner_property_deatils .right_box .ant-image .image_small {
   height: 196px;
   max-height: 196px !important;
