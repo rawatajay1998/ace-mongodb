@@ -1103,10 +1103,15 @@ footer .copyrights_row ul {
   align-items: center;
   justify-content: space-between;
 }
-.banner_property_deatils .ant-image {
+.banner_property_deatils .ant-image,
+.banner_property_deatils .ant-image .image_large {
   width: 100% !important;
   height: 400px;
   max-height: 400px !important;
+}
+.banner_property_deatils .ant-image .image_small {
+  height: 196px;
+  max-height: 196px !important;
 }
 .banner_property_deatils .image_large {
   height: 400px !important;
@@ -2849,6 +2854,9 @@ footer .copyrights_row ul {
   .banner_property_deatils .image_large {
     height: 260px !important;
   }
+  .banner_property_deatils .right_box .ant-image {
+    height: 120px !important;
+  }
   .banner_property_deatils .ant-image {
     max-height: 260px !important;
   }
@@ -2856,7 +2864,7 @@ footer .copyrights_row ul {
     gap: 10px;
   }
   .banner_property_deatils .image_area .right_box {
-    gap: 0;
+    gap: 8px;
   }
   .banner_property_deatils .view_more_button {
     color: #fff;
