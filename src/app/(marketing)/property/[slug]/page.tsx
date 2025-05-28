@@ -46,8 +46,6 @@ export default async function PropertyPage({
     ? await relatedRes.json()
     : { relatedProperties: [] };
 
-  console.log(paymentData);
-
   return (
     <PropertyDetailsClient
       property={propertyData.property}

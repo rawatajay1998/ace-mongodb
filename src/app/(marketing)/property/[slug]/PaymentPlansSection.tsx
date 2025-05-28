@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 const PaymentPlanSection = ({ paymentPlans }) => {
-  // if (!paymentPlans?.length) return null;
+  if (!paymentPlans?.length) return null;
 
   return (
     <div className="content">

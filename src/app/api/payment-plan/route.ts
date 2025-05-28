@@ -6,17 +6,19 @@ import { Types } from "mongoose";
 export async function GET(req: NextRequest) {
   await connectDB();
 
-  const search = req.nextUrl.searchParams.get("search") || "";
+  let search = req.nextUrl.searchParams.get("search") || "";
   const page = parseInt(req.nextUrl.searchParams.get("page") || "1");
   const limit = parseInt(req.nextUrl.searchParams.get("pageSize") || "10"); // pageSize used in frontend
   const skip = (page - 1) * limit;
+
+  search = search.toLowerCase().replace(/\s+/g, "-");
 
   // Build query filter
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const matchStage: any = {};
   if (search) {
     // Assuming property.projectName field
-    matchStage["property.projectName"] = { $regex: search, $options: "i" };
+    matchStage["property.slug"] = { $regex: search, $options: "i" };
   }
 
   // If filtering by propertyId (for fetching single plan in frontend)
