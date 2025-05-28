@@ -16,7 +16,7 @@ const GalleryImage = dynamic(() => import("./GalleryImage"));
 const SidebarPorperty = dynamic(() => import("./Sidebar"));
 const DownloadBrochure = dynamic(() => import("./DownloadBrochure"));
 const ShareModal = dynamic(() => import("./ShareModal"));
-const PaymentPlanSection = dynamic(() => import("../PaymentPlansSection"));
+const PaymentPlanSection = dynamic(() => import("./PaymentPlansSection"));
 
 export default function PropertyDetailsClient({
   property,
