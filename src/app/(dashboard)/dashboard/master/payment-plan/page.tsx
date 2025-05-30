@@ -232,7 +232,7 @@ const PaymentPlanPage = () => {
 
       <Space style={{ marginBottom: 16 }}>
         <Search
-          placeholder="Searc Payment Plans by Project Name"
+          placeholder="Search Payment Plans by Project Name"
           onSearch={(value) => {
             setSearchTerm(value);
             setPage(1);
