@@ -111,7 +111,7 @@ const WebsiteFooter = async () => {
                 Ace Elite Properties 1103 Anantara Business Tower, Business Bay,
                 Dubai UAE
               </li>
-              <li>+971 55 526 6579</li>
+              <li>+971 45757466</li>
               <li>info@AceEliteProperties.com</li>
             </ul>
           </div>

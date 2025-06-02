@@ -44,7 +44,7 @@ const SidebarPorperty = ({ relatedProperties, propertyName }: Props) => {
             <path fill="none" d="M0 0h16v16H0z"></path>
           </svg>
         </Link> */}
-        <Link href={"tel:+971 55 526 6579"} className="call">
+        <Link href={"tel:+971 45757466"} className="call">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="16"
