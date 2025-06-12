@@ -1228,6 +1228,17 @@ footer .copyrights_row ul {
   padding-bottom: 0;
   width: max-content;
 }
+.property_single_row .posted_by img {
+  border-radius: 50%;
+  height: 50px;
+  width: 50px;
+  object-fit: cover;
+  object-position: top;
+}
+.property_single_row .posted_by span,
+.property_single_row .posted_by p {
+  text-transform: capitalize;
+}
 .property_single_row .content .title {
   font-size: 24px;
   margin-bottom: 20px;

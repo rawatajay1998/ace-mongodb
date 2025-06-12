@@ -30,7 +30,7 @@ export interface IProperty extends Document {
   areaSize: string;
   thumbnailImage: string;
   bannerImage: string;
-  propertyPrice: string;
+  propertyPrice: number;
   unitType: string;
   verified: boolean;
   slug: string;
@@ -147,7 +147,7 @@ const PropertySchema = new Schema<IProperty>(
     areaSize: { type: String, required: true, index: true },
     thumbnailImage: { type: String, required: true },
     bannerImage: { type: String, required: true },
-    propertyPrice: { type: String, required: true, index: true },
+    propertyPrice: { type: Number, required: true, index: true },
     verified: { type: Boolean, default: false },
     slug: { type: String, required: true, unique: true },
     postedBy: { type: Schema.Types.ObjectId, ref: "User", required: true },

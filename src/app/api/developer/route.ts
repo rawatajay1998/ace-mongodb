@@ -102,12 +102,22 @@ export const POST = async (request: NextRequest) => {
   }
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const GET = async (req: NextRequest) => {
   await connectDB();
 
   try {
-    const developers = await Developer.find()
+    const { searchParams } = new URL(req.url);
+    const search = searchParams.get("search");
+
+    let query = {};
+
+    if (search) {
+      query = {
+        developerName: { $regex: search, $options: "i" }, // Case-insensitive search
+      };
+    }
+
+    const developers = await Developer.find(query)
       .populate("state")
       .populate("city")
       .sort({ createdAt: -1 });

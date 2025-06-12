@@ -20,7 +20,7 @@ const DeveloperCarousel: React.FC = () => {
   return (
     <div style={{ padding: "20px" }}>
       <Carousel
-        ref={carouselRef}
+        // ref={carouselRef}
         slidesToShow={6}
         autoplay={false}
         dots={true}
@@ -53,6 +53,7 @@ const DeveloperCarousel: React.FC = () => {
           "Binghatti",
           "damac",
           "Ellington",
+          "Risorsa",
           "emaar",
           "imtiaz",
           "majid",
@@ -60,17 +61,26 @@ const DeveloperCarousel: React.FC = () => {
           "sobha",
         ].map((developer) => (
           <div key={developer} style={{ padding: "0 10px" }}>
-            <div style={{ textAlign: "center" }}>
+            <div
+              style={{
+                textAlign: "center",
+                display: "flex",
+                alignItems: "center",
+                height: "100px",
+                width: "100%",
+                justifyContent: "center",
+              }}
+            >
               <Image
                 src={`/assets/images/developers/${developer}.png`}
                 alt={`${developer} Logo`}
-                height={120}
-                width={180}
+                height={developer === "Risorsa" ? 40 : 80}
+                width={developer === "Risorsa" ? 80 : 180}
                 style={{
                   objectFit: "contain",
                   height: "auto",
                   maxWidth: "100%",
-                  maxHeight: "120px",
+                  maxHeight: developer === "Risorsa" ? "80px" : "100px",
                 }}
               />
             </div>

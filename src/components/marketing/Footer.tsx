@@ -11,8 +11,7 @@ interface ICity {
 
 async function getTopLocations(): Promise<ICity[]> {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/home/featured?category=top-locations&type=table&includeCounts=true`,
-    { next: { revalidate: 3600 } } // optional ISR caching
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/home/featured?category=top-locations&type=table&includeCounts=true`
   );
   const data = await res.json();
   return data?.topLocations || [];

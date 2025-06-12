@@ -14,7 +14,7 @@ export async function GET(
     const { slug } = await params;
 
     const property = await Property.findOne({ slug: slug })
-      .populate("postedBy", "name profileImage") // populate only name + profileImage
+      .populate("postedBy", "name profileImageUrl slug") // populate only name + profileImage
       .populate("amenities") // assuming these are referenced
       .populate("faqs"); // assuming these are referenced
 

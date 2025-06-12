@@ -67,12 +67,14 @@ export default function DevelopersPage() {
   const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [searchText, setSearchText] = useState("");
 
-  const fetchDevelopers = async () => {
+  const fetchDevelopers = async (search = "") => {
     setLoading(true);
-    const res = await fetch("/api/developer");
+    const res = await fetch(
+      `/api/developer?search=${encodeURIComponent(search)}`
+    );
     const { data } = await res.json();
-
     setDevelopers(data);
     setLoading(false);
   };
@@ -182,6 +184,19 @@ export default function DevelopersPage() {
       title: "Developer Name",
       dataIndex: "developerName",
       key: "developerName",
+      filterDropdown: () => (
+        <div style={{ padding: 8 }}>
+          <Input
+            placeholder="Search developer"
+            value={searchText}
+            onChange={(e) => {
+              setSearchText(e.target.value);
+              fetchDevelopers(e.target.value);
+            }}
+            style={{ width: 188, marginBottom: 8, display: "block" }}
+          />
+        </div>
+      ),
     },
     { title: "State", dataIndex: ["state", "name"], key: "state" },
     { title: "City", dataIndex: ["city", "name"], key: "city" },

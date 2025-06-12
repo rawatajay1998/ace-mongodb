@@ -6,6 +6,8 @@ import { Collapse } from "antd";
 import dynamic from "next/dynamic";
 import ImageBannerGrid from "./ImagebannerGrid";
 import PropertySkeleton from "./PageSkeleton";
+import Image from "next/image";
+import Link from "next/link";
 const AmenitiesSection = dynamic(() => import("./AmenitiesSection"));
 const MortgageCalculator = dynamic(() => import("./MortgageCalculator"));
 const CarouselWrapper = dynamic(
@@ -50,6 +52,8 @@ export default function PropertyDetailsClient({
 
   const images = [property.bannerImage, ...(property.galleryImages || [])];
 
+  console.log(property);
+
   return (
     <section className="property_content">
       <div className="container">
@@ -74,12 +78,31 @@ export default function PropertyDetailsClient({
                     {Number(property.propertyPrice).toLocaleString()}
                   </p>
                 </div>
-                <div className="btn_wrapper">
-                  <DownloadBrochure propertyName={property.projectName} />
+                <div className="btn_wrapper flex-col">
+                  <div className="flex item-center gap-4">
+                    <DownloadBrochure propertyName={property.projectName} />
 
-                  <ShareModal
-                    url={`https://aceeliteproperties.com/property/${slug}`}
-                  />
+                    <ShareModal
+                      url={`https://aceeliteproperties.com/property/${slug}`}
+                    />
+                  </div>
+                  <div className="posted_by flex items-center gap-2 w-full justify-start lg:justify-end">
+                    <p className="font-medium">Posted By:</p>
+                    <Link
+                      href={`/agents/${property.postedBy.slug}`}
+                      className="flex items-center gap-2"
+                    >
+                      <Image
+                        height={28}
+                        width={28}
+                        alt="Posted By Agent Profile Image"
+                        src={property.postedBy.profileImageUrl}
+                      />
+                      <span className="font-medium">
+                        {property.postedBy.name}
+                      </span>
+                    </Link>
+                  </div>
                 </div>
               </div>
               <div className="content_bottom">

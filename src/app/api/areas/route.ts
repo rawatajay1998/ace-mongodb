@@ -50,6 +50,7 @@ export const GET = async (req: Request) => {
 
     const { searchParams } = new URL(req.url);
     const city = searchParams.get("city");
+    const search = searchParams.get("search");
 
     let query = {};
 
@@ -57,11 +58,15 @@ export const GET = async (req: Request) => {
       if (mongoose.Types.ObjectId.isValid(city)) {
         query = { cityId: new mongoose.Types.ObjectId(city) };
       } else {
-        return NextResponse.json(
-          { error: "Invalid state ID" },
-          { status: 400 }
-        );
+        return NextResponse.json({ error: "Invalid city ID" }, { status: 400 });
       }
+    }
+
+    if (search) {
+      query = {
+        ...query,
+        name: { $regex: search, $options: "i" }, // Case-insensitive search
+      };
     }
 
     const areas = await Area.find(query).populate("cityId");

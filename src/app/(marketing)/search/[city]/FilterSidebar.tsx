@@ -72,6 +72,7 @@ export function FilterSidebar({
         const catOpts = Array.isArray(catRes.data)
           ? catRes.data.map((c) => ({ value: c.name, label: c.name }))
           : [];
+
         const subcatOpts = Array.isArray(subcatRes.data)
           ? subcatRes.data.map((sc) => ({ value: sc.name, label: sc.name }))
           : [];

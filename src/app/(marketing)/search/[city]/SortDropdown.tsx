@@ -7,8 +7,8 @@ import { ChevronDown } from "lucide-react";
 
 const SORT_OPTIONS = [
   { value: "createdAt", label: "Newest First" },
-  { value: "price", label: "Price: Low to High" },
-  { value: "-price", label: "Price: High to Low" },
+  { value: "propertyPrice", label: "Price: Low to High" },
+  { value: "-propertyPrice", label: "Price: High to Low" },
 ] as const;
 
 export function SortDropdown({
@@ -23,7 +23,13 @@ export function SortDropdown({
     (value: string) => {
       const params = new URLSearchParams(searchParams);
       params.set("sortBy", value);
-      params.set("sortOrder", value.startsWith("-") ? "desc" : "asc");
+
+      if (value === "createdAt") {
+        params.set("sortOrder", "desc");
+      } else {
+        params.set("sortOrder", value.startsWith("-") ? "desc" : "asc");
+      }
+
       params.set("page", "1");
       router.push(`?${params.toString()}`);
     },

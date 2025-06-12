@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { Mail, MapPin, Phone } from "lucide-react";
 import { Tooltip } from "antd";
+import Link from "next/link";
 
 interface Props {
   params: {
@@ -241,7 +242,7 @@ export default async function AgentDetailsPage({ params }) {
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 listing_page_cards">
+            <div className="listing_page_cards">
               {properties.map((property) => (
                 <div
                   key={property._id}
@@ -260,7 +261,11 @@ export default async function AgentDetailsPage({ params }) {
                   <div className="flex flex-col justify-between w-full">
                     <div className="header">
                       <div>
-                        <h3 className="project_name">{property.projectName}</h3>
+                        <h3 className="project_name">
+                          <Link href={`/property/${property.slug}`}>
+                            {property.projectName}
+                          </Link>
+                        </h3>
                         <p className="flex items-center gap-2 location">
                           <MapPin size={16} />
                           <span>
@@ -340,7 +345,9 @@ export default async function AgentDetailsPage({ params }) {
                           </button>
                         </Tooltip>
                       </div>
-                      <button>View Property</button>
+                      <Link href={`/property/${property.slug}`}>
+                        <button>View Property</button>
+                      </Link>
                     </div>
                   </div>
                 </div>

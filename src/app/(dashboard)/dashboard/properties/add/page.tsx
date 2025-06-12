@@ -59,7 +59,7 @@ const propertySchema = z.object({
   metaDescription: z.string().min(1, "Unit type is required"),
   areaSize: z.coerce.string().min(1, "Area size must be at least 1"),
   aboutProperty: z.string().min(5, "Description must be at least 5 characters"),
-  propertyPrice: z.coerce.string().min(0, "Price must be 0 or more"),
+  propertyPrice: z.coerce.number().min(0, "Price must be 0 or more"),
   thumbnailImage: z
     .custom<FileList>((val) => val instanceof FileList, {
       message: "Thumbnail image is required",
@@ -795,7 +795,7 @@ export default function AddPropertyForm() {
                   <Input
                     {...field}
                     size="large"
-                    type="text"
+                    type="number"
                     placeholder="Price"
                     status={errors.propertyPrice ? "error" : undefined}
                   />

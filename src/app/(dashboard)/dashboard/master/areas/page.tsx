@@ -59,10 +59,12 @@ export default function AreasPage() {
   const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [searchText, setSearchText] = useState("");
 
-  const fetchAreas = async () => {
+  // Modify fetchAreas to include search parameter
+  const fetchAreas = async (search = "") => {
     setLoading(true);
-    const res = await fetch("/api/areas");
+    const res = await fetch(`/api/areas?search=${encodeURIComponent(search)}`);
     const data = await res.json();
     setAreas(data);
     setLoading(false);
@@ -159,7 +161,24 @@ export default function AreasPage() {
   };
 
   const columns: ColumnsType<Area> = [
-    { title: "Name", dataIndex: "name", key: "name" },
+    {
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+      filterDropdown: () => (
+        <div style={{ padding: 8 }}>
+          <Input
+            placeholder="Search name"
+            value={searchText}
+            onChange={(e) => {
+              setSearchText(e.target.value);
+              fetchAreas(e.target.value);
+            }}
+            style={{ width: 188, marginBottom: 8, display: "block" }}
+          />
+        </div>
+      ),
+    },
     { title: "City", dataIndex: ["cityId", "name"], key: "city" },
     {
       title: "Image",
