@@ -6,9 +6,9 @@ import { Select } from "antd";
 import { ChevronDown } from "lucide-react";
 
 const SORT_OPTIONS = [
-  { value: "createdAt", label: "Newest First" },
-  { value: "propertyPrice", label: "Price: Low to High" },
-  { value: "-propertyPrice", label: "Price: High to Low" },
+  { value: "createdAt_desc", label: "Newest First" },
+  { value: "propertyPrice_asc", label: "Price: Low to High" },
+  { value: "propertyPrice_desc", label: "Price: High to Low" },
 ] as const;
 
 export function SortDropdown({
@@ -18,19 +18,18 @@ export function SortDropdown({
 }) {
   const router = useRouter();
   const sortBy = searchParams.sortBy || "createdAt";
+  const sortOrder = searchParams.sortOrder || "desc";
+  const selectedValue = `${sortBy}_${sortOrder}`;
 
   const handleSort = useCallback(
     (value: string) => {
+      const [sortBy, sortOrder] = value.split("_");
+
       const params = new URLSearchParams(searchParams);
-      params.set("sortBy", value);
-
-      if (value === "createdAt") {
-        params.set("sortOrder", "desc");
-      } else {
-        params.set("sortOrder", value.startsWith("-") ? "desc" : "asc");
-      }
-
+      params.set("sortBy", sortBy);
+      params.set("sortOrder", sortOrder);
       params.set("page", "1");
+
       router.push(`?${params.toString()}`);
     },
     [searchParams, router]
@@ -38,7 +37,7 @@ export function SortDropdown({
 
   return (
     <Select
-      value={sortBy}
+      value={selectedValue}
       onChange={handleSort}
       style={{ width: 200 }}
       className="sort-dropdown"

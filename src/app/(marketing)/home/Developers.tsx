@@ -53,7 +53,7 @@ const DeveloperCarousel: React.FC = () => {
           "Binghatti",
           "damac",
           "Ellington",
-          "Risorsa",
+          "luxuryrealties",
           "emaar",
           "imtiaz",
           "majid",
@@ -74,13 +74,13 @@ const DeveloperCarousel: React.FC = () => {
               <Image
                 src={`/assets/images/developers/${developer}.png`}
                 alt={`${developer} Logo`}
-                height={developer === "Risorsa" ? 40 : 80}
-                width={developer === "Risorsa" ? 80 : 180}
+                height={developer === "luxuryrealties" ? 80 : 80}
+                width={developer === "luxuryrealties" ? 160 : 180}
                 style={{
                   objectFit: "contain",
                   height: "auto",
                   maxWidth: "100%",
-                  maxHeight: developer === "Risorsa" ? "80px" : "100px",
+                  maxHeight: developer === "luxuryrealties" ? "80px" : "100px",
                 }}
               />
             </div>
