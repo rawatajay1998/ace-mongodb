@@ -22,7 +22,7 @@ const DeveloperCarousel: React.FC = () => {
       <Carousel
         // ref={carouselRef}
         slidesToShow={6}
-        autoplay={false}
+        autoplay={true}
         dots={true}
         // Remove effect="fade" as it conflicts with multiple slides
         infinite={true}
@@ -49,10 +49,10 @@ const DeveloperCarousel: React.FC = () => {
       >
         {[
           //   "aldar",
-          "luxuryrealties",
           "Azizi",
           "Binghatti",
           "damac",
+          "luxuryrealties",
           "Ellington",
           "emaar",
           "imtiaz",

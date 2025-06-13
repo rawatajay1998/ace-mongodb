@@ -48,7 +48,7 @@ export async function GET(
 
     const MAX_LIMIT = 100;
     const DEFAULT_LIMIT = 12;
-    const rawSortBy = params.sortBy || "createdAt";
+    const rawSortBy = params.sortBy || "-createdAt";
     const isDescending = rawSortBy.startsWith("-");
     const cleanSortBy = rawSortBy.replace(/^-/, "");
 
@@ -59,15 +59,16 @@ export async function GET(
       "updatedAt",
     ];
 
+    const sortBy = VALID_SORT_FIELDS.includes(cleanSortBy)
+      ? cleanSortBy
+      : "createdAt";
+    const sortOrder = isDescending ? -1 : 1;
+
     const page = Math.max(1, parseInt(params.page || "1"));
     const limit = Math.min(
       MAX_LIMIT,
       parseInt(params.limit || DEFAULT_LIMIT.toString())
     );
-    const sortBy = VALID_SORT_FIELDS.includes(cleanSortBy)
-      ? cleanSortBy
-      : "createdAt";
-    const sortOrder = isDescending ? -1 : 1;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const filters: Record<string, any> = {};
