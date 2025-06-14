@@ -3,29 +3,18 @@
 import React from "react";
 import { Button } from "antd";
 import { LogOut, Menu, X } from "lucide-react";
+import SitemapGenerator from "./GenerateSitemap";
 import toast from "react-hot-toast";
-// import UserMenu from "./UserMenu";
 
 const DashboardHeader = ({
   collapsed,
   onToggle,
+  isAdmin,
 }: {
   collapsed: boolean;
   onToggle: () => void;
+  isAdmin: boolean;
 }) => {
-  // const [user, setUser] = useState(null);
-
-  // const fetchAgent = async () => {
-  //   const res = await fetch("/api/auth/user");
-  //   const data = await res.json();
-
-  //   setUser(data.user);
-  // };
-
-  // useEffect(() => {
-  //   fetchAgent();
-  // }, []);
-
   const handleLogout = async () => {
     try {
       const res = await fetch("/api/auth/logout", {
@@ -33,9 +22,9 @@ const DashboardHeader = ({
       });
 
       if (res.ok) {
-        window.location.href = "/login"; // ← Hard reload to login page
+        window.location.href = "/login";
       } else {
-        console.error("Logout failed");
+        toast.error("Logout failed");
       }
     } catch (error) {
       toast.error(error.message);
@@ -64,8 +53,9 @@ const DashboardHeader = ({
           fontWeight: "600",
         }}
       />
-      <div className="flex gap-4 item-center">
-        {/* {user && <UserMenu user={user} />} */}
+
+      <div className="flex gap-4 items-center">
+        {isAdmin && <SitemapGenerator />}
         <Button
           type="primary"
           className="logout_btn"

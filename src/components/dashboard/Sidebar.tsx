@@ -75,7 +75,6 @@ const menuItems = [
     label: "Master",
     icon: UsersRound,
     key: "master",
-    hideForAgent: true,
     children: [
       {
         label: "Analytics",
@@ -130,7 +129,7 @@ const menuItems = [
       {
         label: "Payment Plan",
         key: "/dashboard/master/payment-plan",
-        hideForAgent: true,
+        // hideForAgent: true,
       },
     ],
   },

@@ -71,7 +71,9 @@ export default function PropertyDetailsClient({
               <div className="content_top">
                 <div className="details">
                   <h1>{property.projectName}</h1>
-                  <p className="developer">by {property.developerName}</p>
+                  {property.developerName && (
+                    <p className="developer">by {property.developerName}</p>
+                  )}
 
                   <p className="price">
                     <span>AED</span>{" "}

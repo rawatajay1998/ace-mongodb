@@ -18,6 +18,8 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
         if (!res.ok) throw new Error("Unauthorized");
 
         const data = await res.json();
+        console.log("Fetched user data:", data);
+
         setIsAdmin(data.user?.role === "admin");
       } catch (err) {
         console.error("Error fetching user:", err);
@@ -35,6 +37,7 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
         <DashboardHeader
           collapsed={collapsed}
           onToggle={() => setCollapsed((prev) => !prev)}
+          isAdmin={isAdmin}
         />
         <Content
           style={{
