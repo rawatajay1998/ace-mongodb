@@ -96,7 +96,11 @@ export function FilterSidebar({
     setType(searchParams.propertyTypeName || "");
     setHighROI(searchParams.highROI === "true");
     setCategory(searchParams.propertyCategoryName || "");
-    setSubcategory(searchParams.propertySubCategoryName || "");
+    setSubcategory(
+      searchParams.propertySubCategoryName?.toLowerCase() === "offplan"
+        ? "Off Plan"
+        : searchParams.propertySubCategoryName || ""
+    );
     setMinPrice(searchParams.minPrice || "");
     setMaxPrice(searchParams.maxPrice || "");
   }, [searchParams]);
