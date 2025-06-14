@@ -64,7 +64,6 @@ export default function PropertyTable({
   fetchUrl,
   onAction,
   actionButtonText,
-  myPropertiesView,
 }: PropertyTableProps) {
   const [data, setData] = useState<Property[]>([]);
   const [user, setUser] = useState(null);
@@ -423,11 +422,9 @@ export default function PropertyTable({
                 {actionButtonText}
               </Button>
             )}
-            {myPropertiesView && (
-              <Dropdown menu={{ items: menuItems }} trigger={["click"]}>
-                <Button icon={<MoreOutlined />} />
-              </Dropdown>
-            )}
+            <Dropdown menu={{ items: menuItems }} trigger={["click"]}>
+              <Button icon={<MoreOutlined />} />
+            </Dropdown>
           </Space>
         );
       },
