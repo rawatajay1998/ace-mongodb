@@ -5,12 +5,18 @@ const nextConfig: NextConfig = {
     domains: ["res.cloudinary.com"],
   },
   typescript: {
-    // Enable TypeScript during production build (recommended)
     ignoreBuildErrors: true,
   },
   eslint: {
-    // Enable ESLint during production build
     ignoreDuringBuilds: false,
+  },
+  async rewrites() {
+    return [
+      {
+        source: "/sitemap.xml",
+        destination: "/api/sitemap",
+      },
+    ];
   },
 };
 

@@ -8,7 +8,7 @@ const SitemapGenerator = () => {
   const handleGenerate = async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/sitemap", {
+      const res = await fetch("/api/sitemap/generate", {
         method: "POST",
       });
 
