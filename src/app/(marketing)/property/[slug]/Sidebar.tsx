@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Mail, MoveRight } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Modal } from "antd";
 import ContactForm from "../../contact/ContactForm";
 
@@ -22,6 +22,15 @@ type Props = {
 
 const SidebarPorperty = ({ relatedProperties, propertyName }: Props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const timeoutTriggered = useRef(false);
+
+  if (typeof window !== "undefined" && !timeoutTriggered.current) {
+    timeoutTriggered.current = true;
+    setTimeout(() => {
+      setIsModalOpen(true);
+    }, 2000); // 5 seconds
+  }
+
   return (
     <div className="contact_form">
       <Image

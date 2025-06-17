@@ -115,8 +115,18 @@ export default function PropertyDetailsClient({
                   </div>
                   <div className="block">
                     <div className="label">Property Type:</div>
-                    <div className="text">{property.propertyTypeName}</div>
+                    <div className="text">
+                      {(typeof property.propertyTypeName === "string"
+                        ? property.propertyTypeName.split(",")
+                        : Array.isArray(property.propertyTypeName)
+                          ? property.propertyTypeName
+                          : []
+                      ).map((type: string, index: number) => (
+                        <div key={index}>{type.trim()}</div>
+                      ))}
+                    </div>
                   </div>
+
                   <div className="block">
                     <div className="label">Property Status:</div>
                     <div className="text">{property.propertyStatusName}</div>
