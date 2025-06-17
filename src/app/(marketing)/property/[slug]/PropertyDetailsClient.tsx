@@ -8,6 +8,7 @@ import ImageBannerGrid from "./ImagebannerGrid";
 import PropertySkeleton from "./PageSkeleton";
 import Image from "next/image";
 import Link from "next/link";
+import { Tooltip } from "antd";
 const AmenitiesSection = dynamic(() => import("./AmenitiesSection"));
 const MortgageCalculator = dynamic(() => import("./MortgageCalculator"));
 const CarouselWrapper = dynamic(
@@ -114,17 +115,40 @@ export default function PropertyDetailsClient({
                     <div className="text">{property.propertyCategoryName}</div>
                   </div>
                   <div className="block">
-                    <div className="label">Property Type:</div>
-                    <div className="text">
-                      {(typeof property.propertyTypeName === "string"
+                    <div className="label font-semibold text-gray-700 mb-1">
+                      Property Type:
+                    </div>
+                    <Tooltip
+                      title={(typeof property.propertyTypeName === "string"
                         ? property.propertyTypeName.split(",")
                         : Array.isArray(property.propertyTypeName)
                           ? property.propertyTypeName
                           : []
-                      ).map((type: string, index: number) => (
-                        <div key={index}>{type.trim()}</div>
-                      ))}
-                    </div>
+                      )
+                        .map((type: string) => type.trim())
+                        .join(", ")}
+                    >
+                      <div
+                        className="text text-gray-900 truncate"
+                        style={{
+                          maxWidth: "160px",
+                          overflow: "hidden",
+                          whiteSpace: "nowrap",
+                          textOverflow: "ellipsis",
+                          cursor: "pointer",
+                          marginTop: "4px", // Adds a small vertical gap
+                        }}
+                      >
+                        {(typeof property.propertyTypeName === "string"
+                          ? property.propertyTypeName.split(",")
+                          : Array.isArray(property.propertyTypeName)
+                            ? property.propertyTypeName
+                            : []
+                        )
+                          .map((type: string) => type.trim())
+                          .join(", ")}
+                      </div>
+                    </Tooltip>
                   </div>
 
                   <div className="block">

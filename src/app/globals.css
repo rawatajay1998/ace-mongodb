@@ -1148,16 +1148,20 @@ footer .copyrights_row ul {
 }
 .property_meta .content_bottom .label {
   color: #222;
-  margin-bottom: 4px;
   font-weight: 400;
   font-size: 16px;
-  line-height: 21.86px;
+  margin-bottom: 0;
 }
 .property_meta .content_bottom .text {
   color: #222;
   font-weight: 450;
   font-size: 16px;
   text-transform: capitalize;
+  max-width: 160px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  cursor: pointer;
 }
 .prose.prose-lg strong {
   font-weight: 450 !important;
