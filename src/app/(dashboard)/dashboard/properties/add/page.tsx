@@ -159,11 +159,14 @@ export default function AddPropertyForm() {
 
   useEffect(() => {
     if (projectName) {
-      // If it contains a space, replace with dash; else use as-is
-      const hasSpaces = /\s/.test(projectName);
-      const generatedSlug = hasSpaces
-        ? projectName.trim().replace(/\s+/g, "-").toLowerCase()
-        : projectName;
+      const generatedSlug = projectName
+        .trim()
+        .toLowerCase()
+        .replace(/&/g, "and") // replace ampersands
+        .replace(/[^a-z0-9\s-]/g, "") // remove special characters except spaces and hyphens
+        .replace(/\s+/g, "-") // replace spaces with dashes
+        .replace(/-+/g, "-"); // collapse multiple dashes into one
+
       setSlug(generatedSlug);
     } else {
       setSlug("");

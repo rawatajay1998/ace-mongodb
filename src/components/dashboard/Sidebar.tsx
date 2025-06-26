@@ -72,6 +72,17 @@ const menuItems = [
     ],
   },
   {
+    label: "Blogs",
+    icon: UsersRound,
+    key: "blogs",
+    children: [
+      {
+        label: "Blog Manager",
+        key: "/dashboard/blogs",
+      },
+    ],
+  },
+  {
     label: "Master",
     icon: UsersRound,
     key: "master",
