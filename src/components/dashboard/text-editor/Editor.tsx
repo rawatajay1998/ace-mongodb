@@ -11,6 +11,7 @@ import TableCell from "@tiptap/extension-table-cell";
 import TableHeader from "@tiptap/extension-table-header";
 import TableRow from "@tiptap/extension-table-row";
 import Link from "@tiptap/extension-link";
+import Image from "@tiptap/extension-image";
 
 import React, { useState } from "react";
 
@@ -24,7 +25,7 @@ import {
   List,
   ListOrdered,
   Codepen,
-  Image,
+  ImageIcon,
   AlignLeft,
   Undo,
   Redo,
@@ -60,6 +61,10 @@ const TipTapEditor: React.FC<TipTapEditorProps> = ({
       TableHeader,
       TableCell,
       Link,
+      Image.configure({
+        inline: true,
+        allowBase64: true, // Enable base64 images
+      }),
     ],
     onUpdate: ({ editor }) => {
       const html = editor.getHTML();
@@ -69,6 +74,27 @@ const TipTapEditor: React.FC<TipTapEditorProps> = ({
   });
 
   if (!editor) return null;
+
+  const addImage = () => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*";
+
+    input.onchange = async () => {
+      if (!input.files?.length) return;
+      const file = input.files[0];
+
+      // Convert image to base64
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const base64 = e.target?.result as string;
+        editor.commands.setImage({ src: base64 });
+      };
+      reader.readAsDataURL(file);
+    };
+
+    input.click();
+  };
 
   const addLink = () => {
     let url = window.prompt("Enter URL");
@@ -297,11 +323,8 @@ const TipTapEditor: React.FC<TipTapEditorProps> = ({
           >
             <ChevronDown />
           </button>
-          <button
-            type="button"
-            onClick={() => editor.chain().focus().setHardBreak().run()}
-          >
-            <Image />
+          <button type="button" onClick={addImage} title="Add Image">
+            <ImageIcon />
           </button>
           <button
             type="button"
