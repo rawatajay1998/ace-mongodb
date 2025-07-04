@@ -15,36 +15,26 @@ cloudinary.config({
 
 // Helper for Cloudinary upload
 const uploadToCloudinary = async (
-  file: FormDataEntryValue | Buffer,
+  file: Buffer,
   folder = "blogs"
 ): Promise<string> => {
-  if (!file || (typeof file === "string" && !file.startsWith("data:"))) {
-    throw new Error("Invalid file");
-  }
-
-  let buffer: Buffer;
-  if (file instanceof Buffer) {
-    buffer = file;
-  } else {
-    buffer = Buffer.from(await (file as File).arrayBuffer());
-  }
-
-  const stream = Readable.from(buffer);
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const result = await new Promise<any>((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     const uploadStream = cloudinary.uploader.upload_stream(
-      { folder },
+      { folder, resource_type: "auto" },
       (error, result) => {
-        if (error || !result)
-          return reject(error || new Error("Upload failed"));
-        resolve(result);
+        if (error || !result) {
+          reject(error || new Error("Upload failed"));
+        } else {
+          resolve(result.secure_url);
+        }
       }
     );
-    stream.pipe(uploadStream);
-  });
 
-  return result.secure_url;
+    const readable = new Readable();
+    readable.push(file);
+    readable.push(null);
+    readable.pipe(uploadStream);
+  });
 };
 
 const generateSlug = (title: string) => {
@@ -57,49 +47,79 @@ const generateSlug = (title: string) => {
     .replace(/-+/g, "-");
 };
 
-// Helper to process content images
+// Process content images and upload to Cloudinary
 const processContentImages = async (content: string): Promise<string> => {
-  const $ = cheerio.load(content);
-  const images = $("img").toArray();
+  if (!content.includes("<img")) return content;
 
-  for (const img of images) {
-    const src = $(img).attr("src");
-    if (!src) continue;
+  try {
+    const $ = cheerio.load(content);
+    const images = $("img").toArray();
 
-    // Skip if already a Cloudinary URL
-    if (src.includes("res.cloudinary.com")) continue;
+    await Promise.all(
+      images.map(async (img) => {
+        const src = $(img).attr("src");
+        if (!src || src.includes("res.cloudinary.com")) return;
 
-    // Upload base64 or blob images
-    if (src.startsWith("data:") || src.startsWith("blob:")) {
-      try {
-        let file: Buffer;
-        if (src.startsWith("data:")) {
-          const base64Data = src.split(",")[1];
-          file = Buffer.from(base64Data, "base64");
-        } else {
-          const response = await fetch(src);
-          const blob = await response.blob();
-          const arrayBuffer = await blob.arrayBuffer();
-          file = Buffer.from(arrayBuffer);
+        try {
+          let buffer: Buffer;
+          if (src.startsWith("data:")) {
+            const base64Data = src.split(",")[1];
+            buffer = Buffer.from(base64Data, "base64");
+          } else {
+            const response = await fetch(src);
+            buffer = Buffer.from(await response.arrayBuffer());
+          }
+
+          const cloudinaryUrl = await uploadToCloudinary(
+            buffer,
+            "blogs/content"
+          );
+          $(img).attr("src", cloudinaryUrl);
+          $(img).removeAttr("srcset");
+        } catch (error) {
+          console.error("Failed to process image:", error);
         }
+      })
+    );
 
-        const cloudinaryUrl = await uploadToCloudinary(file, "blogs/content");
-        $(img).attr("src", cloudinaryUrl);
-      } catch (error) {
-        console.error("Error uploading image:", error);
-        // Keep original src if upload fails
-      }
-    }
+    return $.html();
+  } catch (error) {
+    console.error("Content processing failed:", error);
+    return content;
   }
-
-  return $.html();
 };
-// Helper function to verify admin access
+
+// Extract Cloudinary URLs from HTML content
+const extractCloudinaryUrls = (html: string): string[] => {
+  const urls: string[] = [];
+  const $ = cheerio.load(html);
+  $("img").each((_, img) => {
+    const src = $(img).attr("src");
+    if (src?.includes("res.cloudinary.com")) {
+      urls.push(src);
+    }
+  });
+  return urls;
+};
+
+// Delete multiple images from Cloudinary
+const deleteCloudinaryImages = async (urls: string[]): Promise<void> => {
+  await Promise.all(
+    urls.map(async (url) => {
+      try {
+        const publicId = url.split("/").slice(-2).join("/").split(".")[0];
+        await cloudinary.uploader.destroy(publicId);
+      } catch (error) {
+        console.error(`Failed to delete image ${url}:`, error);
+      }
+    })
+  );
+};
+
+// Verify admin access
 const verifyAdmin = async (request: NextRequest) => {
   const token = request.cookies.get("token")?.value;
-  if (!token) {
-    return { error: "Unauthorized", status: 401 };
-  }
+  if (!token) return { error: "Unauthorized", status: 401 };
 
   const user = await getUserFromToken(token);
   if (!user || user.role !== "admin") {
@@ -109,6 +129,7 @@ const verifyAdmin = async (request: NextRequest) => {
   return { user };
 };
 
+// GET all blogs
 export const GET = async (req: NextRequest) => {
   await connectDB();
 
@@ -116,7 +137,6 @@ export const GET = async (req: NextRequest) => {
     const { searchParams } = new URL(req.url);
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "10");
-
     const skip = (page - 1) * limit;
 
     const [blogs, total] = await Promise.all([
@@ -126,12 +146,7 @@ export const GET = async (req: NextRequest) => {
 
     return NextResponse.json({
       success: true,
-      data: {
-        blogs,
-        total,
-        page,
-        limit,
-      },
+      data: { blogs, total, page, limit },
     });
   } catch (error) {
     console.error("GET Error:", error);
@@ -145,9 +160,9 @@ export const GET = async (req: NextRequest) => {
   }
 };
 
+// CREATE new blog
 export const POST = async (request: NextRequest) => {
   await connectDB();
-
   const authResult = await verifyAdmin(request);
   if (authResult.error) {
     return NextResponse.json(
@@ -159,41 +174,32 @@ export const POST = async (request: NextRequest) => {
   try {
     const formData = await request.formData();
     const thumbnailFile = formData.get("thumbnailFile");
+    const rawContent = formData.get("content")?.toString() || "";
 
-    if (!thumbnailFile) {
+    if (!thumbnailFile || typeof thumbnailFile === "string") {
       return NextResponse.json(
-        { success: false, error: "Thumbnail image is required" },
+        { success: false, error: "Valid thumbnail image is required" },
         { status: 400 }
       );
     }
 
-    const title = formData.get("title")?.toString() || "";
-    const slug = generateSlug(title);
-    const content = formData.get("content")?.toString() || "";
-
-    // Check if slug already exists
-    const existing = await Blog.findOne({ slug });
-    if (existing) {
-      return NextResponse.json(
-        { success: false, error: "A blog with this slug already exists" },
-        { status: 400 }
-      );
-    }
-
-    // Process content images
-    const processedContent = await processContentImages(content);
-
-    // Upload thumbnail
-    const thumbnailUrl = await uploadToCloudinary(thumbnailFile);
+    // Process content and thumbnail in parallel
+    const [processedContent, thumbnailUrl] = await Promise.all([
+      processContentImages(rawContent),
+      uploadToCloudinary(
+        Buffer.from(await thumbnailFile.arrayBuffer()),
+        "blogs/thumbs"
+      ),
+    ]);
 
     const blog = new Blog({
       metaTitle: formData.get("metaTitle"),
       metaDescription: formData.get("metaDescription"),
-      title,
+      title: formData.get("title"),
       subtitle: formData.get("subtitle"),
       content: processedContent,
       thumbnail: thumbnailUrl,
-      slug,
+      slug: generateSlug(formData.get("title")?.toString() || ""),
     });
 
     await blog.save();
@@ -211,9 +217,9 @@ export const POST = async (request: NextRequest) => {
   }
 };
 
+// UPDATE existing blog
 export const PUT = async (request: NextRequest) => {
   await connectDB();
-
   const authResult = await verifyAdmin(request);
   if (authResult.error) {
     return NextResponse.json(
@@ -226,47 +232,54 @@ export const PUT = async (request: NextRequest) => {
     const formData = await request.formData();
     const id = formData.get("id") as string;
     const thumbnailFile = formData.get("thumbnailFile");
-    const content = formData.get("content")?.toString() || "";
+    const newContent = formData.get("content")?.toString() || "";
 
-    const title = formData.get("title")?.toString() || "";
-    const slug = generateSlug(title);
-
-    // Check if another blog already uses this slug
-    const existing = await Blog.findOne({ slug, _id: { $ne: id } });
-    if (existing) {
-      return NextResponse.json(
-        { success: false, error: "A blog with this slug already exists" },
-        { status: 400 }
-      );
-    }
-
-    // Process content images
-    const processedContent = await processContentImages(content);
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const updateData: Record<string, any> = {
-      metaTitle: formData.get("metaTitle"),
-      metaDescription: formData.get("metaDescription"),
-      title,
-      subtitle: formData.get("subtitle"),
-      content: processedContent,
-      slug,
-    };
-
-    if (thumbnailFile && typeof thumbnailFile !== "string") {
-      updateData.thumbnail = await uploadToCloudinary(thumbnailFile);
-    }
-
-    const updatedBlog = await Blog.findByIdAndUpdate(id, updateData, {
-      new: true,
-    });
-
-    if (!updatedBlog) {
+    const originalBlog = await Blog.findById(id);
+    if (!originalBlog) {
       return NextResponse.json(
         { success: false, error: "Blog not found" },
         { status: 404 }
       );
     }
+
+    // Process content and handle thumbnail in parallel
+    const [processedContent, thumbnailUrl] = await Promise.all([
+      processContentImages(newContent),
+      thumbnailFile && typeof thumbnailFile !== "string"
+        ? (async () => {
+            // Delete old thumbnail first
+            if (originalBlog.thumbnail) {
+              await deleteCloudinaryImages([originalBlog.thumbnail]);
+            }
+            return uploadToCloudinary(
+              Buffer.from(await thumbnailFile.arrayBuffer()),
+              "blogs/thumbs"
+            );
+          })()
+        : Promise.resolve(undefined),
+    ]);
+
+    // Find and delete removed images
+    const originalImages = extractCloudinaryUrls(originalBlog.content);
+    const newImages = extractCloudinaryUrls(processedContent);
+    const removedImages = originalImages.filter(
+      (url) => !newImages.includes(url)
+    );
+    await deleteCloudinaryImages(removedImages);
+
+    const updatedBlog = await Blog.findByIdAndUpdate(
+      id,
+      {
+        metaTitle: formData.get("metaTitle"),
+        metaDescription: formData.get("metaDescription"),
+        title: formData.get("title"),
+        subtitle: formData.get("subtitle"),
+        content: processedContent,
+        thumbnail: thumbnailUrl || originalBlog.thumbnail,
+        slug: generateSlug(formData.get("title") as string),
+      },
+      { new: true }
+    );
 
     return NextResponse.json({ success: true, data: updatedBlog });
   } catch (error) {
@@ -281,9 +294,9 @@ export const PUT = async (request: NextRequest) => {
   }
 };
 
+// DELETE blog
 export const DELETE = async (request: NextRequest) => {
   await connectDB();
-
   const authResult = await verifyAdmin(request);
   if (authResult.error) {
     return NextResponse.json(
@@ -295,7 +308,6 @@ export const DELETE = async (request: NextRequest) => {
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
-
     if (!id) {
       return NextResponse.json(
         { success: false, error: "ID parameter is required" },
@@ -304,7 +316,6 @@ export const DELETE = async (request: NextRequest) => {
     }
 
     const deletedBlog = await Blog.findByIdAndDelete(id);
-
     if (!deletedBlog) {
       return NextResponse.json(
         { success: false, error: "Blog not found" },
@@ -312,31 +323,13 @@ export const DELETE = async (request: NextRequest) => {
       );
     }
 
-    // Delete thumbnail from Cloudinary
-    if (deletedBlog.thumbnail) {
-      const publicId = deletedBlog.thumbnail
-        .split("/")
-        .slice(-2)
-        .join("/")
-        .split(".")[0];
-      try {
-        await cloudinary.uploader.destroy(publicId);
-      } catch (cloudinaryError) {
-        console.error("Cloudinary deletion error:", cloudinaryError);
-      }
-    }
+    // Delete all associated images
+    const imagesToDelete = [
+      deletedBlog.thumbnail,
+      ...extractCloudinaryUrls(deletedBlog.content),
+    ].filter(Boolean) as string[];
 
-    // Find and delete content images from Cloudinary
-    const contentImages =
-      deletedBlog.content.match(/res\.cloudinary\.com\/[^"\s]+/g) || [];
-    for (const imgUrl of contentImages) {
-      const publicId = imgUrl.split("/").slice(-2).join("/").split(".")[0];
-      try {
-        await cloudinary.uploader.destroy(publicId);
-      } catch (cloudinaryError) {
-        console.error("Error deleting content image:", cloudinaryError);
-      }
-    }
+    await deleteCloudinaryImages(imagesToDelete);
 
     return NextResponse.json({
       success: true,

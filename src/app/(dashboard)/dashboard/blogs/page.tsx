@@ -75,29 +75,62 @@ export default function BlogDashboard() {
       .replace(/\s+/g, "-")
       .replace(/-+/g, "-");
 
+  // Add this helper inside the component
+  const uploadBase64Image = async (base64: string): Promise<string> => {
+    const res = await fetch("/api/blogs/upload", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ base64 }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Upload failed");
+    return data.url;
+  };
+
+  const replaceBase64ImagesWithCloudinary = async (
+    html: string
+  ): Promise<string> => {
+    const div = document.createElement("div");
+    div.innerHTML = html;
+    const images = div.querySelectorAll("img");
+    for (const img of images) {
+      const src = img.getAttribute("src");
+      if (src && src.startsWith("data:image")) {
+        try {
+          const url = await uploadBase64Image(src);
+          img.setAttribute("src", url);
+          img.removeAttribute("srcset");
+        } catch (err) {
+          console.error("Image upload failed", err);
+        }
+      }
+    }
+    return div.innerHTML;
+  };
+
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
       const isEditing = !!editingBlog;
 
-      if (!isEditing && !selectedImageFile) {
-        message.error("Thumbnail image is required");
-        return;
-      }
+      if (!editorContent) throw new Error("Content cannot be empty");
 
-      // Show loading state
       message.loading({
-        content: "Processing images...",
-        key: "upload",
+        content: isEditing ? "Updating blog..." : "Creating blog...",
+        key: "save",
         duration: 0,
       });
+
+      // Replace base64 images in content
+      const processedContent =
+        await replaceBase64ImagesWithCloudinary(editorContent);
 
       const formData = new FormData();
       formData.append("metaTitle", values.metaTitle);
       formData.append("metaDescription", values.metaDescription);
       formData.append("title", values.title);
       formData.append("subtitle", values.subtitle || "");
-      formData.append("content", editorContent);
+      formData.append("content", processedContent);
 
       if (selectedImageFile) {
         formData.append("thumbnailFile", selectedImageFile);
@@ -112,25 +145,27 @@ export default function BlogDashboard() {
         body: formData,
       });
 
-      if (res.ok) {
-        message.success({
-          content: isEditing ? "Blog updated!" : "Blog created!",
-          key: "upload",
-        });
-        closeModal();
-        fetchBlogs();
-      } else {
-        const errorData = await res.json();
-        message.error({
-          content: errorData.error || "Error saving blog",
-          key: "upload",
-        });
-      }
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to save blog");
+
+      message.success({
+        content: isEditing
+          ? "Blog updated successfully!"
+          : "Blog created successfully!",
+        key: "save",
+      });
+
+      closeModal();
+      fetchBlogs();
     } catch (error) {
       console.error("Submission error:", error);
-      message.error({ content: "Failed to save blog", key: "upload" });
+      message.error({
+        content: error instanceof Error ? error.message : "Failed to save blog",
+        key: "save",
+      });
     }
   };
+
   const handleEdit = (blog: BlogType) => {
     setEditingBlog(blog);
     form.setFieldsValue(blog);
@@ -351,7 +386,10 @@ export default function BlogDashboard() {
             <TipTapEditor
               key={editorKey}
               initialContent={editorContent}
-              onEditorChange={(content: string) => setEditorContent(content)}
+              onEditorChange={(content: string) => {
+                console.log("Editor change triggered"); // ✅ Debug line
+                setEditorContent(content);
+              }}
             />
           </Form.Item>
         </Form>
