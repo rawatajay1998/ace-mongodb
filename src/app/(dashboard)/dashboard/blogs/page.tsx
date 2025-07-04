@@ -85,6 +85,13 @@ export default function BlogDashboard() {
         return;
       }
 
+      // Show loading state
+      message.loading({
+        content: "Processing images...",
+        key: "upload",
+        duration: 0,
+      });
+
       const formData = new FormData();
       formData.append("metaTitle", values.metaTitle);
       formData.append("metaDescription", values.metaDescription);
@@ -106,19 +113,24 @@ export default function BlogDashboard() {
       });
 
       if (res.ok) {
-        message.success(isEditing ? "Blog updated!" : "Blog created!");
+        message.success({
+          content: isEditing ? "Blog updated!" : "Blog created!",
+          key: "upload",
+        });
         closeModal();
         fetchBlogs();
       } else {
         const errorData = await res.json();
-        message.error(errorData.error || "Error saving blog");
+        message.error({
+          content: errorData.error || "Error saving blog",
+          key: "upload",
+        });
       }
     } catch (error) {
       console.error("Submission error:", error);
-      message.error("Failed to save blog");
+      message.error({ content: "Failed to save blog", key: "upload" });
     }
   };
-
   const handleEdit = (blog: BlogType) => {
     setEditingBlog(blog);
     form.setFieldsValue(blog);

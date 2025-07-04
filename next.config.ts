@@ -10,6 +10,11 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: false,
   },
+  api: {
+    bodyParser: {
+      sizeLimit: "25mb",
+    },
+  },
   async rewrites() {
     return [
       {

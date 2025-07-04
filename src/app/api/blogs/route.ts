@@ -4,6 +4,7 @@ import connectDB from "@/lib/db";
 import Blog from "@/models/blog.model";
 import { NextRequest, NextResponse } from "next/server";
 import { getUserFromToken } from "@/lib/auth";
+import * as cheerio from "cheerio";
 
 // Configure Cloudinary
 cloudinary.config({
@@ -14,17 +15,26 @@ cloudinary.config({
 
 // Helper for Cloudinary upload
 const uploadToCloudinary = async (
-  file: FormDataEntryValue
+  file: FormDataEntryValue | Buffer,
+  folder = "blogs"
 ): Promise<string> => {
-  if (!file || typeof file === "string") throw new Error("Invalid file");
+  if (!file || (typeof file === "string" && !file.startsWith("data:"))) {
+    throw new Error("Invalid file");
+  }
 
-  const buffer = Buffer.from(await (file as File).arrayBuffer());
+  let buffer: Buffer;
+  if (file instanceof Buffer) {
+    buffer = file;
+  } else {
+    buffer = Buffer.from(await (file as File).arrayBuffer());
+  }
+
   const stream = Readable.from(buffer);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const result = await new Promise<any>((resolve, reject) => {
     const uploadStream = cloudinary.uploader.upload_stream(
-      { folder: "blogs" }, // Changed folder to 'blogs'
+      { folder },
       (error, result) => {
         if (error || !result)
           return reject(error || new Error("Upload failed"));
@@ -47,6 +57,43 @@ const generateSlug = (title: string) => {
     .replace(/-+/g, "-");
 };
 
+// Helper to process content images
+const processContentImages = async (content: string): Promise<string> => {
+  const $ = cheerio.load(content);
+  const images = $("img").toArray();
+
+  for (const img of images) {
+    const src = $(img).attr("src");
+    if (!src) continue;
+
+    // Skip if already a Cloudinary URL
+    if (src.includes("res.cloudinary.com")) continue;
+
+    // Upload base64 or blob images
+    if (src.startsWith("data:") || src.startsWith("blob:")) {
+      try {
+        let file: Buffer;
+        if (src.startsWith("data:")) {
+          const base64Data = src.split(",")[1];
+          file = Buffer.from(base64Data, "base64");
+        } else {
+          const response = await fetch(src);
+          const blob = await response.blob();
+          const arrayBuffer = await blob.arrayBuffer();
+          file = Buffer.from(arrayBuffer);
+        }
+
+        const cloudinaryUrl = await uploadToCloudinary(file, "blogs/content");
+        $(img).attr("src", cloudinaryUrl);
+      } catch (error) {
+        console.error("Error uploading image:", error);
+        // Keep original src if upload fails
+      }
+    }
+  }
+
+  return $.html();
+};
 // Helper function to verify admin access
 const verifyAdmin = async (request: NextRequest) => {
   const token = request.cookies.get("token")?.value;
@@ -122,6 +169,7 @@ export const POST = async (request: NextRequest) => {
 
     const title = formData.get("title")?.toString() || "";
     const slug = generateSlug(title);
+    const content = formData.get("content")?.toString() || "";
 
     // Check if slug already exists
     const existing = await Blog.findOne({ slug });
@@ -132,6 +180,10 @@ export const POST = async (request: NextRequest) => {
       );
     }
 
+    // Process content images
+    const processedContent = await processContentImages(content);
+
+    // Upload thumbnail
     const thumbnailUrl = await uploadToCloudinary(thumbnailFile);
 
     const blog = new Blog({
@@ -139,7 +191,7 @@ export const POST = async (request: NextRequest) => {
       metaDescription: formData.get("metaDescription"),
       title,
       subtitle: formData.get("subtitle"),
-      content: formData.get("content"),
+      content: processedContent,
       thumbnail: thumbnailUrl,
       slug,
     });
@@ -174,6 +226,7 @@ export const PUT = async (request: NextRequest) => {
     const formData = await request.formData();
     const id = formData.get("id") as string;
     const thumbnailFile = formData.get("thumbnailFile");
+    const content = formData.get("content")?.toString() || "";
 
     const title = formData.get("title")?.toString() || "";
     const slug = generateSlug(title);
@@ -187,13 +240,16 @@ export const PUT = async (request: NextRequest) => {
       );
     }
 
+    // Process content images
+    const processedContent = await processContentImages(content);
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const updateData: Record<string, any> = {
       metaTitle: formData.get("metaTitle"),
       metaDescription: formData.get("metaDescription"),
       title,
       subtitle: formData.get("subtitle"),
-      content: formData.get("content"),
+      content: processedContent,
       slug,
     };
 
@@ -256,7 +312,7 @@ export const DELETE = async (request: NextRequest) => {
       );
     }
 
-    // Optionally delete the image from Cloudinary
+    // Delete thumbnail from Cloudinary
     if (deletedBlog.thumbnail) {
       const publicId = deletedBlog.thumbnail
         .split("/")
@@ -267,7 +323,18 @@ export const DELETE = async (request: NextRequest) => {
         await cloudinary.uploader.destroy(publicId);
       } catch (cloudinaryError) {
         console.error("Cloudinary deletion error:", cloudinaryError);
-        // Continue even if Cloudinary deletion fails
+      }
+    }
+
+    // Find and delete content images from Cloudinary
+    const contentImages =
+      deletedBlog.content.match(/res\.cloudinary\.com\/[^"\s]+/g) || [];
+    for (const imgUrl of contentImages) {
+      const publicId = imgUrl.split("/").slice(-2).join("/").split(".")[0];
+      try {
+        await cloudinary.uploader.destroy(publicId);
+      } catch (cloudinaryError) {
+        console.error("Error deleting content image:", cloudinaryError);
       }
     }
 
