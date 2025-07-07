@@ -9,9 +9,7 @@ import {
   Store,
 } from "lucide-react";
 import Image from "next/image";
-import CarouselWrapper from "@/components/marketing/CarouselWrapper";
 import Link from "next/link";
-import TeamCard from "@/components/marketing/TeamCard";
 
 import SearchBanner from "./searchBanner";
 import OffPlanProperties from "./OffPlan";
@@ -23,17 +21,13 @@ import TestimonialsCarousel from "./Testimonials";
 import DeveloperCarousel from "./Developers";
 import BannerVideo from "./BannerVideo";
 import ExclusiveProperties from "./ExclusiveListing";
+import TeamSection from "./TeamCarosuel";
 
 const teamArray = [
   {
     name: "Rishi Malik",
     designation: "Founder",
     imageUrl: "/assets/images/team/rishi-malik.jpg",
-  },
-  {
-    name: "Rucile",
-    designation: "Admin Officer",
-    imageUrl: "/assets/images/team/rucile.jpg",
   },
   {
     name: "Mayuri Chandwani",
@@ -288,12 +282,13 @@ const HomePgae = () => {
               Guided by Experts
             </h3>
           </div>
-          <CarouselWrapper slidesToShow={5}>
+          {/* <CarouselWrapper slidesToShow={5}>
             {teamArray &&
               teamArray.map((person) => {
                 return <TeamCard key={person.name} {...person} />;
               })}
-          </CarouselWrapper>
+          </CarouselWrapper> */}
+          <TeamSection teamArray={teamArray} />
         </div>
       </section>
 
