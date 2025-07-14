@@ -4,8 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Mail, MoveRight } from "lucide-react";
 import { useRef, useState } from "react";
-import { Modal } from "antd";
-import ContactForm from "../../contact/ContactForm";
+import ContactModal from "./ContactModal";
 
 type Property = {
   _id: string;
@@ -90,15 +89,13 @@ const SidebarPorperty = ({ relatedProperties, propertyName }: Props) => {
         </button>
       </div>
 
-      <Modal
-        open={isModalOpen}
-        onCancel={() => setIsModalOpen(false)}
-        footer={null}
-      >
-        <div className="contact_form">
-          <ContactForm source="property" propertyName={propertyName} />
-        </div>
-      </Modal>
+      {isModalOpen && (
+        <ContactModal
+          open={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          propertyName={propertyName}
+        />
+      )}
 
       {relatedProperties.length > 0 && (
         <div className="mt-12">

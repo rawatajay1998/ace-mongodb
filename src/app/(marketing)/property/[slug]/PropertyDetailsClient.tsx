@@ -53,8 +53,6 @@ export default function PropertyDetailsClient({
 
   const images = [property.bannerImage, ...(property.galleryImages || [])];
 
-  console.log(property);
-
   return (
     <section className="property_content">
       <div className="container">

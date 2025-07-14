@@ -2285,6 +2285,125 @@ footer .copyrights_row ul {
   min-width: max-content !important;
 }
 
+.contact_property_modal .ant-modal-content {
+  padding: 0;
+  border-radius: 20px;
+  overflow: hidden;
+}
+.contact_property_modal .ant-modal-content .ant-form {
+  padding: 20px;
+  padding-top: 60px;
+}
+.contact_property_modal .ant-modal-content label {
+  font-size: 14px;
+  color: #121212;
+  font-weight: 500;
+}
+.contact_property_modal .ant-modal-content input,
+.contact_property_modal .ant-modal-content textarea {
+  color: #121212;
+  font-size: 13px;
+}
+.contact_property_modal .ant-modal-content input::placeholder,
+.contact_property_modal .ant-modal-content textarea::placeholder {
+  color: #121212;
+}
+.contact_property_modal .ant-modal-content .checkbox_font {
+  font-size: 13px;
+  line-height: 1.2;
+}
+.contact_property_modal .header {
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  align-items: center;
+  padding-block: 20px;
+  position: relative;
+  padding-bottom: 60px;
+  background-color: #0a264a;
+}
+.contact_property_modal .header h3 {
+  color: #fff;
+  font-size: 26px;
+  font-weight: 600;
+  text-align: center;
+}
+.contact_property_modal .header h4 {
+  color: #fff;
+  font-size: 18px;
+  text-align: center;
+}
+.contact_property_modal .header {
+  position: relative;
+  background-color: #0a264a;
+  text-align: center;
+}
+.contact_property_modal .ant-modal-content .ant-modal-close-x span {
+  color: #fff !important;
+  font-size: 24px !important;
+}
+
+/* Logo styles */
+.contact_property_modal .header .logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+  padding: 12px;
+  position: absolute;
+  bottom: -50px;
+  border-radius: 100%;
+  height: 100px;
+  width: 100px;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  z-index: 3;
+}
+
+/* Logo styles */
+.contact_property_modal .header .logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+  padding: 12px;
+  position: absolute;
+  bottom: -50px;
+  border-radius: 100%;
+  height: 100px;
+  width: 100px;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  z-index: 3;
+}
+
+/* LEFT Triangle */
+.contact_property_modal .header .triangle-left {
+  z-index: 2;
+  border-top: 60px solid #0000;
+  border-bottom: 0 solid #0000;
+  border-right: 200px solid #0a264a;
+  width: 0;
+  height: 0;
+  position: absolute;
+  bottom: -60px;
+  left: 0;
+  transform: rotate(-180deg);
+}
+
+/* RIGHT Triangle */
+.contact_property_modal .header .triangle-right {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-top: 60px solid transparent;
+  border-bottom: 0 solid transparent;
+  border-left: 200px solid #0a264a;
+  z-index: 2;
+  bottom: -60px;
+  right: 0;
+  transform: rotate(-180deg);
+}
+
 /* media queries */
 
 @media (max-width: 1320px) {
