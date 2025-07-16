@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Modal, Form, Input, Button, Checkbox, Select } from "antd";
+import { Modal, Form, Input, Button, Checkbox } from "antd";
 import { UserOutlined, PhoneOutlined, MailOutlined } from "@ant-design/icons";
 import axios from "axios";
 import Image from "next/image";
@@ -73,62 +73,51 @@ const ContactModal: React.FC<ContactModalProps> = ({
             style={{ marginTop: 8 }}
           >
             <div>
-              <Form.Item
-                name="name"
-                label="Full Name"
-                rules={[
-                  { required: true, message: "Please enter your full name" },
-                ]}
-              >
-                <Input
-                  size="large"
-                  prefix={<UserOutlined />}
-                  placeholder="Enter your name"
-                  style={{
-                    borderRadius: 14,
-                    boxShadow: "0 1px 4px rgba(22,119,255,0.06)",
-                    border: "1.5px solid #e0e7ef",
-                    background: "#f8fafc",
-                  }}
-                />
-              </Form.Item>
-
-              <Form.Item
-                name="role"
-                label="I am"
-                hidden
-                style={{ marginBottom: 0 }}
-              >
-                <Select
-                  size="large"
-                  placeholder="Select one"
-                  style={{ borderRadius: 14, background: "#f8fafc" }}
-                  options={[
-                    { value: "Buyer", label: "Buyer" },
-                    { value: "Seller", label: "Seller" },
+              <div className="grid grid-cols-2 gap-4">
+                <Form.Item
+                  name="name"
+                  label="Full Name"
+                  rules={[
+                    { required: true, message: "Please enter your full name" },
                   ]}
-                />
-              </Form.Item>
+                >
+                  <Input
+                    size="large"
+                    prefix={<UserOutlined />}
+                    placeholder="Enter your name"
+                    style={{
+                      borderRadius: 14,
+                      boxShadow: "0 1px 4px rgba(22,119,255,0.06)",
+                      border: "1.5px solid #e0e7ef",
+                      background: "#f8fafc",
+                    }}
+                  />
+                </Form.Item>
 
-              <Form.Item
-                name="phone"
-                label="Phone Number"
-                rules={[
-                  { required: true, message: "Please enter your phone number" },
-                ]}
-              >
-                <Input
-                  size="large"
-                  prefix={<PhoneOutlined />}
-                  placeholder="Enter your phone number"
-                  style={{
-                    borderRadius: 14,
-                    boxShadow: "0 1px 4px rgba(22,119,255,0.06)",
-                    border: "1.5px solid #e0e7ef",
-                    background: "#f8fafc",
-                  }}
-                />
-              </Form.Item>
+                <Form.Item
+                  name="phone"
+                  label="Phone Number"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please enter your phone number",
+                    },
+                  ]}
+                >
+                  <Input
+                    size="large"
+                    prefix={<PhoneOutlined />}
+                    placeholder="Enter your phone number"
+                    style={{
+                      borderRadius: 14,
+                      boxShadow: "0 1px 4px rgba(22,119,255,0.06)",
+                      border: "1.5px solid #e0e7ef",
+                      background: "#f8fafc",
+                    }}
+                  />
+                </Form.Item>
+              </div>
+
               <Form.Item
                 name="email"
                 label="Email"

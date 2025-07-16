@@ -15,6 +15,41 @@ type BlogType = {
   slug?: string;
 };
 
+import type { Metadata } from "next";
+
+// This function is called before the page is rendered
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string };
+}): Promise<Metadata> {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/blogs/${params.slug}`
+    );
+    if (!res.ok) throw new Error("Failed to fetch blog");
+
+    const json = await res.json();
+    const blog = json.data.currentBlog;
+
+    return {
+      title: blog.title,
+      description: blog.metaDescription,
+      openGraph: {
+        title: blog.title,
+        description: blog.metaDescription,
+        images: [{ url: blog.thumbnail || "/default-thumbnail.jpg" }],
+      },
+    };
+  } catch (err) {
+    console.error("generateMetadata error:", err);
+    return {
+      title: "Blog Not Found | Ace Elite Properties",
+      description: "Sorry, the blog you're looking for could not be found.",
+    };
+  }
+}
+
 export default async function SingleBlogPage({
   params,
 }: {
