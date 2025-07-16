@@ -8,3 +8,16 @@
   margin-bottom: 12px;
   padding-bottom: 8px;
 }
+.prose p {
+  margin-bottom: 12px;
+  font-size: 16px;
+}
+
+.prose h2 {
+  font-size: 22px;
+  margin-bottom: 8px;
+}
+.prose h3 {
+  font-size: 20px;
+  margin-bottom: 8px;
+}

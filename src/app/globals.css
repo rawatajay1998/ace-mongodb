@@ -2301,11 +2301,13 @@ footer .copyrights_row ul {
   font-size: 14px;
   color: #121212;
   font-weight: 500;
+  font-family: "Futura PT", sans-serif;
 }
 .contact_property_modal .ant-modal-content input,
 .contact_property_modal .ant-modal-content textarea {
   color: #121212;
   font-size: 13px;
+  font-family: "Futura PT", sans-serif;
 }
 .contact_property_modal .ant-modal-content input::placeholder,
 .contact_property_modal .ant-modal-content textarea::placeholder {
@@ -2314,6 +2316,7 @@ footer .copyrights_row ul {
 .contact_property_modal .ant-modal-content .checkbox_font {
   font-size: 13px;
   line-height: 1.2;
+  font-family: "Futura PT", sans-serif;
 }
 .contact_property_modal .header {
   color: #fff;
@@ -2331,11 +2334,13 @@ footer .copyrights_row ul {
   font-size: 20px;
   font-weight: 600;
   text-align: center;
+  font-family: "Futura PT", sans-serif;
 }
 .contact_property_modal .header h4 {
   color: #fff;
   font-size: 18px;
   text-align: center;
+  font-family: "Futura PT", sans-serif;
 }
 .contact_property_modal .header {
   position: relative;
@@ -2345,6 +2350,7 @@ footer .copyrights_row ul {
 .contact_property_modal .ant-modal-content .ant-modal-close-x span {
   color: #fff !important;
   font-size: 24px !important;
+  font-family: "Futura PT", sans-serif;
 }
 
 /* Logo styles */

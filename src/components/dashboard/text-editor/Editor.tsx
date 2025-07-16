@@ -295,6 +295,14 @@ const TipTapEditor: React.FC<TipTapEditorProps> = ({
           </button>
           <button
             type="button"
+            onClick={() =>
+              editor.chain().focus().toggleHeading({ level: 3 }).run()
+            }
+          >
+            H3
+          </button>
+          <button
+            type="button"
             onClick={() => editor.chain().focus().toggleBulletList().run()}
           >
             <List />
