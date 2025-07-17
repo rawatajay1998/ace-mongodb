@@ -109,6 +109,7 @@ async function PropertyResults({ city, filters }: { city: string; filters }) {
     ...filters,
     highROI: filters.highROI,
   });
+  console.log(properties);
 
   return (
     <>

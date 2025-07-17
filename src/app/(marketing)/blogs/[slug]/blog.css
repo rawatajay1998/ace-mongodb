@@ -21,3 +21,17 @@
   font-size: 20px;
   margin-bottom: 8px;
 }
+.prose table th {
+  color: #fff;
+  background-color: #0a264a;
+  border-bottom: 1px solid #ddd;
+  padding: 4px 8px;
+}
+.prose table th p,
+.prose table td p {
+  margin-bottom: 0 !important;
+}
+.prose table td {
+  border-bottom: 1px solid #ddd;
+  padding: 8px 12px;
+}

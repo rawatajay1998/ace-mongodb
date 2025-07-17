@@ -97,7 +97,9 @@ function PropertyCard({ property }: { property: IPropertyCardProps }) {
             </span>
             <span>
               <strong>Property Type:</strong>
-              {property.propertyTypeName}
+              {Array.isArray(property.propertyTypeName)
+                ? property.propertyTypeName.join(", ")
+                : property.propertyTypeName}
             </span>
           </div>
 
