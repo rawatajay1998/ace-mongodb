@@ -1,10 +1,9 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Pagination, Spin } from "antd";
+import { Image, Pagination, Spin } from "antd";
 import Link from "next/link";
 import dayjs from "dayjs";
-import Image from "next/image";
 
 type BlogType = {
   _id: string;
@@ -61,9 +60,11 @@ export default function BlogListingPage() {
                 <Image
                   src={blog.thumbnail || "/default-thumbnail.jpg"}
                   alt={blog.title}
-                  width={100}
-                  height={100}
-                  className="w-full h-48 object-cover"
+                  width={600}
+                  height={250}
+                  style={{ objectFit: "cover", width: "100%", height: "250px" }}
+                  preview={false}
+                  className="w-full"
                 />
                 <div className="p-4">
                   <h2 className="text-lg font-semibold">{blog.title}</h2>
