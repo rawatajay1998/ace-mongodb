@@ -244,7 +244,30 @@ section.bg_section {
   padding-block: 20px;
 }
 .team_section .slick-list .team_card {
-  margin-right: 20px;
+  margin-inline: 10px;
+}
+.team_section .slick-arrow {
+  opacity: 1;
+  background: #0a264a;
+  border-radius: 32px;
+  justify-content: center;
+  align-items: center;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  top: calc(50% - 50px);
+}
+.team_section .slick-arrow {
+  top: 50%;
+}
+.team_section .slick-arrow::after {
+  display: none;
+}
+.team_section .slick-arrow.slick-next {
+  right: -20px;
+}
+.team_section .slick-arrow.slick-prev {
+  left: -20px;
 }
 
 section .container {
@@ -2648,7 +2671,13 @@ footer .copyrights_row ul {
   .carousel_wrapper .slick-arrow.slick-prev {
     left: -10px;
   }
+  .team_section .slick-arrow.slick-prev {
+    left: -10px;
+  }
   .carousel_wrapper .slick-arrow.slick-next {
+    right: -10px;
+  }
+  .team_section .slick-arrow.slick-next {
     right: -10px;
   }
   .testimonial_section .carousel_wrapper .slick-track {
