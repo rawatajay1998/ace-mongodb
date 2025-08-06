@@ -237,9 +237,16 @@ section {
   padding-block: 60px;
 }
 section.bg_section {
-  background: #f3f7fd;
+  /* background: #f3f7fd; */
   padding-block: 40px;
 }
+.team_section .slick-list {
+  padding-block: 20px;
+}
+.team_section .slick-list .team_card {
+  margin-right: 20px;
+}
+
 section .container {
   max-width: 1280px;
   width: 100%;

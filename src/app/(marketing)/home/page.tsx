@@ -30,19 +30,40 @@ const teamArray = [
     imageUrl: "/assets/images/team/rishi-malik.jpg",
   },
   {
+    name: "Bhimi Ahuja",
+    designation: "HR Executive",
+    imageUrl: "/assets/images/team/bhimi_ahuja.jpg",
+  },
+  {
+    name: "Nishant Mahajan",
+    designation: "Real Estate Agent",
+    imageUrl: "/assets/images/team/nishant_mahajan.jpg",
+  },
+  {
+    name: "Kamal Pandey",
+    designation: "Real Estate Agent",
+    imageUrl: "/assets/images/team/kamal_pandey.jpg",
+  },
+  {
     name: "Mayuri Chandwani",
-    designation: "RealEstate Agent",
+    designation: "Real Estate Agent",
     imageUrl: "/assets/images/team/mayuri-chadnwani.jpg",
+  },
+
+  {
+    name: "Arjun Aggarwal",
+    designation: "Real Estate Agent",
+    imageUrl: "/assets/images/team/arjun_aggarwal.jpg",
+  },
+  {
+    name: "Shirin Azad",
+    designation: "Tele Sales Executive",
+    imageUrl: "/assets/images/team/shirin_azad.jpg",
   },
   {
     name: "Natalia",
-    designation: "RealEstate Agent",
+    designation: "Real Estate Agent",
     imageUrl: "/assets/images/team/natalia-rashwan.jpg",
-  },
-  {
-    name: "Christine",
-    designation: "RealEstate Agent",
-    imageUrl: "/assets/images/team/christine.jpg",
   },
 ];
 

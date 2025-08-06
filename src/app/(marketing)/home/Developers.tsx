@@ -20,38 +20,21 @@ const DeveloperCarousel: React.FC = () => {
   return (
     <div style={{ padding: "20px" }}>
       <Carousel
-        // ref={carouselRef}
         slidesToShow={6}
         autoplay={true}
         dots={true}
-        // Remove effect="fade" as it conflicts with multiple slides
         infinite={true}
         responsive={[
-          {
-            breakpoint: 1024,
-            settings: {
-              slidesToShow: 3,
-            },
-          },
-          {
-            breakpoint: 768,
-            settings: {
-              slidesToShow: 2,
-            },
-          },
-          {
-            breakpoint: 480,
-            settings: {
-              slidesToShow: 2,
-            },
-          },
+          { breakpoint: 1024, settings: { slidesToShow: 3 } },
+          { breakpoint: 768, settings: { slidesToShow: 2 } },
+          { breakpoint: 480, settings: { slidesToShow: 2 } },
         ]}
       >
         {[
-          //   "aldar",
           "Azizi",
           "Binghatti",
           "damac",
+          "Alum",
           "luxuryrealties",
           "Ellington",
           "emaar",
@@ -80,7 +63,12 @@ const DeveloperCarousel: React.FC = () => {
                   objectFit: "contain",
                   height: "auto",
                   maxWidth: "100%",
-                  maxHeight: developer === "luxuryrealties" ? "80px" : "100px",
+                  maxHeight:
+                    developer.toLowerCase() === "alum"
+                      ? "60px"
+                      : developer === "luxuryrealties"
+                        ? "80px"
+                        : "100px",
                 }}
               />
             </div>

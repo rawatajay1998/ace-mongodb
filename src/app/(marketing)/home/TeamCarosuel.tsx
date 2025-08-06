@@ -2,52 +2,26 @@
 
 import TeamCard from "@/components/marketing/TeamCard";
 import { Carousel } from "antd";
-import { useEffect, useState } from "react";
 
 const TeamSection = ({ teamArray }) => {
-  const [isDesktop, setIsDesktop] = useState(false);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsDesktop(window.innerWidth >= 1024);
-    };
-
-    handleResize(); // run on load
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  if (isDesktop) {
-    return (
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: `repeat(${Math.min(teamArray.length, 4)}, 1fr)`,
-          justifyContent: teamArray.length < 4 ? "center" : "start",
-          gap: "24px",
-        }}
-      >
-        {teamArray.map((person) => (
-          <TeamCard key={person.name} {...person} />
-        ))}
-      </div>
-    );
-  }
+  const carouselSettings = {
+    dots: false,
+    infinite: false,
+    slidesToShow: 5,
+    margin: 10, // default is 5 (desktop)
+    stagePadding: 10,
+    responsive: [
+      {
+        breakpoint: 1024, // below 1024px
+        settings: {
+          slidesToShow: 1, // show 1 item for mobile
+        },
+      },
+    ],
+  };
 
   return (
-    <Carousel
-      dots={false}
-      infinite={false}
-      slidesToShow={1} // default mobile
-      responsive={[
-        {
-          breakpoint: 1024, // tablet
-          settings: {
-            slidesToShow: 1,
-          },
-        },
-      ]}
-    >
+    <Carousel {...carouselSettings}>
       {teamArray.map((person) => (
         <TeamCard key={person.name} {...person} />
       ))}
