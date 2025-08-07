@@ -30,11 +30,6 @@ const teamArray = [
     imageUrl: "/assets/images/team/rishi-malik.jpg",
   },
   {
-    name: "Bhimi Ahuja",
-    designation: "HR Executive",
-    imageUrl: "/assets/images/team/bhimi_ahuja.jpg",
-  },
-  {
     name: "Nishant Mahajan",
     designation: "Real Estate Agent",
     imageUrl: "/assets/images/team/nishant_mahajan.jpg",
@@ -57,7 +52,7 @@ const teamArray = [
   },
   {
     name: "Shirin Azad",
-    designation: "Tele Sales Executive",
+    designation: "Real Estate Agent",
     imageUrl: "/assets/images/team/shirin_azad.jpg",
   },
   {
