@@ -34,7 +34,7 @@ const DeveloperCarousel: React.FC = () => {
           "Azizi",
           "Binghatti",
           "damac",
-          "Alum",
+          "alum",
           "luxuryrealties",
           "Ellington",
           "emaar",
